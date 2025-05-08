@@ -4,6 +4,7 @@ const WebSocket = require('ws')
 const wss = new WebSocket.Server({ port: 8080 });
 
 let clients = [];
+let clientId = 0;
 
 // import { loadPlayer } from './public/js/player'
 
@@ -11,17 +12,33 @@ wss.on('connection', (ws) => {
   console.log('Client connected');
   clients.push(ws);
 
-  // loadPlayer(app, ws, new PIXI.Sprite(texture), container)
+  const newPlayerId = clientId++;
 
-  ws.on('message', (message) => {
-    console.log(`Received: ${message}`);
+  console.log(`Player ${newPlayerId} connected`);
 
-    clients.forEach(client => {
-      if (client !== ws && client.readyState === WebSocket.OPEN) {
-        client.send(message); 
+  x = Math.random() * 400;
+  y = Math.random() * 400;
+
+  clients[newPlayerId] = { x: x, y: y };
+
+
+  wss.clients.forEach(client => {
+      if (client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify({
+              type: 'playerJoined',
+              id: newPlayerId,
+              x: x,
+              y: y,
+          }));
       }
-    });
   });
+
+  setTimeout(() => {
+    ws.send(JSON.stringify({
+        type: 'you',
+        id: newPlayerId,
+    }));
+  }, 100)
 
   ws.on('close', () => {
     console.log('Client disconnected');

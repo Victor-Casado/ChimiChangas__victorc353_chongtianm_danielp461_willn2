@@ -26,12 +26,12 @@ export class Game {
       return new Game(app, texture);
     }
 
-    loadPlayer(client, x, y){
-        const player = new Player(this.app, client, new PIXI.Sprite(this.texture));
+    loadPlayer(id, x, y){
+        const player = new Player(this.app, id, new PIXI.Sprite(this.texture), x, y);
     
         this.container.addChild(player.sprite);
-        player.sprite.x = x;
-        player.sprite.y = y;
+        // player.sprite.x = x;
+        // player.sprite.y = y;
         this.players.push(player);
         return player
     }

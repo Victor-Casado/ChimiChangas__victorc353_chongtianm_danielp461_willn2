@@ -3,7 +3,7 @@ import { Controller } from './controller.js';
 // Class for handling Player
 export class Player
 {
-    constructor(app, client, sprite)
+    constructor(app, id, sprite, x, y)
     {
         this.app = app;
 
@@ -12,14 +12,14 @@ export class Player
 
         // The player's position
         this.position = {
-            x: Math.random() * app.screen.width,
-            y: Math.random() * app.screen.height,
+            x: x,
+            y: y,
         };
 
         // Character movement controller
         this.controller = new Controller();
 
-        this.client = client;
+        this.id = id;
         this.sprite = sprite;
 
         this.playerHeight = 50;
@@ -48,5 +48,15 @@ export class Player
 
         this.sprite.x  = this.position.x;
         this.sprite.y = this.position.y;
+    }
+
+    getId(){
+        return this.id;
+    }
+    getPosX(){
+        return this.position.x;
+    }
+    getPosY(){
+        return this.position.y;
     }
 }

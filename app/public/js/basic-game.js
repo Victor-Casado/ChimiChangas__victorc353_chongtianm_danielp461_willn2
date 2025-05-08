@@ -1,4 +1,6 @@
-import { Controller } from './controller.js';
+import { Player } from './player.js';
+
+const players = [];
 
 (async () =>
     {
@@ -15,49 +17,37 @@ import { Controller } from './controller.js';
         const container = new PIXI.Container();
     
         app.stage.addChild(container);
-    
-        // Create a controller that handles keyboard inputs.
-        const controller = new Controller();
 
-        // Load the bunny texture
-        //const pathToCharacter = '../assets/CharactersPack/x0.5/American@0.5x.png'
-        const texture = await PIXI.Assets.load('https://pixijs.com/assets/bunny.png');
-    
-        const bunny = new PIXI.Sprite(texture);
-    
-        bunny.x = app.screen.width / 2;
-        bunny.y = app.screen.height / 2;
-        container.addChild(bunny);
-    
         // Move the container to the center
         container.x = 0;
         container.y = 0;
-    
+
         // Center the bunny sprites in local container coordinates
         container.pivot.x = container.width / 2;
         container.pivot.y = container.height / 2;
-    
-        // Animate the scene and the character based on the controller's input.
+
+        // Load the bunny texture
+        const texture = await PIXI.Assets.load('https://pixijs.com/assets/bunny.png');
+
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'p') {
+              console.log("P pressed");
+              const player = loadPlayer(123, new PIXI.Sprite(texture));
+
+              container.addChild(player.sprite);
+              players.push(player);
+            }
+        });
+        
         app.ticker.add(() =>
-        {
-            const speed = controller.sprint? 5 : 2; // Adjust the movement speed
-
-            if (controller.keys.up.pressed) {
-                bunny.y -= speed;
-            }
-            if (controller.keys.down.pressed) {
-                bunny.y += speed;
-            }
-            if (controller.keys.left.pressed) {
-                bunny.x -= speed;
-            }
-            if (controller.keys.right.pressed) {
-                bunny.x += speed;
-            }
-
-            // Optional: Keep bunny within bounds
-            bunny.x = Math.max(0, Math.min(app.screen.width, bunny.x));
-            bunny.y = Math.max(0, Math.min(app.screen.height, bunny.y));
-        })
-    
+            {
+                players.forEach(player => {
+                    player.updatePosition();
+                });
+            })
+        
     })();
+
+function loadPlayer(client, sprite){
+    return new Player(client, sprite); 
+}

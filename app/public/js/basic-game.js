@@ -20,7 +20,7 @@ var app = new PIXI.Application;
         container.x = 0;
         container.y = 0;
 
-        // Center the bunny sprites in local container coordinates
+        // Center the sprites in local container coordinates
         container.pivot.x = container.width / 2;
         container.pivot.y = container.height / 2;
 

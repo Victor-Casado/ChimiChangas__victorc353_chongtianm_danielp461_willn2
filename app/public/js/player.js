@@ -1,7 +1,5 @@
 import { Controller } from './controller.js';
 
-//todo: add character width and height; and edit bounds
-
 // Class for handling Player
 export class Player
 {
@@ -23,6 +21,9 @@ export class Player
 
         this.client = client;
         this.sprite = sprite;
+
+        this.playerHeight = 50;
+        this.playerWidth = 30;
     }
 
     updatePosition(){
@@ -41,10 +42,9 @@ export class Player
             this.position.x += speed;
         }
 
-        // Keep bunny within bounds
-        console.log(this.app.screen)
-        this.position.x = Math.max(0, Math.min(this.app.screen.width, this.position.x));
-        this.position.y = Math.max(0, Math.min(this.app.screen.height, this.position.y));
+        // Keep player within bounds
+        this.position.x = Math.max(0, Math.min(this.app.screen.width - this.playerWidth, this.position.x));
+        this.position.y = Math.max(0, Math.min(this.app.screen.height - this.playerHeight, this.position.y));
 
         this.sprite.x  = this.position.x;
         this.sprite.y = this.position.y;

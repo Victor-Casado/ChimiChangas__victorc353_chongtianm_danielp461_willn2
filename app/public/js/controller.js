@@ -1,6 +1,5 @@
 // Map keyboard key codes to controller's state keys
 const keyMap = {
-    Space: 'space',
     KeyW: 'up',
     ArrowUp: 'up',
     KeyA: 'left',
@@ -22,8 +21,9 @@ export class Controller
             left: { pressed: false, doubleTap: false, timestamp: 0 },
             down: { pressed: false, doubleTap: false, timestamp: 0 },
             right: { pressed: false, doubleTap: false, timestamp: 0 },
-            space: { pressed: false, doubleTap: false, timestamp: 0 },
         };
+
+        this.sprint = false;
 
         window.addEventListener('keydown', (event) => this.keydownHandler(event));
         window.addEventListener('keyup', (event) => this.keyupHandler(event));
@@ -39,6 +39,9 @@ export class Controller
 
         // If not already in the double-tap state, toggle the double tap state if the key was pressed twice within 300ms.
         this.keys[key].doubleTap = this.keys[key].doubleTap || now - this.keys[key].timestamp < 300;
+
+        // Sprint
+        this.sprint = this.keys[key].doubleTap;
 
         // Toggle on the key pressed state.
         this.keys[key].pressed = true;

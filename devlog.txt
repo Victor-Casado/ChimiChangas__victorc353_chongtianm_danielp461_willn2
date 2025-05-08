@@ -1,2 +1,8 @@
 victorC -- 2025-5-7 18:3
  - Updated design doc by switching word "towns" to word "boxes"
+
+willN -- 2025-05-07 23:07
+ - Added websocket communication via button
+
+danielP -- 2025-05-07 23:08
+ - Added individual player movement and sprite 

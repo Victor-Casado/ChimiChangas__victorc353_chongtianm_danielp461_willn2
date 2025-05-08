@@ -1,0 +1,30 @@
+{
+  "name": "chimichangas__victorc353_chongtianm_danielp461_willn2",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Victor-Casado/ChimiChangas__victorc353_chongtianm_danielp461_willn2.git"
+  },
+  "keywords": [
+    "idk"
+  ],
+  "author": "me",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Victor-Casado/ChimiChangas__victorc353_chongtianm_danielp461_willn2/issues"
+  },
+  "homepage": "https://github.com/Victor-Casado/ChimiChangas__victorc353_chongtianm_danielp461_willn2#readme",
+  "dependencies": {
+    "express": "^4.21.2",
+    "package.json": "^2.0.1",
+    "pixi.js": "^8.9.2",
+    "pkg.json": "^2.0.9",
+    "ws": "^8.18.2"
+  }
+}

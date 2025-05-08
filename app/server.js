@@ -5,9 +5,13 @@ const wss = new WebSocket.Server({ port: 8080 });
 
 let clients = [];
 
+// import { loadPlayer } from './public/js/player'
+
 wss.on('connection', (ws) => {
   console.log('Client connected');
   clients.push(ws);
+
+  // loadPlayer(app, ws, new PIXI.Sprite(texture), container)
 
   ws.on('message', (message) => {
     console.log(`Received: ${message}`);

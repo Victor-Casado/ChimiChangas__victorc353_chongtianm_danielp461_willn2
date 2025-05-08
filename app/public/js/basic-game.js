@@ -20,6 +20,7 @@ import { Controller } from './controller.js';
         const controller = new Controller();
 
         // Load the bunny texture
+        //const pathToCharacter = '../assets/CharactersPack/x0.5/American@0.5x.png'
         const texture = await PIXI.Assets.load('https://pixijs.com/assets/bunny.png');
     
         const bunny = new PIXI.Sprite(texture);
@@ -39,10 +40,9 @@ import { Controller } from './controller.js';
         // Animate the scene and the character based on the controller's input.
         app.ticker.add(() =>
         {
-            const speed = 2; // Adjust the movement speed
+            const speed = controller.sprint? 5 : 2; // Adjust the movement speed
 
             if (controller.keys.up.pressed) {
-                console.log('pressed up');
                 bunny.y -= speed;
             }
             if (controller.keys.down.pressed) {

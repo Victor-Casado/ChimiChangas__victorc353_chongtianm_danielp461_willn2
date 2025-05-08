@@ -5,15 +5,17 @@ import { Controller } from './controller.js';
 // Class for handling Player
 export class Player
 {
-    constructor(client, sprite)
+    constructor(app, client, sprite)
     {
+        this.app = app;
+
         this.walkSpeed = 2;
         this.sprintSpeed = 5;
 
         // The player's position
         this.position = {
-            x: 0, //Math.random() * app.screen.width,
-            y: 0, //Math.random() * app.screen.height,
+            x: Math.random() * app.screen.width,
+            y: Math.random() * app.screen.height,
         };
 
         // Character movement controller
@@ -40,8 +42,9 @@ export class Player
         }
 
         // Keep bunny within bounds
-        //this.position.x = Math.max(0, Math.min(app.screen.width, this.position.x));
-        //this.position.y = Math.max(0, Math.min(app.screen.height, this.position.y));
+        console.log(this.app.screen)
+        this.position.x = Math.max(0, Math.min(this.app.screen.width, this.position.x));
+        this.position.y = Math.max(0, Math.min(this.app.screen.height, this.position.y));
 
         this.sprite.x  = this.position.x;
         this.sprite.y = this.position.y;

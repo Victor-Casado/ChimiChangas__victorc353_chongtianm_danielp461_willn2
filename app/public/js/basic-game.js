@@ -1,12 +1,10 @@
 import { Player } from './player.js';
 
-const players = [];
+var players = [];
+var app = new PIXI.Application;
 
 (async () =>
     {
-        // Create a new application
-        const app = new PIXI.Application();
-    
         // Initialize the application
         await app.init({ background: '#1099bb', resizeTo: window });
     
@@ -31,8 +29,7 @@ const players = [];
 
         document.addEventListener('keydown', function(event) {
             if (event.key === 'p') {
-              console.log("P pressed");
-              const player = loadPlayer(123, new PIXI.Sprite(texture));
+              const player = loadPlayer(app, 123, new PIXI.Sprite(texture));
 
               container.addChild(player.sprite);
               players.push(player);
@@ -45,9 +42,9 @@ const players = [];
                     player.updatePosition();
                 });
             })
-        
+
     })();
 
-function loadPlayer(client, sprite){
-    return new Player(client, sprite); 
+function loadPlayer(app, client, sprite){
+    return new Player(app, client, sprite); 
 }

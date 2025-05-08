@@ -1,4 +1,4 @@
-const socket = new WebSocket('ws://localhost:8080');
+const socket = new WebSocket('ws://157.245.112.246:8080', 'echo-protocol');
 const button = document.getElementById('pressButton');
 const messagesDiv = document.getElementById('messages');
 

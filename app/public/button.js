@@ -1,4 +1,4 @@
-const socket = new WebSocket('ws://localhost:8080');
+const socket = new WebSocket('ws://157.230.12.97:8080');
 const button = document.getElementById('pressButton');
 const messagesDiv = document.getElementById('messages');
 

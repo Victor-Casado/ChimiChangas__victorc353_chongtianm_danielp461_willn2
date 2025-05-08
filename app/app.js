@@ -1,9 +1,10 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+const path = require('path');
+const app = express();
 
-app.get('/', (req, res, next) => {
-  res.send('<h1>Hello World</h1>')
-})
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/templates/index.html'));
+});
 
 const port = process.env.PORT || 3000
 

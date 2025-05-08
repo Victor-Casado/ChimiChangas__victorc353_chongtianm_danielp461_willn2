@@ -19,5 +19,11 @@
   "bugs": {
     "url": "https://github.com/Victor-Casado/ChimiChangas__victorc353_chongtianm_danielp461_willn2/issues"
   },
-  "homepage": "https://github.com/Victor-Casado/ChimiChangas__victorc353_chongtianm_danielp461_willn2#readme"
+  "homepage": "https://github.com/Victor-Casado/ChimiChangas__victorc353_chongtianm_danielp461_willn2#readme",
+  "dependencies": {
+    "express": "^4.21.2",
+    "package.json": "^2.0.1",
+    "pixi.js": "^8.9.2",
+    "pkg.json": "^2.0.9"
+  }
 }

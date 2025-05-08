@@ -3,27 +3,27 @@ import { Controller } from './controller.js';
 // Class for handling Player
 export class Player
 {
-    constructor(app, id, sprite, x, y)
+    constructor(app, id, sprite, x, y, local)
     {
         this.app = app;
 
         this.walkSpeed = 2;
         this.sprintSpeed = 5;
 
-        // The player's position
         this.position = {
             x: x,
             y: y,
         };
-
-        // Character movement controller
-        this.controller = new Controller();
+        
 
         this.id = id;
         this.sprite = sprite;
 
         this.playerHeight = 50;
         this.playerWidth = 30;
+
+        this.local = local;
+        this.controller = new Controller(local);
     }
 
     updatePosition(){

@@ -6,24 +6,34 @@ const wss = new WebSocket.Server({ port: 8080 });
 let clients = [];
 let clientId = 0;
 
-// import { loadPlayer } from './public/js/player'
-
 wss.on('connection', (ws) => {
   console.log('Client connected');
-  clients.push(ws);
 
   const newPlayerId = clientId++;
-
   console.log(`Player ${newPlayerId} connected`);
 
-  x = Math.random() * 400;
-  y = Math.random() * 400;
+  const x = Math.random() * 400;
+  const y = Math.random() * 400;
 
-  clients[newPlayerId] = { x: x, y: y };
+  
 
+  ws.send(JSON.stringify({
+    type: 'you',
+    id: newPlayerId,
+    x: x,
+    y: y,
+  }));
+
+  ws.send(JSON.stringify({
+    type: 'existingPlayers',
+    clients: clients.map(p => ({ id: p.id, x: p.x, y: p.y }))
+  }));
+
+  clients.push({ id: newPlayerId, x: x, y: y, ws: ws });
 
   wss.clients.forEach(client => {
-      if (client.readyState === WebSocket.OPEN) {
+    
+      if (client.readyState === WebSocket.OPEN && client != ws) {
           client.send(JSON.stringify({
               type: 'playerJoined',
               id: newPlayerId,
@@ -33,12 +43,6 @@ wss.on('connection', (ws) => {
       }
   });
 
-  setTimeout(() => {
-    ws.send(JSON.stringify({
-        type: 'you',
-        id: newPlayerId,
-    }));
-  }, 100)
 
   ws.on('close', () => {
     console.log('Client disconnected');

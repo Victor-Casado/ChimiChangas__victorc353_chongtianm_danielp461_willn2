@@ -13,7 +13,7 @@ const keyMap = {
 // Class for handling keyboard inputs.
 export class Controller
 {
-    constructor()
+    constructor(active)
     {
         // The controller's state.
         this.keys = {
@@ -25,8 +25,10 @@ export class Controller
 
         this.sprint = false;
 
-        window.addEventListener('keydown', (event) => this.keydownHandler(event));
-        window.addEventListener('keyup', (event) => this.keyupHandler(event));
+        if(active){
+            window.addEventListener('keydown', (event) => this.keydownHandler(event));
+            window.addEventListener('keyup', (event) => this.keyupHandler(event));
+        }
     }
 
     keydownHandler(event)

@@ -92,7 +92,7 @@ app.get('/signup', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/templates/signup.html'));
 });
 
-const {addUser, updateUsername, fetchUser, userExists} = require('./public/js/db_scripts/login');
+const {addUser, updateUsername, fetchUser, userExists} = require('./db_scripts/login');
 
 // post
 app.post('/signup', async (req, res) => {

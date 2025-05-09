@@ -1,31 +1,23 @@
+import {create} from "./db_functions";
+
 const sqlite3 = require('sqlite3');
 
 var db = new sqlite3.Database("../../devoroyale.db");
 
-
-const execute = async (db, sql) => {
-    return new Promise((resolve, reject) => {
-        db.exec(sql, (err) => {
-        if (err) reject(err);
-        resolve();
-        });
-    });
-};
-
 const createTables = async () => {
     try {
         // user table
-        await execute(
+        await create(
             db,
             `CREATE TABLE IF NOT EXISTS users (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-                username TEXT NOT NULL,
+                username TEXT NOT NULL UNIQUE,
                 password TEXT NOT NULL
             );`
         );
 
         // leaderboard table
-        await execute(
+        await create(
             db,
             `CREATE TABLE IF NOT EXISTS leaderboard (
                 username TEXT NOT NULL,

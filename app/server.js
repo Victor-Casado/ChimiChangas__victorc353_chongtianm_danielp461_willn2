@@ -73,9 +73,9 @@ wss.on('connection', (ws) => {
 
 const app = express();
 
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'public')), express.urlencoded({ extended: true }));
 
-// routes
+// get
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/templates/index.html'));
 });
@@ -86,6 +86,40 @@ app.get('/game', (req, res) => {
 
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/templates/login.html'));
+});
+
+app.get('/signup', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/templates/signup.html'));
+});
+
+const {addUser, updateUsername, fetchUser, userExists} = require('./public/js/db_scripts/login');
+
+// post
+app.post('/signup', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    await addUser(username, password);
+    res.redirect('/login');
+  } catch (err) {
+    res.status(500).send('Username already exists');
+  }
+});
+
+app.post('/login', async (req, res) => {
+  const { username, password } = req.body;
+
+  try {
+    user = await fetchUser('username', username);
+    if(user.password == password){
+      res.redirect('/game');
+    }
+    else{
+      res.status(500).send('Username or password does not match');
+    }
+  } catch (err) {
+    res.status(500).send('Username or password does not match');
+  }
 });
 
 const port = process.env.PORT || 3000

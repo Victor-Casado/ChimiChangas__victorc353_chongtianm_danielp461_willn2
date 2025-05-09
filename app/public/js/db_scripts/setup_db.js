@@ -1,8 +1,11 @@
-import {create} from "./db_functions";
+const {create} = require("./db_functions");
+const path = require('path');
 
 const sqlite3 = require('sqlite3');
+const DB_PATH = path.join(__dirname, '../../devoroyale.db');
+console.log(DB_PATH);
 
-var db = new sqlite3.Database("../../devoroyale.db");
+var db = new sqlite3.Database(DB_PATH);
 
 const createTables = async () => {
     try {

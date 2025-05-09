@@ -15,8 +15,6 @@ wss.on('connection', (ws) => {
   const x = Math.random() * 400;
   const y = Math.random() * 400;
 
-  
-
   ws.send(JSON.stringify({
     type: 'you',
     id: newPlayerId,
@@ -77,8 +75,17 @@ const app = express();
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+// routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/templates/index.html'));
+});
+
+app.get('/game', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/templates/game.html'));
+});
+
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/templates/login.html'));
 });
 
 const port = process.env.PORT || 3000

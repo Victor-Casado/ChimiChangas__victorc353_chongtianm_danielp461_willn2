@@ -15,6 +15,9 @@ export class Game {
       this.container.pivot.y = this.container.height / 2;
 
       this.players = [];
+
+      this.zoomLevel = 1.5;
+      this.container.scale.set(this.zoomLevel);
     }
   
     static async init() {
@@ -40,7 +43,11 @@ export class Game {
         this.app.ticker.add(() => {
             this.players.forEach(player => {
                 player.updatePosition(); 
-            });
+                if(player.isActive()){
+                  this.container.x = this.app.screen.width / 2 - player.getPosX() * this.zoomLevel;
+                  this.container.y = this.app.screen.height / 2 - player.getPosY() * this.zoomLevel;
+                }
+              });
         });
     }
   }

@@ -79,4 +79,7 @@ export class Player
     getPosY(){
         return this.position.y;
     }
+    isActive(){
+        return this.local;
+    }
 }

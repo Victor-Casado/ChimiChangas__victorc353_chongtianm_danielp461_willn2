@@ -43,7 +43,26 @@ wss.on('connection', (ws) => {
       }
   });
 
+  ws.on('message', (data) => {
+    const message = JSON.parse(data);
 
+    if (message.type === 'move') {
+      // console.log(`${message.id} moved`);
+      c = clients.find(p => p.id === message.id)
+      c.x = message.x;
+      c.y = message.y;
+      wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN && client != ws) {
+          client.send(JSON.stringify({
+              type: 'playerMoved',
+              id: message.id,
+              x: message.x,
+              y: message.y,
+          }));
+        }
+      })
+    }
+  });
   ws.on('close', () => {
     console.log('Client disconnected');
     clients = clients.filter(client => client !== ws);

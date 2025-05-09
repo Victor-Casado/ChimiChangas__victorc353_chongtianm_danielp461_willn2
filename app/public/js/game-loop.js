@@ -2,6 +2,8 @@ import { Game } from './game.js';
 
 const ws = new WebSocket(`ws://${window.location.hostname}:8080`);
 let game = null;
+let players = [];
+let player = null;
 let messageQueue = [];
 
 ws.onmessage = (event) => {
@@ -22,19 +24,27 @@ messageQueue = [];
 
 function handleMessage(data) {
     if (data.type === 'you') {
-        game.loadPlayer(data.id, data.x, data.y, true);
+        player = game.loadPlayer(data.id, data.x, data.y, true, ws);
         console.log(`you are ${data.id}`);
     }
 
     if (data.type === 'playerJoined') {
         console.log(`Player ${data.id} joined the lobby`);
-        game.loadPlayer(data.id, data.x, data.y, false);
+        players.push(game.loadPlayer(data.id, data.x, data.y, false));
     }
 
     if (data.type === 'existingPlayers') {
         console.log("Loading existing players:", data.clients);
         data.clients.forEach(playerData => {
-            game.loadPlayer(playerData.id, playerData.x, playerData.y, false);
+            players.push(game.loadPlayer(playerData.id, playerData.x, playerData.y, false));
         });
     }
+
+    if (data.type === 'playerMoved') {
+        // console.log("Loading existing players:", data.clients);
+        const mover = game.players.find(p => p.id === data.id);
+        console.log(mover.getId());
+        mover.setPosition(data.x, data.y);
+    }
 }
+

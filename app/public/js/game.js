@@ -26,8 +26,8 @@ export class Game {
       return new Game(app, texture);
     }
 
-    loadPlayer(id, x, y, active){
-        const player = new Player(this.app, id, new PIXI.Sprite(this.texture), x, y, active);
+    loadPlayer(id, x, y, active, ws){
+        const player = new Player(this.app, id, new PIXI.Sprite(this.texture), x, y, active, ws);
     
         this.container.addChild(player.sprite);
         // player.sprite.x = x;

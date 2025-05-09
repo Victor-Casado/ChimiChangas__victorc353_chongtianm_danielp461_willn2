@@ -2,7 +2,7 @@ const {create} = require("./db_functions");
 const path = require('path');
 
 const sqlite3 = require('sqlite3');
-const DB_PATH = path.join(__dirname, '../../devoroyale.db');
+const DB_PATH = path.join(__dirname, '../public/devoroyale.db');
 console.log(DB_PATH);
 
 var db = new sqlite3.Database(DB_PATH);

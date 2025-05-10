@@ -6,7 +6,7 @@ import { Game }  from './middleware/game.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-game = Game.serverInit();
+//game = Game.serverInit();
 
 const wss = new WebSocketServer({ port: 8080 });
 
@@ -109,6 +109,10 @@ app.use(express.urlencoded({ extended: true }));
 // Routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/templates/index.html'));
+});
+
+app.get('/dev', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/templates/dev.html'));
 });
 
 app.get('/game', (req, res) => {

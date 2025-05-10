@@ -3,7 +3,7 @@ import {Controller} from './controller.js';
 // Class for handling Player
 export class Player
 {
-    constructor(app, id, sprite, x, y, local, ws)
+    constructor(app, id, sprite, x, y, local, ws, dev=false)
     {
         this.app = app;
 
@@ -22,9 +22,10 @@ export class Player
         this.playerWidth = 30;
 
         this.local = local;
+        this.dev = dev;
         this.controller = new Controller(local);
 
-        if(local){
+        if(local && !dev){
             this.ws = ws;
         }
     }
@@ -52,8 +53,7 @@ export class Player
         this.sprite.x  = this.position.x;
         this.sprite.y = this.position.y;
         
-        if(this.local){
-            // console.log('MOVING MOVING');
+        if(this.local && !this.dev){
             this.ws.send(JSON.stringify({
                 type: 'move',
                 id: this.id,
@@ -69,15 +69,19 @@ export class Player
         this.position.x = x;
         this.position.y = y;
     }
+
     getId(){
         return this.id;
     }
+
     getPosX(){
         return this.position.x;
     }
+
     getPosY(){
         return this.position.y;
     }
+
     isActive(){
         return this.local;
     }

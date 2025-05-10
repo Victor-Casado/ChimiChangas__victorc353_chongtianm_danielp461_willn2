@@ -2,7 +2,9 @@ import express from 'express';
 import WebSocket, { WebSocketServer } from 'ws';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { addUser, fetchUser, updateUsername} from './db_scripts/login.js';
 import { Game }  from './middleware/game.js';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -22,8 +24,8 @@ wss.on('connection', (ws) => {
   const x = Math.random() * 400;
   const y = Math.random() * 400;
 
-  player = game.loadPlayer(newPlayerId, x, y, false, ws);
-  console.log(game.players);
+  // player = game.loadPlayer(newPlayerId, x, y, false, ws);
+  // console.log(game.players);
 
   ws.send(JSON.stringify({
     type: 'you',
@@ -134,13 +136,13 @@ app.get('/signup', (req, res) => {
 // POST handlers
 app.post('/signup', async (req, res) => {
   const { username, password } = req.body;
-  try {
-    const addedUser = await addUser(username, password);
-  } catch (err) {
-    res.status(500).send('Username already exists');
-  }
+  let addedUser = await addUser(username, password);
+
   if (addedUser){
     res.redirect('/login');
+  }
+  else {
+    res.status(500).send('Username already exists');
   }
 });
 
@@ -149,7 +151,7 @@ app.post('/login', async (req, res) => {
   try {
     const user = await fetchUser('username', username);
     if (user.password === password) {
-      res.redirect('/');
+      res.redirect('/home');
     } else {
       res.status(500).send('Username or password does not match');
     }

@@ -40,7 +40,6 @@ export const fetchUser = async (column, value) => {
     } catch (err) {
         console.log(err);
     } finally {
-        console.log('yo', user);
         db.close();
     }
     return user;

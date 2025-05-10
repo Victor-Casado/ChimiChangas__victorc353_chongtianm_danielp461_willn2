@@ -33,7 +33,7 @@ import { Player } from '../../middleware/player.js';
     }
 
     const localFrames = getAnimationFrames(0, 0);
-    const dummyFrames = getAnimationFrames(1, 0); // Different character
+    const dummyFrames = getAnimationFrames(1, 0);
 
     const localPlayerSprite = new PIXI.AnimatedSprite(localFrames);
     localPlayerSprite.animationSpeed = 0.15;

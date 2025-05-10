@@ -1,6 +1,7 @@
 {
   "name": "chimichangas__victorc353_chongtianm_danielp461_willn2",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
   "main": "server.js",
   "scripts": {

@@ -1,7 +1,14 @@
-const express = require('express');
-const path = require('path');
-const WebSocket = require('ws')
-const wss = new WebSocket.Server({ port: 8080 });
+import express from 'express';
+import WebSocket, { WebSocketServer } from 'ws';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import { Game }  from './middleware/game.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+game = Game.serverInit();
+
+const wss = new WebSocketServer({ port: 8080 });
 
 let clients = [];
 let clientId = 0;
@@ -14,6 +21,9 @@ wss.on('connection', (ws) => {
 
   const x = Math.random() * 400;
   const y = Math.random() * 400;
+
+  player = game.loadPlayer(newPlayerId, x, y, false, ws);
+  console.log(game.players);
 
   ws.send(JSON.stringify({
     type: 'you',
@@ -29,41 +39,58 @@ wss.on('connection', (ws) => {
 
   clients.push({ id: newPlayerId, x: x, y: y, ws: ws });
 
+  // Notify other clients about new player
   wss.clients.forEach(client => {
-    
-      if (client.readyState === WebSocket.OPEN && client != ws) {
-          client.send(JSON.stringify({
-              type: 'playerJoined',
-              id: newPlayerId,
-              x: x,
-              y: y,
-          }));
-      }
+    if (client.readyState === WebSocket.OPEN && client !== ws) {
+      client.send(JSON.stringify({
+        type: 'playerJoined',
+        id: newPlayerId,
+        x: x,
+        y: y,
+      }));
+    }
   });
 
   ws.on('message', (data) => {
     const message = JSON.parse(data);
 
     if (message.type === 'move') {
-      // console.log(`${message.id} moved`);
-      c = clients.find(p => p.id === message.id)
-      c.x = message.x;
-      c.y = message.y;
-      wss.clients.forEach(client => {
-        if (client.readyState === WebSocket.OPEN && client != ws) {
-          client.send(JSON.stringify({
+      const c = clients.find(p => p.id === message.id);
+      if (c) {
+        c.x = message.x;
+        c.y = message.y;
+        // Broadcast movement to other clients
+        wss.clients.forEach(client => {
+          if (client.readyState === WebSocket.OPEN && client !== ws) {
+            client.send(JSON.stringify({
               type: 'playerMoved',
               id: message.id,
               x: message.x,
               y: message.y,
-          }));
-        }
-      })
+            }));
+          }
+        });
+      }
     }
   });
+
   ws.on('close', () => {
     console.log('Client disconnected');
-    clients = clients.filter(client => client !== ws);
+    // Remove client from clients array
+    clients = clients.filter(client => client.ws !== ws);
+    // Notify other clients about disconnection
+    wss.clients.forEach(client => {
+      if (client.readyState === WebSocket.OPEN) {
+        // Find the disconnected client's id
+        const disconnectedClient = clients.find(c => c.ws === ws);
+        if (disconnectedClient) {
+          client.send(JSON.stringify({
+            type: 'playerDisconnected',
+            id: disconnectedClient.id,
+          }));
+        }
+      }
+    });
   });
 
   ws.on('error', (error) => {
@@ -73,9 +100,13 @@ wss.on('connection', (ws) => {
 
 const app = express();
 
-app.use(express.static(path.join(__dirname, 'public')), express.urlencoded({ extended: true }));
+// Static files
+app.use('/public', express.static(path.join(__dirname, 'public')));
+app.use('/middleware', express.static(path.join(__dirname, 'middleware')));
 
-// get
+app.use(express.urlencoded({ extended: true }));
+
+// Routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/templates/index.html'));
 });
@@ -92,12 +123,9 @@ app.get('/signup', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/templates/signup.html'));
 });
 
-const {addUser, updateUsername, fetchUser, userExists} = require('./db_scripts/login');
-
-// post
+// POST handlers
 app.post('/signup', async (req, res) => {
   const { username, password } = req.body;
-
   try {
     await addUser(username, password);
     res.redirect('/login');
@@ -108,13 +136,11 @@ app.post('/signup', async (req, res) => {
 
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
-
   try {
-    user = await fetchUser('username', username);
-    if(user.password == password){
+    const user = await fetchUser('username', username);
+    if (user.password === password) {
       res.redirect('/game');
-    }
-    else{
+    } else {
       res.status(500).send('Username or password does not match');
     }
   } catch (err) {
@@ -122,8 +148,7 @@ app.post('/login', async (req, res) => {
   }
 });
 
-const port = process.env.PORT || 3000
-
-app.listen(port, ()=> {
-  console.log('listening on: ', port)
-}) 
+const port = process.env.PORT || 3000;
+app.listen(port, () => {
+  console.log('Listening on port:', port);
+});

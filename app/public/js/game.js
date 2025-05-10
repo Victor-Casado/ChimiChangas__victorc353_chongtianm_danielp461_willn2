@@ -1,53 +1,49 @@
-import { Player } from './player.js';
+import { Game } from '../../middleware/game.js';
 
-export class Game {
-    constructor(app, texture) {
-      this.app = app;
-      this.container = new PIXI.Container();
-      this.texture = texture;
-  
-      document.body.appendChild(this.app.canvas);
-      this.app.stage.addChild(this.container);
-  
-      this.container.x = 0;
-      this.container.y = 0;
-      this.container.pivot.x = this.container.width / 2;
-      this.container.pivot.y = this.container.height / 2;
+const ws = new WebSocket(`ws://${window.location.hostname}:8080`);
+let game = null;
+let players = [];
+let player = null;
+let messageQueue = [];
 
-      this.players = [];
+ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
 
-      this.zoomLevel = 1.5;
-      this.container.scale.set(this.zoomLevel);
+    if (!game) {
+        messageQueue.push(data);
+    } else {
+        handleMessage(data);
     }
-  
-    static async init() {
-      const app = new PIXI.Application();
-      await app.init({ background: '#1099bb', resizeTo: window });
-  
-      const texture = await PIXI.Assets.load('https://pixijs.com/assets/bunny.png');
-  
-      return new Game(app, texture);
-    }
+};
 
-    loadPlayer(id, x, y, active, ws){
-        const player = new Player(this.app, id, new PIXI.Sprite(this.texture), x, y, active, ws);
-    
-        this.container.addChild(player.sprite);
-        // player.sprite.x = x;
-        // player.sprite.y = y;
-        this.players.push(player);
-        return player
+game = await Game.clientInit();
+game.startLoop();
+
+messageQueue.forEach(handleMessage);
+messageQueue = [];
+
+function handleMessage(data) {
+    if (data.type === 'you') {
+        player = game.loadPlayer(data.id, data.x, data.y, true, ws);
+        console.log(`you are ${data.id}`);
     }
 
-    startLoop() {
-        this.app.ticker.add(() => {
-            this.players.forEach(player => {
-                player.updatePosition(); 
-                if(player.isActive()){
-                  this.container.x = this.app.screen.width / 2 - player.getPosX() * this.zoomLevel;
-                  this.container.y = this.app.screen.height / 2 - player.getPosY() * this.zoomLevel;
-                }
-              });
+    if (data.type === 'playerJoined') {
+        console.log(`Player ${data.id} joined the lobby`);
+        players.push(game.loadPlayer(data.id, data.x, data.y, false));
+    }
+
+    if (data.type === 'existingPlayers') {
+        console.log("Loading existing players:", data.clients);
+        data.clients.forEach(playerData => {
+            players.push(game.loadPlayer(playerData.id, playerData.x, playerData.y, false));
         });
     }
-  }
+
+    if (data.type === 'playerMoved') {
+        // console.log("Loading existing players:", data.clients);
+        const mover = game.players.find(p => p.id === data.id);
+        console.log(mover.getId());
+        mover.setPosition(data.x, data.y);
+    }
+}

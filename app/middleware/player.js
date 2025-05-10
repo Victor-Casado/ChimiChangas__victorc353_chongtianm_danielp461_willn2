@@ -1,4 +1,4 @@
-import { Controller } from './controller.js';
+import {Controller} from './controller.js';
 
 // Class for handling Player
 export class Player
@@ -15,7 +15,6 @@ export class Player
             y: y,
         };
         
-
         this.id = id;
         this.sprite = sprite;
 

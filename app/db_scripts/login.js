@@ -12,8 +12,10 @@ const addUser = async (username, password) => {
     try {
         await execute(db, sql, [username, password]);
         console.log("Added user", username);
+        return true;
     } catch (err) {
         console.log(err);
+        return false;
     } finally {
         db.close();
     }

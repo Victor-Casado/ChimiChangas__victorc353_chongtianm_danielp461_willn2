@@ -115,6 +115,10 @@ app.get('/game', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/templates/game.html'));
 });
 
+app.get('/home', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/templates/home.html'));
+});
+
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/templates/login.html'));
 });
@@ -127,10 +131,12 @@ app.get('/signup', (req, res) => {
 app.post('/signup', async (req, res) => {
   const { username, password } = req.body;
   try {
-    await addUser(username, password);
-    res.redirect('/login');
+    const addedUser = await addUser(username, password);
   } catch (err) {
     res.status(500).send('Username already exists');
+  }
+  if (addedUser){
+    res.redirect('/login');
   }
 });
 
@@ -139,7 +145,7 @@ app.post('/login', async (req, res) => {
   try {
     const user = await fetchUser('username', username);
     if (user.password === password) {
-      res.redirect('/game');
+      res.redirect('/');
     } else {
       res.status(500).send('Username or password does not match');
     }

@@ -2,10 +2,8 @@ import {Controller} from './controller.js';
 
 export class Player
 {
-    constructor(app, id, spriteAnimation, x, y, local, ws, orientation='front', dev=false)
-    {
-        this.app = app;
-        
+    constructor(id, spriteAnimation, x, y, local, ws, orientation='front', dev=false)
+    {   
         this.walkSpeed = 2;
         this.sprintSpeed = 3.5;
 
@@ -83,9 +81,6 @@ export class Player
         this.sprite.play();
         this.sprite.loop = true;
         this.sprite.anchor.set(0.5);
-    
-        this.position.x = Math.max(0, Math.min(this.app.screen.width - this.playerWidth, this.position.x));
-        this.position.y = Math.max(0, Math.min(this.app.screen.height - this.playerHeight, this.position.y));
     
         this.sprite.position.set(this.position.x, this.position.y);
         

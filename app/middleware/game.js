@@ -36,9 +36,11 @@ export class Game {
     }
 
     async loadPlayer(id, x, y, active, ws){
+      
       const player = new Player(id, x, y, active, ws);
       if(!this.isServer){
-        await player.loadSprite('https://pixijs.com/assets/bunny.png');
+        const localPlayerSprite = new SpriteAnimation(1);
+        await localPlayerSprite.loadAnimations();
         this.container.addChild(player.sprite);
       }
       if(active){
@@ -50,7 +52,6 @@ export class Game {
     }
 
     startLoop() {
-      
       this.app.ticker.add(() => {
         if(this.localPlayer){
           this.localPlayer.updatePosition();

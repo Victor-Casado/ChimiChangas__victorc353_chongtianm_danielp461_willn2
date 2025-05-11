@@ -2,7 +2,7 @@ import {Controller} from './controller.js';
 
 export class Player
 {
-    constructor(id, spriteAnimation, x, y, local, ws, orientation='front', dev=false)
+    constructor(id, spriteAnimation, x, y, local, ws=null, orientation='front', dev=false)
     {   
         this.walkSpeed = 2;
         this.sprintSpeed = 3.5;
@@ -16,7 +16,10 @@ export class Player
         this.spriteAnimation = spriteAnimation;
         this.orientation = orientation;
         this.animation = 'Idle';
-        this.sprite = new PIXI.AnimatedSprite(this.spriteAnimation.getTexture(this.orientation, 'Idle'));
+        
+        if(spriteAnimation != null){
+            this.sprite = new PIXI.AnimatedSprite(this.spriteAnimation.getTexture(this.orientation, 'Idle'));
+        }
 
         this.playerHeight = 50;
         this.playerWidth = 30;
@@ -25,7 +28,7 @@ export class Player
         this.dev = dev;
         this.controller = new Controller(local);
 
-        if(local && !dev){
+        if(!dev){
             this.ws = ws;
         }
     }
@@ -119,5 +122,15 @@ export class Player
     }
     getSprite(){
         return this.sprite;
+    }
+    toJSON(){
+        return {
+            id: this.id,
+            x: this.position.x,
+            y: this.position.y,
+            orientation: this.orientation,
+            animation: this.animation,
+            local: this.local,
+        };
     }
 }

@@ -25,20 +25,19 @@ messageQueue = [];
 
 function handleMessage(data) {
     if (data.type === 'you') {
-        player = game.loadPlayer(data.id, 1, data.x, data.y, true, ws);
+        player = game.loadPlayer(data.player.id, 1, data.player.x, data.player.y, true, ws, data.player.orientation);
         console.log(player);
-        console.log(`you are ${data.id}`);
     }
 
     if (data.type === 'playerJoined') {
         console.log(`Player ${data.id} joined the lobby`);
-        players.push(game.loadPlayer(data.id, 1, data.x, data.y, false));
+        players.push(game.loadPlayer(data.player.id, 1, data.player.x, data.player.y, false, null, data.player.orientation));
     }
 
     if (data.type === 'existingPlayers') {
         console.log("Loading existing players:", data.clients);
         data.clients.forEach(playerData => {
-            players.push(game.loadPlayer(playerData.id, 1, playerData.x, playerData.y, false));
+            players.push(game.loadPlayer(playerData.id, 1, playerData.x, playerData.y, false, null, playerData.orientation));
         });
     }
 

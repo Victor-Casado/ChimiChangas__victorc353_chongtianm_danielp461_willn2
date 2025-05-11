@@ -41,10 +41,10 @@ export class Game {
 
 
 
-    loadPlayer(id, skinNum, x, y, active, ws){
+    loadPlayer(id, skinNum, x, y, active, ws, orientation){
       const localPlayerSprite = new SpriteAnimation(skinNum);
 
-      const player = new Player(id, localPlayerSprite, x, y, active, ws);
+      const player = new Player(id, localPlayerSprite, x, y, active, ws, orientation);
   
         
       this.container.addChild(player.sprite);
@@ -59,8 +59,12 @@ export class Game {
 
     startLoop() {
       this.app.ticker.add(() => {
+        this.players.forEach((player) => {
+          player.updatePosition();
+        });
+        
         if(this.localPlayer){
-          this.localPlayer.updatePosition();
+          
           this.container.x = this.app.screen.width / 2 - this.localPlayer.getPosX() * this.zoomLevel;
           this.container.y = this.app.screen.height / 2 - this.localPlayer.getPosY() * this.zoomLevel;
           

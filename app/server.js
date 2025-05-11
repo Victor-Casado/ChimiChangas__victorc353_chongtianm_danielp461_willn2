@@ -5,6 +5,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { addUser, fetchUser, updateUsername} from './db_scripts/login.js';
 import { Game }  from './middleware/game.js';
+import { Player }  from './middleware/player.js';
 
 
 const __filename = fileURLToPath(import.meta.url);
@@ -29,18 +30,22 @@ wss.on('connection', async (ws) => {
   const x = Math.random() * 400;
   const y = Math.random() * 400;
 
+  let newPlayer = new Player(newPlayerId, null, x, y, false, ws);
+  
+
+  console.log(game.players);
+
   ws.send(JSON.stringify({
     type: 'you',
-    id: newPlayerId,
-    x: x,
-    y: y,
+    player: newPlayer.toJSON()
   }));
 
   ws.send(JSON.stringify({
     type: 'existingPlayers',
-    clients: clients.map(p => ({ id: p.id, x: p.x, y: p.y }))
+    clients: game.players.map(p => (p.toJSON()))
   }));
 
+  game.players.push(newPlayer);
   clients.push({ id: newPlayerId, x: x, y: y, ws: ws });
 
   // Notify other clients about new player
@@ -48,9 +53,7 @@ wss.on('connection', async (ws) => {
     if (client.readyState === WebSocket.OPEN && client !== ws) {
       client.send(JSON.stringify({
         type: 'playerJoined',
-        id: newPlayerId,
-        x: x,
-        y: y,
+        player: newPlayer.toJSON(),
       }));
     }
   });

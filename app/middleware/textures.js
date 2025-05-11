@@ -4,13 +4,10 @@ import { SpriteAnimation } from "./animations/sprite_animation.js";
 var chestRanks = ['wooden', 'silver', 'gold', 'diamond']
 var playerSkins = ['1', '2', '3'];
 var orientations = ['front', 'behind', 'left', 'right'];
-var app = new PIXI.Application();
 
 export class Textures{
 
     static async loadAll(){
-        await app.init({ background: '#1099bb', resizeTo: window });
-
         await this.loadChests();
         await this.loadPlayerSkins();
     }

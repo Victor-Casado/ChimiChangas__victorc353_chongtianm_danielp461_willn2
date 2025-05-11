@@ -1,4 +1,5 @@
 import express from 'express';
+import session from 'express-session';
 import WebSocket, { WebSocketServer } from 'ws';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -11,7 +12,7 @@ const __dirname = path.dirname(__filename);
 
 let game;
 (async () => {
-  game = await Game.init();
+  game = await Game.serverInit();
 })();
 
 const wss = new WebSocketServer({ port: 8080 });
@@ -25,13 +26,8 @@ wss.on('connection', async (ws) => {
   const newPlayerId = clientId++;
   console.log(`Player ${newPlayerId} connected`);
 
-  // console.log(clients);
   const x = Math.random() * 400;
   const y = Math.random() * 400;
-
-  // let player = await game.loadPlayer(newPlayerId, x, y, false, ws);
-
-  // console.log(game.players);
 
   ws.send(JSON.stringify({
     type: 'you',
@@ -108,11 +104,21 @@ wss.on('connection', async (ws) => {
 
 const app = express();
 
+app.use(session({
+  secret: 'secret key',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { secure: false }
+}));
+
+let logged_in = false;
+
 // Static files
 app.use('/public', express.static(path.join(__dirname, 'public')));
 app.use('/middleware', express.static(path.join(__dirname, 'middleware')));
 
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // Routes
 app.get('/', (req, res) => {
@@ -124,10 +130,16 @@ app.get('/dev', (req, res) => {
 });
 
 app.get('/game', (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
   res.sendFile(path.join(__dirname, 'public/templates/game.html'));
 });
 
 app.get('/home', (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
   res.sendFile(path.join(__dirname, 'public/templates/home.html'));
 });
 
@@ -137,6 +149,14 @@ app.get('/login', (req, res) => {
 
 app.get('/signup', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/templates/signup.html'));
+});
+
+app.get('/me', async (req, res) => {
+  if (!req.session.user) {
+    return res.status(401).json({ error: 'Not logged in' });
+  }
+
+  res.json({ username: req.session.user });
 });
 
 // POST handlers
@@ -157,6 +177,7 @@ app.post('/login', async (req, res) => {
   try {
     const user = await fetchUser('username', username);
     if (user.password === password) {
+      req.session.user = username;
       res.redirect('/home');
     } else {
       res.status(500).send('Username or password does not match');

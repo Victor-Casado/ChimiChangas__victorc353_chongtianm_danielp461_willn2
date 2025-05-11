@@ -1,5 +1,4 @@
 import { Game } from '../../middleware/game.js';
-import { SpriteAnimation } from '../../middleware/animations/sprite_animation.js';
 
 const ws = new WebSocket(`ws://${window.location.hostname}:8080`);
 let game = null;
@@ -17,7 +16,7 @@ ws.onmessage = (event) => {
     }
 };
 
-game = await Game.init();
+game = await Game.clientInit();
 game.startLoop();
 
 

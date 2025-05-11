@@ -5,8 +5,24 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>DEVOROYALE</title>
+        <script src="https://pixijs.download/release/pixi.min.js"></script>
     </head>
     <body>
+        <h1 id="greeting">Loading...</h1>
+
+        <script>
+        fetch('../../me')
+            .then(res => res.json())
+            .then(data => {
+            document.getElementById('greeting').textContent = `Hi, ${data.username}!`;
+            })
+            .catch(err => {
+            console.error('Error fetching /me:', err);
+            document.getElementById('greeting').textContent = 'Error loading user';
+            });
+        </script>
+
         <a href="/game">JOIN GAME</a>
+
     </body>
 </html>

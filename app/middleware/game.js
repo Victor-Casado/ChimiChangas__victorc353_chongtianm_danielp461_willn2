@@ -35,8 +35,9 @@ export class Game {
       return new Game(true, null);
     }
 
-    async loadPlayer(id, x, y, active, ws){
-      const player = new Player(id, x, y, active, ws);
+    async loadPlayer(id, spriteAnimation, x, y, active, ws){
+      const player = new Player(this.app, id, spriteAnimation, x, y, active, ws);
+      
       if(!this.isServer){
         await player.loadSprite('https://pixijs.com/assets/bunny.png');
         this.container.addChild(player.sprite);

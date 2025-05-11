@@ -4,24 +4,20 @@ export class ChestAnimation
     constructor(rank, x, y)
     {
         this.rank = rank;
-        this.path = this.getPath();
+        this.path = ChestAnimation.getPath(this.rank);
         this.opened = false;
-        this.animation = null;
-        this.sprite = null;
+        this.animation = PIXI.Assets.cache.get(this.path).data.animations;
+        this.sprite = PIXI.AnimatedSprite.fromFrames(this.animation['chests']);
         this.position = {
             x: x,
             y: y,
         };
-    }
-
-    async init(){
-        await PIXI.Assets.load([this.path]);
-
-        this.animation = PIXI.Assets.cache.get(this.path).data.animations;
-        this.sprite = PIXI.AnimatedSprite.fromFrames(this.animation['chests']);
-        
         this.sprite.x = this.position.x;
         this.sprite.y = this.position.y;
+    }
+
+    static getPath(rank){
+        return '/public/assets/ChestPack/animation/chest/' + rank + '/chest.json';
     }
 
     getX(){
@@ -40,10 +36,6 @@ export class ChestAnimation
         return this.rank;
     }
 
-    getPath(){
-        return '/public/assets/ChestPack/animation/chest/' + this.rank + '/chest.json';
-    }
-
     getAnimation(){
         return this.animations[this.rank];
     }
@@ -58,7 +50,7 @@ export class ChestAnimation
 
     openChest(){
         if (this.sprite) {
-            this.sprite.loop = false; // Play only once
+            this.sprite.loop = false;
             this.sprite.onComplete = () => {
                 // ADD WEAPONS HERE
             };

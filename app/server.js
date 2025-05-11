@@ -8,15 +8,11 @@ import { Game }  from './middleware/game.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-<<<<<<< HEAD
 
 let game;
 (async () => {
   game = await Game.serverInit();
 })();
-=======
-//game = Game.serverInit();
->>>>>>> 8dac00226a3b8ecdf68c955ef909b972f284e0c4
 
 const wss = new WebSocketServer({ port: 8080 });
 
@@ -33,12 +29,8 @@ wss.on('connection', async (ws) => {
   const x = Math.random() * 400;
   const y = Math.random() * 400;
 
-<<<<<<< HEAD
   // let player = await game.loadPlayer(newPlayerId, x, y, false, ws);
 
-=======
-  // player = game.loadPlayer(newPlayerId, x, y, false, ws);
->>>>>>> 8dac00226a3b8ecdf68c955ef909b972f284e0c4
   // console.log(game.players);
 
   ws.send(JSON.stringify({

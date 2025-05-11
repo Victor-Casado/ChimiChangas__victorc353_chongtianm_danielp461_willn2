@@ -1,5 +1,6 @@
 import { Player } from '../../middleware/player.js';
-import { SpriteAnimation } from '../../middleware/sprite_animation.js';
+import { SpriteAnimation } from '../../middleware/animations/sprite_animation.js';
+import { WoodenChest } from '../../middleware/animations/chests/wooden.js';
 
 (async () => {
     const app = new PIXI.Application();
@@ -9,16 +10,20 @@ import { SpriteAnimation } from '../../middleware/sprite_animation.js';
     const container = new PIXI.Container();
     app.stage.addChild(container);
 
-    const localPlayerSprite = new SpriteAnimation(1);
-    await localPlayerSprite.loadAnimations();
+    // chest animation load
+    const woodenChest = new WoodenChest(100, 100);
+    await woodenChest.init();
 
-    // const dummyPlayerSprite = new PIXI.AnimatedSprite(dummyFrames);
+    // sprite animation load
+    const spriteAnimation = new SpriteAnimation(1);
+    await spriteAnimation.loadAnimations();
 
-    const localPlayer = new Player(app, 0, localPlayerSprite, app.screen.width / 2, app.screen.height / 2, true, null, 'front', true);
-    // const dummyPlayer = new Player(app, 1, dummyPlayerSprite, app.screen.width / 2 + 30, app.screen.height / 2, false, null, true);
-    // container.addChild(dummyPlayer.sprite);
+    // player
+    const localPlayer = new Player(0, spriteAnimation, app.screen.width / 2, app.screen.height / 2, true, null, 'front', true);
+    await localPlayer.loadSprite();
 
     container.addChild(localPlayer.getSprite());
+    container.addChild(woodenChest.getSprite());
 
     container.x = 0;
     container.y = 0;
@@ -28,7 +33,9 @@ import { SpriteAnimation } from '../../middleware/sprite_animation.js';
 
     app.ticker.add(() => {
         localPlayer.updatePosition();
-        // dummyPlayer.updatePosition();
+        if(Math.abs(localPlayer.position.x - woodenChest.position.x) < 50 && Math.abs(localPlayer.position.y - woodenChest.position.y) < 50){
+            woodenChest.openChest();
+        }
     });
     
 })();

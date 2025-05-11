@@ -1,4 +1,6 @@
-// Class for handling srprite animations
+// Class for handling sprite animations
+
+// TODO: make child classes
 export class SpriteAnimation
 {
     constructor(skinNum)
@@ -34,7 +36,4 @@ export class SpriteAnimation
         const sprite = PIXI.AnimatedSprite.fromFrames(this.animations[orientation][orientation + action]);
         return sprite.textures;
     }
-
-
-    
 }

@@ -16,7 +16,6 @@ export class Player
         this.spriteAnimation = spriteAnimation;
         this.orientation = orientation;
         this.animation = 'Idle';
-        this.sprite = new PIXI.AnimatedSprite(this.spriteAnimation.getAnimation(this.orientation, 'Idle'));
 
         this.playerHeight = 50;
         this.playerWidth = 30;
@@ -30,9 +29,8 @@ export class Player
         }
     }
 
-    async loadSprite(img){
-        this.texture = await PIXI.Assets.load(img);
-        this.sprite = new PIXI.Sprite(this.texture);
+    async loadSprite(){
+        this.sprite = new PIXI.AnimatedSprite(this.spriteAnimation.getAnimation(this.orientation, 'Idle'));
     }
 
     updatePosition(){

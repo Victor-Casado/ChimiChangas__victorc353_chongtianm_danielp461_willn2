@@ -33,7 +33,7 @@ wss.on('connection', async (ws) => {
   let newPlayer = new Player(newPlayerId, null, x, y, false, ws);
   
 
-  console.log(game.players);
+  // console.log(game.players);
 
   ws.send(JSON.stringify({
     type: 'you',
@@ -60,20 +60,16 @@ wss.on('connection', async (ws) => {
 
   ws.on('message', (data) => {
     const message = JSON.parse(data);
-
     if (message.type === 'move') {
-      const c = clients.find(p => p.id === message.id);
-      if (c) {
-        c.x = message.x;
-        c.y = message.y;
-        // Broadcast movement to other clients
+      const p = game.players.find(p => p.getId() === message.player.id);
+      if (p) {
+        // console.log('*********');
+        p.refresh(message.player);
         wss.clients.forEach(client => {
           if (client.readyState === WebSocket.OPEN && client !== ws) {
             client.send(JSON.stringify({
               type: 'playerMoved',
-              id: message.id,
-              x: message.x,
-              y: message.y,
+              player: message.player,
             }));
           }
         });

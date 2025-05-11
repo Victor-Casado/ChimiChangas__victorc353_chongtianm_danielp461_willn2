@@ -72,8 +72,7 @@ export class Player
             this.orientation = newOrientation;
             this.animation = newAnimation;
     
-            this.sprite.textures = this.spriteAnimation.getTexture(this.orientation, this.animation);
-            this.sprite.animationSpeed = (this.animation === '') ? (this.controller.sprint ? 0.5 : 0.3) : 0.1;
+            this.updateOrientation();
         }
     
         this.sprite.play();
@@ -83,22 +82,39 @@ export class Player
         this.sprite.position.set(this.position.x, this.position.y);
         
         if(this.local && !this.dev){
+            
             this.ws.send(JSON.stringify({
                 type: 'move',
-                id: this.id,
-                x: this.position.x,
-                y: this.position.y,
+                player: this.toJSON(),
             }));
         }
     }
     
+    updateOrientation(){
+        this.sprite.textures = this.spriteAnimation.getTexture(this.orientation, this.animation);
+        this.sprite.animationSpeed = (this.animation === '') ? (this.controller.sprint ? 0.5 : 0.3) : 0.1;
+    }
+    refresh(player){
+        // console.log(player);
+        this.orientation = player.orientation;
+        this.animation = player.animation;
 
-    setPosition(x, y){
-        this.sprite.x = x;
-        this.sprite.y = y;
+        if(this.sprite){
+            this.sprite.x = player.x;
+            this.sprite.y = player.y;
 
-        this.position.x = x;
-        this.position.y = y;
+            this.updateOrientation();
+
+            this.sprite.play();
+            this.sprite.loop = true;
+            this.sprite.anchor.set(0.5);
+        }
+        
+
+        this.position.x = player.x;
+        this.position.y = player.y;
+
+        
     }
 
     getSprite(){

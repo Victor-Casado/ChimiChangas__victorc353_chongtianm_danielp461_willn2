@@ -46,4 +46,6 @@ function handleMessage(data) {
         console.log(mover.getId());
         mover.setPosition(data.x, data.y);
     }
+
+
 }

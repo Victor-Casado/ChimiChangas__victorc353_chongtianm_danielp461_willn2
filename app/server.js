@@ -6,24 +6,30 @@ import { Game }  from './middleware/game.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-game = Game.serverInit();
+
+let game;
+(async () => {
+  game = await Game.serverInit();
+})();
 
 const wss = new WebSocketServer({ port: 8080 });
 
 let clients = [];
 let clientId = 0;
 
-wss.on('connection', (ws) => {
+wss.on('connection', async (ws) => {
   console.log('Client connected');
 
   const newPlayerId = clientId++;
   console.log(`Player ${newPlayerId} connected`);
 
+  // console.log(clients);
   const x = Math.random() * 400;
   const y = Math.random() * 400;
 
-  player = game.loadPlayer(newPlayerId, x, y, false, ws);
-  console.log(game.players);
+  // let player = await game.loadPlayer(newPlayerId, x, y, false, ws);
+
+  // console.log(game.players);
 
   ws.send(JSON.stringify({
     type: 'you',

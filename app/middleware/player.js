@@ -1,14 +1,13 @@
 import {Controller} from './controller.js';
 
-// Class for handling Player
 export class Player
 {
-    constructor(app, id, sprite, x, y, local, ws)
+    constructor(id, x, y, local, ws)
     {
-        this.app = app;
 
         this.walkSpeed = 2;
         this.sprintSpeed = 5;
+        this.texture = null;
 
         this.position = {
             x: x,
@@ -16,7 +15,7 @@ export class Player
         };
         
         this.id = id;
-        this.sprite = sprite;
+        this.sprite = null;
 
         this.playerHeight = 50;
         this.playerWidth = 30;
@@ -27,6 +26,11 @@ export class Player
         if(local){
             this.ws = ws;
         }
+    }
+
+    async loadSprite(img){
+        this.texture = await PIXI.Assets.load(img);
+        this.sprite = new PIXI.Sprite(this.texture);
     }
 
     updatePosition(){
@@ -45,15 +49,10 @@ export class Player
             this.position.x += speed;
         }
 
-        // Keep player within bounds
-        this.position.x = Math.max(0, Math.min(this.app.screen.width - this.playerWidth, this.position.x));
-        this.position.y = Math.max(0, Math.min(this.app.screen.height - this.playerHeight, this.position.y));
-
-        this.sprite.x  = this.position.x;
+        this.sprite.x = this.position.x;
         this.sprite.y = this.position.y;
         
         if(this.local){
-            // console.log('MOVING MOVING');
             this.ws.send(JSON.stringify({
                 type: 'move',
                 id: this.id,
@@ -80,5 +79,8 @@ export class Player
     }
     isActive(){
         return this.local;
+    }
+    getSprite(){
+        return this.sprite;
     }
 }

@@ -11,7 +11,7 @@ const __dirname = path.dirname(__filename);
 
 let game;
 (async () => {
-  game = await Game.serverInit();
+  game = await Game.init();
 })();
 
 const wss = new WebSocketServer({ port: 8080 });

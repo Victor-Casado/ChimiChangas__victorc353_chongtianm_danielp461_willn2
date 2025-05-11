@@ -1,52 +1,45 @@
 import {Player} from './player.js';
+import {SpriteAnimation} from './animations/sprite_animation.js';
+import { Textures } from './textures.js';
 
 export class Game {
-    constructor(isServer, app) {
+    constructor(app) {
       this.players = [];
-      this.isServer = isServer;
       
-      if (!isServer) {
-        this.app = app;
+      this.app = app;
+      
+      this.container = new PIXI.Container();
+      document.body.appendChild(this.app.canvas);
+      this.app.stage.addChild(this.container);
+  
+      this.container.x = 0;
+      this.container.y = 0;
+      this.container.pivot.x = this.container.width / 2;
+      this.container.pivot.y = this.container.height / 2;
+  
+      this.zoomLevel = 1.5;
+      this.container.scale.set(this.zoomLevel);
+
+      this.localPlayer = null;
+    }
+  
+    static async init() {
+      await Textures.loadAll();
+  
+      return new Game(Textures.getApp());
+    }
+
+    loadPlayer(id, skinNum, x, y, active, ws){
+      const localPlayerSprite = new SpriteAnimation(skinNum);
+
+      const player = new Player(id, localPlayerSprite, x, y, active, ws);
         
-        this.container = new PIXI.Container();
-        document.body.appendChild(this.app.canvas);
-        this.app.stage.addChild(this.container);
-    
-        this.container.x = 0;
-        this.container.y = 0;
-        this.container.pivot.x = this.container.width / 2;
-        this.container.pivot.y = this.container.height / 2;
-    
-        this.zoomLevel = 1.5;
-        this.container.scale.set(this.zoomLevel);
-
-        this.localPlayer = null;
-      }
-    }
-  
-    static async clientInit() {
-      const app = new PIXI.Application();
-      await app.init({ background: '#1099bb', resizeTo: window });
-  
-      return new Game(false, app);
-    }
-
-    static async serverInit(){
-      return new Game(true, null);
-    }
-
-    async loadPlayer(id, spriteAnimation, x, y, active, ws){
-      const player = new Player(this.app, id, spriteAnimation, x, y, active, ws);
+      this.container.addChild(player.sprite);
       
-      if(!this.isServer){
-        const localPlayerSprite = new SpriteAnimation(1);
-        await localPlayerSprite.loadAnimations();
-        this.container.addChild(player.sprite);
-      }
       if(active){
         this.localPlayer = player;
-        console.log("loading local player");
       }
+
       this.players.push(player);
       return player;
     }

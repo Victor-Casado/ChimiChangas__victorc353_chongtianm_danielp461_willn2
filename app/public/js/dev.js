@@ -1,4 +1,5 @@
 import { Player } from '../../middleware/player.js';
+import { Textures } from '../../middleware/textures.js';
 import { SpriteAnimation } from '../../middleware/animations/sprite_animation.js';
 import { WoodenChest } from '../../middleware/animations/chests/wooden.js';
 
@@ -10,17 +11,16 @@ import { WoodenChest } from '../../middleware/animations/chests/wooden.js';
     const container = new PIXI.Container();
     app.stage.addChild(container);
 
+    await Textures.loadAll();
+
     // chest animation load
     const woodenChest = new WoodenChest(100, 100);
-    await woodenChest.init();
 
     // sprite animation load
     const spriteAnimation = new SpriteAnimation(1);
-    await spriteAnimation.loadAnimations();
 
     // player
     const localPlayer = new Player(0, spriteAnimation, app.screen.width / 2, app.screen.height / 2, true, null, 'front', true);
-    await localPlayer.loadSprite();
 
     container.addChild(localPlayer.getSprite());
     container.addChild(woodenChest.getSprite());

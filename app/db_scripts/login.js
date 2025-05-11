@@ -1,11 +1,7 @@
-const {execute} = require("./db_functions");
-const {fetchFirst} = require("./db_functions");
-const path = require('path');
+import sqlite3 from 'sqlite3';
+import {execute, fetchFirst, DB_PATH} from './db_functions.js';
 
-const sqlite3 = require('sqlite3');
-const DB_PATH = path.join(__dirname, '../public/devoroyale.db');
-
-const addUser = async (username, password) => {
+export const addUser = async (username, password) => {
     const db = new sqlite3.Database(DB_PATH);
     const sql = `INSERT INTO users(username, password) VALUES(?, ?)`;
     console.log(DB_PATH);
@@ -14,12 +10,14 @@ const addUser = async (username, password) => {
         console.log("Added user", username);
     } catch (err) {
         console.log(err);
+        return false;
     } finally {
         db.close();
     }
+    return true;
 };
 
-const updateUsername = async (old_username, new_username) => {
+export const updateUsername = async (old_username, new_username) => {
     const db = new sqlite3.Database(DB_PATH);
     const sql = `UPDATE users SET username = ? WHERE username = ?`;
     try {
@@ -32,7 +30,7 @@ const updateUsername = async (old_username, new_username) => {
     }
 };
 
-const fetchUser = async (column, value) => {
+export const fetchUser = async (column, value) => {
     const db = new sqlite3.Database(DB_PATH);
     let sql = `SELECT * FROM users WHERE ${column} = ?`;
     let user = null;
@@ -42,14 +40,7 @@ const fetchUser = async (column, value) => {
     } catch (err) {
         console.log(err);
     } finally {
-        console.log('yo', user);
         db.close();
     }
     return user;
 };
-
-module.exports = {
-    addUser,
-    updateUsername,
-    fetchUser
-}

@@ -2,15 +2,21 @@ import express from 'express';
 import WebSocket, { WebSocketServer } from 'ws';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { addUser, fetchUser, updateUsername} from './db_scripts/login.js';
 import { Game }  from './middleware/game.js';
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+<<<<<<< HEAD
 
 let game;
 (async () => {
   game = await Game.serverInit();
 })();
+=======
+//game = Game.serverInit();
+>>>>>>> 8dac00226a3b8ecdf68c955ef909b972f284e0c4
 
 const wss = new WebSocketServer({ port: 8080 });
 
@@ -27,8 +33,12 @@ wss.on('connection', async (ws) => {
   const x = Math.random() * 400;
   const y = Math.random() * 400;
 
+<<<<<<< HEAD
   // let player = await game.loadPlayer(newPlayerId, x, y, false, ws);
 
+=======
+  // player = game.loadPlayer(newPlayerId, x, y, false, ws);
+>>>>>>> 8dac00226a3b8ecdf68c955ef909b972f284e0c4
   // console.log(game.players);
 
   ws.send(JSON.stringify({
@@ -117,8 +127,16 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/templates/index.html'));
 });
 
+app.get('/dev', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/templates/dev.html'));
+});
+
 app.get('/game', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/templates/game.html'));
+});
+
+app.get('/home', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/templates/home.html'));
 });
 
 app.get('/login', (req, res) => {
@@ -132,10 +150,12 @@ app.get('/signup', (req, res) => {
 // POST handlers
 app.post('/signup', async (req, res) => {
   const { username, password } = req.body;
-  try {
-    await addUser(username, password);
+  let addedUser = await addUser(username, password);
+
+  if (addedUser){
     res.redirect('/login');
-  } catch (err) {
+  }
+  else {
     res.status(500).send('Username already exists');
   }
 });
@@ -145,7 +165,7 @@ app.post('/login', async (req, res) => {
   try {
     const user = await fetchUser('username', username);
     if (user.password === password) {
-      res.redirect('/game');
+      res.redirect('/home');
     } else {
       res.status(500).send('Username or password does not match');
     }

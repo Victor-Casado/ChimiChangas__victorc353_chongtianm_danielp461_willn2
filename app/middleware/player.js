@@ -30,6 +30,8 @@ export class Player
     }
 
     async loadSprite(){
+        console.log("this.spriteAnimation");
+        console.log(this.spriteAnimation);
         this.sprite = new PIXI.AnimatedSprite(this.spriteAnimation.getAnimation(this.orientation, 'Idle'));
     }
 

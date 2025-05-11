@@ -1,4 +1,5 @@
 import {Player} from './player.js';
+import {SpriteAnimation} from './animations/sprite_animation.js';
 
 export class Game {
     constructor(isServer, app) {
@@ -36,11 +37,16 @@ export class Game {
     }
 
     async loadPlayer(id, spriteAnimation, x, y, active, ws){
-      const player = new Player(this.app, id, spriteAnimation, x, y, active, ws);
+      const player = new Player(id, spriteAnimation, x, y, active, ws);
       
       if(!this.isServer){
         const localPlayerSprite = new SpriteAnimation(1);
         await localPlayerSprite.loadAnimations();
+        console.log("****");
+        console.log(localPlayerSprite);
+        await player.loadSprite();
+        console.log(player.sprite);
+        
         this.container.addChild(player.sprite);
       }
       if(active){

@@ -25,7 +25,8 @@
 	"sourceSize": {"w":16,"h":20}
 }},
 "animations": {
-	"free_character_1-3": ["free_character_1-3-27.png","free_character_1-3-28.png","free_character_1-3-29.png"]
+	"behind": ["free_character_1-3-27.png","free_character_1-3-28.png","free_character_1-3-29.png"],
+	"behindIdle": ["free_character_1-3-28.png"]
 },
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",

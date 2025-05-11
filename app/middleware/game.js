@@ -37,7 +37,7 @@ export class Game {
     loadPlayer(id, x, y, active, ws){
       const player = new Player(this.app, id, new PIXI.Sprite(this.texture), x, y, active, ws);
   
-      this.container.addChild(player.sprite);
+      this.container.addChild(player.spriteAnimation);
       this.players.push(player);
       return player;
     }

@@ -3,12 +3,12 @@ import {Controller} from './controller.js';
 // Class for handling Player
 export class Player
 {
-    constructor(app, id, sprite, x, y, local, ws, dev=false)
+    constructor(app, id, spriteAnimation, x, y, local, ws, orientation='front', dev=false)
     {
         this.app = app;
 
         this.walkSpeed = 2;
-        this.sprintSpeed = 5;
+        this.sprintSpeed = 3.5;
 
         this.position = {
             x: x,
@@ -16,7 +16,10 @@ export class Player
         };
         
         this.id = id;
-        this.sprite = sprite;
+        this.spriteAnimation = spriteAnimation;
+        this.orientation = orientation;
+        this.animation = 'Idle';
+        this.sprite = new PIXI.AnimatedSprite(this.spriteAnimation.getAnimation(this.orientation, 'Idle'));
 
         this.playerHeight = 50;
         this.playerWidth = 30;
@@ -31,27 +34,56 @@ export class Player
     }
 
     updatePosition(){
-        const speed = this.controller.sprint? this.sprintSpeed : this.walkSpeed; // Adjust the movement speed
-
+        const speed = this.controller.sprint ? this.sprintSpeed : this.walkSpeed;
+        let pressed = false;
+        let newOrientation = this.orientation;
+        let newAnimation = this.animation;
+    
         if (this.controller.keys.up.pressed) {
             this.position.y -= speed;
+            newOrientation = 'behind';
+            newAnimation = '';
+            pressed = true;
         }
         if (this.controller.keys.down.pressed) {
             this.position.y += speed;
+            newOrientation = 'front';
+            newAnimation = '';
+            pressed = true;
         }
         if (this.controller.keys.left.pressed) {
             this.position.x -= speed;
+            newOrientation = 'left';
+            newAnimation = '';
+            pressed = true;
         }
         if (this.controller.keys.right.pressed) {
             this.position.x += speed;
+            newOrientation = 'right';
+            newAnimation = '';
+            pressed = true;
+        }
+    
+        if (!pressed) {
+            newAnimation = 'Idle';
         }
 
-        // Keep player within bounds
+        if (newOrientation !== this.orientation || newAnimation !== this.animation) {
+            this.orientation = newOrientation;
+            this.animation = newAnimation;
+    
+            this.sprite.textures = this.spriteAnimation.getAnimation(this.orientation, this.animation);
+            this.sprite.animationSpeed = (this.animation === '') ? (this.controller.sprint ? 0.5 : 0.3) : 0.1;
+        }
+    
+        this.sprite.play();
+        this.sprite.loop = true;
+        this.sprite.anchor.set(0.5);
+    
         this.position.x = Math.max(0, Math.min(this.app.screen.width - this.playerWidth, this.position.x));
         this.position.y = Math.max(0, Math.min(this.app.screen.height - this.playerHeight, this.position.y));
-
-        this.sprite.x  = this.position.x;
-        this.sprite.y = this.position.y;
+    
+        this.sprite.position.set(this.position.x, this.position.y);
         
         if(this.local && !this.dev){
             this.ws.send(JSON.stringify({
@@ -62,12 +94,18 @@ export class Player
             }));
         }
     }
+    
+
     setPosition(x, y){
         this.sprite.x = x;
         this.sprite.y = y;
 
         this.position.x = x;
         this.position.y = y;
+    }
+
+    getSprite(){
+        return this.sprite;
     }
 
     getId(){

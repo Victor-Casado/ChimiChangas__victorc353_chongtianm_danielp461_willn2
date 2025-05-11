@@ -4,7 +4,8 @@ export class Player
 {
     constructor(app, id, spriteAnimation, x, y, local, ws, orientation='front', dev=false)
     {
-
+        this.app = app;
+        
         this.walkSpeed = 2;
         this.sprintSpeed = 3.5;
 

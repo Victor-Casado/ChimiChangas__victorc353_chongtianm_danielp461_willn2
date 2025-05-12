@@ -78,13 +78,4 @@ export class Game {
     getPlayers(){
       return this.players;
     }
-    updatePlayers(players){
-      this.players = players;
-      this.players.forEach(player => {
-        player.setPosition(player.getPosX(), player.getPosY());
-      });
-    }
-    refreshState(data){
-      this.updatePlayers(data.players);
-    }
   }

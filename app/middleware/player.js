@@ -75,14 +75,9 @@ export class Player
             this.updateOrientation();
         }
     
-        this.sprite.play();
-        this.sprite.loop = true;
-        this.sprite.anchor.set(0.5);
-    
         this.sprite.position.set(this.position.x, this.position.y);
         
         if(this.local && !this.dev){
-            
             this.ws.send(JSON.stringify({
                 type: 'move',
                 player: this.toJSON(),
@@ -91,30 +86,38 @@ export class Player
     }
     
     updateOrientation(){
-        this.sprite.textures = this.spriteAnimation.getTexture(this.orientation, this.animation);
-        this.sprite.animationSpeed = (this.animation === '') ? (this.controller.sprint ? 0.5 : 0.3) : 0.1;
-    }
-    refresh(player){
-        // console.log(player);
-        this.orientation = player.orientation;
-        this.animation = player.animation;
+        const newTextures = this.spriteAnimation.getTexture(this.orientation, this.animation);
 
-        if(this.sprite){
+        if (this.sprite.textures !== newTextures) {
+            this.sprite.textures = newTextures;
+            this.sprite.play();
+        }
+
+        this.sprite.animationSpeed = (this.animation === '') 
+            ? (this.controller.sprint ? 0.5 : 0.3) 
+            : 0.1;
+
+        this.sprite.loop = true;
+        this.sprite.anchor.set(0.5);
+    }
+    
+    refresh(player) {
+        if (this.sprite) {
             this.sprite.x = player.x;
             this.sprite.y = player.y;
-
-            this.updateOrientation();
-
-            this.sprite.play();
-            this.sprite.loop = true;
-            this.sprite.anchor.set(0.5);
+    
+            const sameOrientation = this.orientation === player.orientation;
+            const sameAnimation = this.animation === player.animation;
+    
+            if (!sameOrientation || !sameAnimation) {
+                this.orientation = player.orientation;
+                this.animation = player.animation;
+                this.updateOrientation();
+            }
         }
-        
-
+    
         this.position.x = player.x;
         this.position.y = player.y;
-
-        
     }
 
     getSprite(){

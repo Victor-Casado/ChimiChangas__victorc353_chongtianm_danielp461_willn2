@@ -60,7 +60,7 @@ export class Game {
     startLoop() {
       this.app.ticker.add(() => {
         this.players.forEach((player) => {
-          player.updatePosition();
+          player.update([]);
         });
         
         if(this.localPlayer){

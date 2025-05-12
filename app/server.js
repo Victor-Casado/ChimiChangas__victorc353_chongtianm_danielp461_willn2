@@ -30,9 +30,8 @@ wss.on('connection', async (ws) => {
   const x = Math.random() * 400;
   const y = Math.random() * 400;
 
-  let newPlayer = new Player(newPlayerId, null, x, y, false, ws);
+  let newPlayer = new Player(req.session.user, newPlayerId, null, x, y, false, ws);
   
-
   // console.log(game.players);
 
   ws.send(JSON.stringify({

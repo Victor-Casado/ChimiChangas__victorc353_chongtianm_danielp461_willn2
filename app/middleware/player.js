@@ -33,6 +33,13 @@ export class Player
         }
     }
 
+    update(chests){
+        this.updatePosition();
+        chests.forEach((chest => {
+            this.updateChest(chest);
+        }));
+    }
+
     updatePosition(){
         const speed = this.controller.sprint ? this.sprintSpeed : this.walkSpeed;
         let pressed = false;
@@ -100,6 +107,18 @@ export class Player
         this.sprite.loop = true;
         this.sprite.anchor.set(0.5);
     }
+
+    updateChest(chest){
+        if(this.nearbyChest(chest)){
+            // const basicText = new Text({ text: 'Press E to open chest' });
+
+            // basicText.x = 50;
+            // basicText.y = 100;
+            if(this.controller.keys.useItem.pressed){
+                chest.openChest();
+            }
+        }
+    }
     
     refresh(player) {
         if (this.sprite) {
@@ -118,6 +137,16 @@ export class Player
     
         this.position.x = player.x;
         this.position.y = player.y;
+
+        
+    }
+
+    nearbyChest(chest){
+        const dist = 35;
+        if(Math.abs(this.position.x - chest.position.x) < dist && Math.abs(this.position.y - chest.position.y) <dist){
+            return true;
+        }
+        return false;
     }
 
     getSprite(){
@@ -139,9 +168,11 @@ export class Player
     isActive(){
         return this.local;
     }
+
     getSprite(){
         return this.sprite;
     }
+
     toJSON(){
         return {
             id: this.id,

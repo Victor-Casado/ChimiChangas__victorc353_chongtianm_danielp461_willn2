@@ -17,18 +17,17 @@ ws.onmessage = (event) => {
 game = await Game.clientInit();
 game.startLoop();
 
-
 messageQueue.forEach(handleMessage);
 messageQueue = [];
 
 function handleMessage(data) {
     if (data.type === 'you') {
-        game.loadPlayer(data.player.id, 1, data.player.x, data.player.y, true, ws, data.player.orientation);
+        game.loadPlayer(null, data.player.id, 1, data.player.x, data.player.y, true, ws, data.player.orientation);
     }
 
     if (data.type === 'playerJoined') {
         console.log(`Player ${data.player.id} joined the lobby`);
-        game.loadPlayer(data.player.id, 1, data.player.x, data.player.y, false, null, data.player.orientation);
+        game.loadPlayer(null, data.player.id, 1, data.player.x, data.player.y, false, null, data.player.orientation);
     }
 
     if (data.type === 'existingPlayers') {
@@ -41,9 +40,7 @@ function handleMessage(data) {
     if (data.type === 'playerMoved') {
         // console.log("Loading existing players:", data.clients);
         const mover = game.players.find(p => p.id === data.player.id);
-        if(data.player){
-
-        }
+        //data.player = UPDATE DATA
         mover.refresh(data.player);
     }
 }

@@ -1,0 +1,40 @@
+{"frames": {
+
+"free_character_1-3-27.png":
+{
+	"frame": {"x":1,"y":22,"w":16,"h":18},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":2,"w":16,"h":18},
+	"sourceSize": {"w":16,"h":20}
+},
+"free_character_1-3-28.png":
+{
+	"frame": {"x":1,"y":1,"w":16,"h":19},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":1,"w":16,"h":19},
+	"sourceSize": {"w":16,"h":20}
+},
+"free_character_1-3-29.png":
+{
+	"frame": {"x":1,"y":42,"w":16,"h":18},
+	"rotated": false,
+	"trimmed": true,
+	"spriteSourceSize": {"x":0,"y":2,"w":16,"h":18},
+	"sourceSize": {"w":16,"h":20}
+}},
+"animations": {
+	"behind": ["free_character_1-3-27.png","free_character_1-3-28.png","free_character_1-3-29.png"],
+	"behindIdle": ["free_character_1-3-28.png"]
+},
+"meta": {
+	"app": "https://www.codeandweb.com/texturepacker",
+	"version": "1.1",
+	"image": "anim.png",
+	"format": "RGBA8888",
+	"size": {"w":18,"h":61},
+	"scale": "1",
+	"smartupdate": "$TexturePacker:SmartUpdate:53f09ff4eebbd01b287312f5d7b70f2d:c51ead6af8c97734e352a5ded4822d36:6347dbebbf1304f1c390863db2a23cce$"
+}
+}

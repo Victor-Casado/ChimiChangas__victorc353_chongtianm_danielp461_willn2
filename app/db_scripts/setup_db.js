@@ -1,9 +1,5 @@
-const {create} = require("./db_functions");
-const path = require('path');
-
-const sqlite3 = require('sqlite3');
-const DB_PATH = path.join(__dirname, '../../devoroyale.db');
-console.log(DB_PATH);
+import sqlite3 from 'sqlite3';
+import {create, DB_PATH} from './db_functions.js';
 
 var db = new sqlite3.Database(DB_PATH);
 

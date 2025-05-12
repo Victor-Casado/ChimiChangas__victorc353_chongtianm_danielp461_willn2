@@ -1,46 +1,46 @@
-import { Player } from './player.js';
+import { Game } from '../../middleware/game.js';
 
-export class Game {
-    constructor(app, texture) {
-      this.app = app;
-      this.container = new PIXI.Container();
-      this.texture = texture;
-  
-      document.body.appendChild(this.app.canvas);
-      this.app.stage.addChild(this.container);
-  
-      this.container.x = 0;
-      this.container.y = 0;
-      this.container.pivot.x = this.container.width / 2;
-      this.container.pivot.y = this.container.height / 2;
+const ws = new WebSocket(`ws://${window.location.hostname}:8080`);
+let game = null;
+let messageQueue = [];
 
-      this.players = [];
+ws.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+
+    if (!game) {
+        messageQueue.push(data);
+    } else {
+        handleMessage(data);
     }
-  
-    static async init() {
-      const app = new PIXI.Application();
-      await app.init({ background: '#1099bb', resizeTo: window });
-  
-      const texture = await PIXI.Assets.load('https://pixijs.com/assets/bunny.png');
-  
-      return new Game(app, texture);
-    }
+};
 
-    loadPlayer(id, x, y, active, ws){
-        const player = new Player(this.app, id, new PIXI.Sprite(this.texture), x, y, active, ws);
-    
-        this.container.addChild(player.sprite);
-        // player.sprite.x = x;
-        // player.sprite.y = y;
-        this.players.push(player);
-        return player
+game = await Game.clientInit();
+game.startLoop();
+
+messageQueue.forEach(handleMessage);
+messageQueue = [];
+
+function handleMessage(data) {
+    if (data.type === 'you') {
+        game.loadPlayer(null, data.player.id, 1, data.player.x, data.player.y, true, ws, data.player.orientation);
     }
 
-    startLoop() {
-        this.app.ticker.add(() => {
-            this.players.forEach(player => {
-                player.updatePosition(); 
-            });
+    if (data.type === 'playerJoined') {
+        console.log(`Player ${data.player.id} joined the lobby`);
+        game.loadPlayer(null, data.player.id, 1, data.player.x, data.player.y, false, null, data.player.orientation);
+    }
+
+    if (data.type === 'existingPlayers') {
+        console.log("Loading existing players:", data.clients);
+        data.clients.forEach(playerData => {
+            game.loadPlayer(playerData.id, 1, playerData.x, playerData.y, false, null, playerData.orientation);
         });
     }
-  }
+
+    if (data.type === 'playerMoved') {
+        // console.log("Loading existing players:", data.clients);
+        const mover = game.players.find(p => p.id === data.player.id);
+        //data.player = UPDATE DATA
+        mover.refresh(data.player);
+    }
+}

@@ -36,6 +36,12 @@ export class Textures{
         );
     }
 
+    static async loadTexts(){
+        await PIXI.Assets.load(
+            'https://pixijs.com/assets/bitmap-font/desyrel.xml'
+        );
+    }
+
     static getApp(){
         return app;
     }

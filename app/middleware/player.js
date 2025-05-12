@@ -2,8 +2,9 @@ import {Controller} from './controller.js';
 
 export class Player
 {
-    constructor(id, spriteAnimation, x, y, local, ws=null, orientation='front', dev=false)
+    constructor(username, id, spriteAnimation, x, y, local, ws=null, orientation='front', dev=false, playerWidth='20', playerHeight='25')
     {   
+        this.username = username;
         this.walkSpeed = 2;
         this.sprintSpeed = 3.5;
 
@@ -19,14 +20,34 @@ export class Player
         
         if(spriteAnimation != null){
             this.sprite = new PIXI.AnimatedSprite(this.spriteAnimation.getTexture(this.orientation, 'Idle'));
+            this.texts = {
+                'username': new PIXI.BitmapText({
+                                text: username,
+                                style: {
+                                    fontFamily: 'Arial',
+                                    fontSize: 10,
+                                    fill: 0xff1010,
+                                    align: 'center',
+                                }}),
+                'itemInteraction': new PIXI.BitmapText({
+                                text: '',
+                                style: {
+                                    fontFamily: 'Arial',
+                                    fontSize: 24,
+                                    fill: 0xff1010,
+                                    align: 'center',
+                                }})
+            };
+            this.updateTextPos()
         }
 
-        this.playerHeight = 50;
-        this.playerWidth = 30;
+        this.playerWidth = playerWidth;
+        this.playerHeight = playerHeight;
 
         this.local = local;
         this.dev = dev;
         this.controller = new Controller(local);
+        this.numNearbyChest = 0;
 
         if(!dev){
             this.ws = ws;
@@ -35,9 +56,7 @@ export class Player
 
     update(chests){
         this.updatePosition();
-        chests.forEach((chest => {
-            this.updateChest(chest);
-        }));
+        this.updateChest(chests);
     }
 
     updatePosition(){
@@ -83,6 +102,7 @@ export class Player
         }
     
         this.sprite.position.set(this.position.x, this.position.y);
+        this.updateTextPos();
         
         if(this.local && !this.dev){
             this.ws.send(JSON.stringify({
@@ -108,16 +128,33 @@ export class Player
         this.sprite.anchor.set(0.5);
     }
 
-    updateChest(chest){
-        if(this.nearbyChest(chest)){
-            // const basicText = new Text({ text: 'Press E to open chest' });
+    updateChest(chests){
+        this.texts['itemInteraction'].text = '';
+        this.numNearbyChest = 0;
+        chests.forEach((chest => {
+            this.checkChest(chest);
+        }));
+        if(this.numNearbyChest > 0){
+            this.texts['itemInteraction'].text = 'Press E to open chest';
+        }
+    }
 
-            // basicText.x = 50;
-            // basicText.y = 100;
+    checkChest(chest){
+        if(this.nearbyChest(chest)){
+            this.numNearbyChest++;
             if(this.controller.keys.useItem.pressed){
                 chest.openChest();
             }
         }
+    }
+
+    updateTextPos(){
+        console.log(this.texts.username.text);
+        this.texts['username'].x = this.position.x - this.playerWidth;
+        this.texts['username'].y = this.position.y - this.playerHeight;
+
+        this.texts['itemInteraction'].x = this.position.x;
+        this.texts['itemInteraction'].y = this.position.y + 200;
     }
     
     refresh(player) {
@@ -136,9 +173,7 @@ export class Player
         }
     
         this.position.x = player.x;
-        this.position.y = player.y;
-
-        
+        this.position.y = player.y;   
     }
 
     nearbyChest(chest){
@@ -171,6 +206,10 @@ export class Player
 
     getSprite(){
         return this.sprite;
+    }
+
+    getTexts(){
+        return this.texts;
     }
 
     toJSON(){

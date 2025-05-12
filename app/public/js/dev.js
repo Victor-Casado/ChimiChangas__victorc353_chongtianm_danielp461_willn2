@@ -33,12 +33,18 @@ import { DiamondChest } from '../../middleware/animations/chests/diamond.js';
     const spriteAnimation = new SpriteAnimation(1);
 
     // player
-    const localPlayer = new Player(0, spriteAnimation, app.screen.width / 2, app.screen.height / 2, true, null, 'front', true);
+    const localPlayer = new Player('Topher', 0, spriteAnimation, app.screen.width / 2, app.screen.height / 2, true, null, 'front', true);
 
     container.addChild(localPlayer.getSprite());
     chests.forEach((chest => {
         container.addChild(chest.getSprite());
     }));
+
+    const texts = localPlayer.getTexts();
+
+    Object.keys(texts).forEach(text => {
+        container.addChild(texts[text]);
+    });
 
     app.ticker.add(() => {
         localPlayer.update(chests);

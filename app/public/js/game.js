@@ -21,19 +21,21 @@ messageQueue.forEach(handleMessage);
 messageQueue = [];
 
 function handleMessage(data) {
+    const hardCodedUser = 'GUEST';
     if (data.type === 'you') {
-        game.loadPlayer(data.player.id, 1, data.player.x, data.player.y, true, ws, data.player.orientation);
+        console.log(hardCodedUser);
+        game.loadPlayer(hardCodedUser, data.player.id, 1, data.player.x, data.player.y, true, ws, data.player.orientation);
     }
 
     if (data.type === 'playerJoined') {
         console.log(`Player ${data.player.id} joined the lobby`);
-        game.loadPlayer(data.player.id, 1, data.player.x, data.player.y, false, null, data.player.orientation);
+        game.loadPlayer(hardCodedUser, data.player.id, 1, data.player.x, data.player.y, false, null, data.player.orientation);
     }
 
     if (data.type === 'existingPlayers') {
         console.log("Loading existing players:", data.clients);
         data.clients.forEach(playerData => {
-            game.loadPlayer(playerData.id, 1, playerData.x, playerData.y, false, null, playerData.orientation);
+            game.loadPlayer(hardCodedUser, playerData.id, 1, playerData.x, playerData.y, false, null, playerData.orientation);
         });
     }
 

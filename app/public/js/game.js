@@ -22,12 +22,12 @@ messageQueue = [];
 
 function handleMessage(data) {
     if (data.type === 'you') {
-        game.loadPlayer(null, data.player.id, 1, data.player.x, data.player.y, true, ws, data.player.orientation);
+        game.loadPlayer(data.player.id, 1, data.player.x, data.player.y, true, ws, data.player.orientation);
     }
 
     if (data.type === 'playerJoined') {
         console.log(`Player ${data.player.id} joined the lobby`);
-        game.loadPlayer(null, data.player.id, 1, data.player.x, data.player.y, false, null, data.player.orientation);
+        game.loadPlayer(data.player.id, 1, data.player.x, data.player.y, false, null, data.player.orientation);
     }
 
     if (data.type === 'existingPlayers') {

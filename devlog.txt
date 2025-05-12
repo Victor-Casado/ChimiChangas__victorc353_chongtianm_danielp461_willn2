@@ -18,3 +18,6 @@ willN -- 2025-05-08 20:56
 
 danielP -- 2025-05-08 21:05
  - Added db functions and basic login/signup
+
+markM -- 2025-05-12 11:42
+- attempted to add gun animations

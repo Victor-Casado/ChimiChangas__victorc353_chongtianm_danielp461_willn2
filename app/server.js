@@ -25,27 +25,35 @@ let clientId = 0;
 wss.on('connection', async (ws) => {
   console.log('Client connected');
 
-  let players = game.players;
-    for (let i = 0; i < players.length; i++) {
-      let player = players[i];
-      if (player.username === username) {
-        console.log(`Player ${player.id} connected`);
-        ws.send(JSON.stringify({
-          type: 'you',
-          player: player.toJSON()
-        }));
-        return;
-      }
-    }
+  let newPlayer = null;
+  let newPlayerId = 0;
+  let playerExists = false;
 
-  const newPlayerId = clientId++;
+  let players = game.players;
+  for (let i = 0; i < players.length; i++) {
+    let player = players[i];
+    if(player.username === username){
+      newPlayer = player;
+      newPlayerId = player.id;
+      playerExists = true;
+      break;
+    }
+  }
+  
+  if(!playerExists){
+    newPlayerId = clientId++;
+    newPlayer = new Player(username, newPlayerId, null, Math.random() * 400, Math.random() * 400, false, ws);
+    game.players.push(newPlayer);
+    clients.push(
+      {id: newPlayerId, 
+        x: newPlayer.x, 
+        y: newPlayer.y, 
+        ws: ws }
+    );
+  }
+
   console.log(`Player ${newPlayerId} connected`);
 
-  const x = Math.random() * 400;
-  const y = Math.random() * 400;
-
-  let newPlayer = new Player(username, newPlayerId, null, x, y, false, ws);
-  
   ws.send(JSON.stringify({
     type: 'you',
     player: newPlayer.toJSON()
@@ -53,16 +61,11 @@ wss.on('connection', async (ws) => {
 
   ws.send(JSON.stringify({
     type: 'existingPlayers',
-    clients: game.players.map(p => (p.toJSON()))
+    clients: game.players.map(p => (p.toJSON())),
+    localUser: username
   }));
 
-  game.players.push(newPlayer);
-  clients.push(
-    {id: newPlayerId, 
-      x: x, 
-      y: y, 
-      ws: ws }
-  );
+  
 
   // Notify other clients about new player
   wss.clients.forEach(client => {
@@ -96,6 +99,7 @@ wss.on('connection', async (ws) => {
     console.log('Client disconnected');
     // Remove client from clients array
     clients = clients.filter(client => client.ws !== ws);
+    
   
     // Notify other clients about disconnection
     wss.clients.forEach(client => {

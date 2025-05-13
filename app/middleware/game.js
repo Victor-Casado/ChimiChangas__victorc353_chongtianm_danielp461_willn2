@@ -75,6 +75,10 @@ export class Game {
 
     }
 
+    findPlayer(id){
+      return this.players.find(p => p.id == id);
+    }
+
     startLoop() {
       this.app.ticker.add(() => {
         this.players.forEach((player) => {

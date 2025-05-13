@@ -44,13 +44,14 @@ wss.on('connection', async (ws) => {
     newPlayerId = clientId++;
     newPlayer = new Player(username, newPlayerId, null, Math.random() * 400, Math.random() * 400, false, ws);
     game.players.push(newPlayer);
-    clients.push(
+  }
+
+  clients.push(
       {id: newPlayerId, 
         x: newPlayer.x, 
         y: newPlayer.y, 
         ws: ws }
     );
-  }
 
   console.log(`Player ${newPlayerId} connected`);
 
@@ -116,7 +117,10 @@ wss.on('connection', async (ws) => {
         }
       // }
       clients = clients.filter(client => client.ws !== ws);
-      game.removePlayer(disconnectedClient.id);
+      if(disconnectedClient){
+        game.findPlayer(disconnectedClient.id).destroy();
+      }
+      
     });
     
   });

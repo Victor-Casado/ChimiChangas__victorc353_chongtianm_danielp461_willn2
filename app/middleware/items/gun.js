@@ -1,9 +1,8 @@
-
 export class Gun extends Item
 {
-    constructor(id, sprite, ws=null, dev=false, width='20', height='25', damage, range, numBullets, cooldown, bulletType)
+    constructor(id, sprite, ws=null, dev=false, width='20', height='25', isHeld = false, x, y, damage, range, numBullets, cooldown, bulletType)
     {
-        super(id, sprite, ws=null, dev=false, width='20', height='25')
+        super(id, sprite, ws=null, dev=false, width='20', height='25', isHeld, x, y)
         this.damage = damage;
         this.range = range;
         this.numBullets = numBullets;

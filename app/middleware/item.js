@@ -1,12 +1,12 @@
 
 export class Item
 {
-    constructor(id, spriteAnimation, ws=null, dev=false, width='20', height='25')
+    constructor(id, sprite, ws=null, dev=false, width='20', height='25')
     {
         this.id = id;
         this.width = width;
         this.height = height;
-        this.sprite = new PIXI.AnimatedSprite(spriteAnimation.getTexture(this.orientation, 'Idle'));
+        this.sprite = sprite;
         this.dev = dev;
 
         if(!dev){

@@ -23,9 +23,6 @@ export class Item
         return this.id;
     }
 
-    getSprite(){
-        return this.sprite;
-    }
     toJSON(){
         return {
             id: this.id,

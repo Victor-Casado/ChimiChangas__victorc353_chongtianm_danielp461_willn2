@@ -1,11 +1,12 @@
 export class Gun extends Item
 {
-    constructor(id, sprite, ws=null, dev=false, width='20', height='25', isHeld = false, x, y, damage, range, numBullets, cooldown, bulletType)
+    constructor(id, sprite, ws=null, dev=false, width='20', height='25', isHeld = false, x, y, damage, range, numBullets, cooldown, bulletType, bulletSpeed)
     {
         super(id, sprite, ws=null, dev=false, width='20', height='25', isHeld, x, y)
         this.damage = damage;
         this.range = range;
         this.numBullets = numBullets;
+        this.bulletSpeed = bulletSpeed;
         this.cooldown = cooldown;
         this.bulletType = bulletType;
     }
@@ -16,6 +17,7 @@ export class Gun extends Item
             sprite: this.sprite,
             damage: this.damage,
             range: this.range,
+            bulletSpeed: this.bulletSpeed,
             numBullets: this.numBullets,
             cooldown: this.cooldown,
             bulletType: this.bulletType

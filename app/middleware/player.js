@@ -217,6 +217,7 @@ export class Player
     toJSON(){
         return {
             id: this.id,
+            activeItem: this.inventory[this.activeSlot],
             x: this.position.x,
             y: this.position.y,
             orientation: this.orientation,

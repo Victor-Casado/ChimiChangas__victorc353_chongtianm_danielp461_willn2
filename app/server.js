@@ -24,16 +24,18 @@ let clientId = 0;
 wss.on('connection', async (ws) => {
   console.log('Client connected');
 
+  
+
   const newPlayerId = clientId++;
   console.log(`Player ${newPlayerId} connected`);
 
   const x = Math.random() * 400;
   const y = Math.random() * 400;
 
-  let newPlayer = new Player('FAKE USERNAME', newPlayerId, null, x, y, false, ws);
-  
-  // console.log(game.players);
+  let username = "GUEST";
 
+  let newPlayer = new Player(username, newPlayerId, null, x, y, false, ws);
+  
   ws.send(JSON.stringify({
     type: 'you',
     player: newPlayer.toJSON()
@@ -45,7 +47,7 @@ wss.on('connection', async (ws) => {
   }));
 
   game.players.push(newPlayer);
-  clients.push({ id: newPlayerId, x: x, y: y, ws: ws });
+  clients.push({id: newPlayerId, x: x, y: y, ws: ws });
 
   // Notify other clients about new player
   wss.clients.forEach(client => {
@@ -62,7 +64,6 @@ wss.on('connection', async (ws) => {
     if (message.type === 'move') {
       const p = game.players.find(p => p.getId() === message.player.id);
       if (p) {
-        // console.log('*********');
         p.refresh(message.player);
         wss.clients.forEach(client => {
           if (client.readyState === WebSocket.OPEN && client !== ws) {
@@ -79,7 +80,27 @@ wss.on('connection', async (ws) => {
   ws.on('close', () => {
     console.log('Client disconnected');
     // Remove client from clients array
-    clients = clients.filter(client => client.ws !== ws);
+    //clients = clients.filter(client => client.ws !== ws);
+    let removedClientId = null;
+    for (let i = 0; i < clients.length; i++) {
+      let client = clients[i];
+      if (client.ws !== ws) {
+        removedClientId = client.id;
+        clients.splice(i, 1);
+        break;
+      }
+    }
+    let players = game.players;
+    for (let i = 0; i < players.length; i++) {
+      let player = players[i];
+      if (player.getId() === removedClientId) {
+        players.splice(i, 1);
+        game.players.splice(i, 1);
+        i--;
+      }
+    }
+
+
     // Notify other clients about disconnection
     wss.clients.forEach(client => {
       if (client.readyState === WebSocket.OPEN) {

@@ -24,7 +24,15 @@ let clientId = 0;
 wss.on('connection', async (ws) => {
   console.log('Client connected');
 
-  
+  let players = game.players;
+    for (let i = 0; i < players.length; i++) {
+      let player = players[i];
+      if (player.ws === ws) {
+        players.splice(i, 1);
+        game.players.splice(i, 1);
+        i--;
+      }
+    }
 
   const newPlayerId = clientId++;
   console.log(`Player ${newPlayerId} connected`);
@@ -80,27 +88,8 @@ wss.on('connection', async (ws) => {
   ws.on('close', () => {
     console.log('Client disconnected');
     // Remove client from clients array
-    //clients = clients.filter(client => client.ws !== ws);
-    let removedClientId = null;
-    for (let i = 0; i < clients.length; i++) {
-      let client = clients[i];
-      if (client.ws !== ws) {
-        removedClientId = client.id;
-        clients.splice(i, 1);
-        break;
-      }
-    }
-    let players = game.players;
-    for (let i = 0; i < players.length; i++) {
-      let player = players[i];
-      if (player.getId() === removedClientId) {
-        players.splice(i, 1);
-        game.players.splice(i, 1);
-        i--;
-      }
-    }
-
-
+    clients = clients.filter(client => client.ws !== ws);
+  
     // Notify other clients about disconnection
     wss.clients.forEach(client => {
       if (client.readyState === WebSocket.OPEN) {

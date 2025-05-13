@@ -175,6 +175,19 @@ export class Player
         this.position.y = player.y;   
     }
 
+    destroy(){
+        if(this.sprite){
+            this.sprite.destroy();
+        }
+        if(this.texts){
+            console.log(this.texts);
+            // console.log(this.texts.values());
+            Object.values(this.texts).forEach(p => {
+                p.destroy();
+            });
+        }
+    }
+
     nearbyChest(chest){
         const dist = 35;
         if(Math.abs(this.position.x - chest.position.x) < dist && Math.abs(this.position.y - chest.position.y) <dist){

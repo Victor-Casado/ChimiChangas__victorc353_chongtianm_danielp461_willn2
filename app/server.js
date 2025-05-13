@@ -98,22 +98,27 @@ wss.on('connection', async (ws) => {
   ws.on('close', () => {
     console.log('Client disconnected');
     // Remove client from clients array
-    clients = clients.filter(client => client.ws !== ws);
+    
     
   
     // Notify other clients about disconnection
     wss.clients.forEach(client => {
-      if (client.readyState === WebSocket.OPEN) {
+      // if (client.readyState === WebSocket.OPEN) {
         // Find the disconnected client's id
         const disconnectedClient = clients.find(c => c.ws === ws);
+        // console.log(ws);
         if (disconnectedClient) {
+          console.log("dcc");
           client.send(JSON.stringify({
             type: 'playerDisconnected',
             id: disconnectedClient.id,
           }));
         }
-      }
+      // }
+      clients = clients.filter(client => client.ws !== ws);
+      game.removePlayer(disconnectedClient.id);
     });
+    
   });
 
   ws.on('error', (error) => {

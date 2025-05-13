@@ -41,11 +41,14 @@ function handleMessage(data) {
             }
         });
     }
-
     if (data.type === 'playerMoved') {
         // console.log("Loading existing players:", data.clients);
         const mover = game.players.find(p => p.id === data.player.id);
         //data.player = UPDATE DATA
         mover.refresh(data.player);
+    }
+    if(data.type==='playerDisconnected') {
+        console.log("PLAYER DC");
+        game.removePlayer(data.id);       
     }
 }

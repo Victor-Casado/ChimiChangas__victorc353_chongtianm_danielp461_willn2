@@ -62,6 +62,19 @@ export class Game {
       return player;
     }
 
+    removePlayer(id){
+      console.log("removing " + id);
+      for(let i = 0; i<this.players.length; ++i){
+        if(this.players[i].id == id){
+          const p = this.players[i];
+          p.destroy();
+
+          this.players.pop(i);
+        }
+      }
+
+    }
+
     startLoop() {
       this.app.ticker.add(() => {
         this.players.forEach((player) => {

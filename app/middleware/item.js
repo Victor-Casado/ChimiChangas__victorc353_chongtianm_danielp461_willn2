@@ -1,13 +1,9 @@
 
 export class Item
 {
-    constructor(id, spriteAnimation, ws=null, dev=false, width='20', height='25', range, numBullets, cooldown, damage)
+    constructor(id, spriteAnimation, ws=null, dev=false, width='20', height='25')
     {
         this.id = id;
-        this.range = range;
-        this.numBullets = numBullets;
-        this.cooldown = cooldown;
-        this.damage = damage;
         this.width = width;
         this.height = height;
         this.sprite = new PIXI.AnimatedSprite(spriteAnimation.getTexture(this.orientation, 'Idle'));
@@ -33,10 +29,6 @@ export class Item
     toJSON(){
         return {
             id: this.id,
-            damage: this.damage,
-            cooldown: this.cooldown,
-            range: this.range,
-            numBullets: this.numBullets,
             sprite: this.sprite,
         };
     }

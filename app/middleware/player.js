@@ -40,7 +40,7 @@ export class Player
                                     align: 'center',
                                 }})
             };
-            this.updateTextPos()
+            this.updateTextPos();
         }
 
         this.playerWidth = playerWidth;
@@ -151,7 +151,6 @@ export class Player
     }
 
     updateTextPos(){
-        console.log(this.texts.username.text);
         this.texts['username'].x = this.position.x - this.playerWidth;
         this.texts['username'].y = this.position.y - this.playerHeight;
 
@@ -216,6 +215,7 @@ export class Player
 
     toJSON(){
         return {
+            username: this.username,
             id: this.id,
             activeItem: this.inventory[this.activeSlot],
             x: this.position.x,

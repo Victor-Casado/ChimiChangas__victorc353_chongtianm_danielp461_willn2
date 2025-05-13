@@ -18,6 +18,7 @@ let game;
 
 const wss = new WebSocketServer({ port: 8080 });
 
+let username = '';
 let clients = [];
 let clientId = 0;
 
@@ -27,10 +28,13 @@ wss.on('connection', async (ws) => {
   let players = game.players;
     for (let i = 0; i < players.length; i++) {
       let player = players[i];
-      if (player.ws === ws) {
-        players.splice(i, 1);
-        game.players.splice(i, 1);
-        i--;
+      if (player.username === username) {
+        console.log(`Player ${player.id} connected`);
+        ws.send(JSON.stringify({
+          type: 'you',
+          player: player.toJSON()
+        }));
+        return;
       }
     }
 
@@ -39,8 +43,6 @@ wss.on('connection', async (ws) => {
 
   const x = Math.random() * 400;
   const y = Math.random() * 400;
-
-  let username = "GUEST";
 
   let newPlayer = new Player(username, newPlayerId, null, x, y, false, ws);
   
@@ -55,7 +57,12 @@ wss.on('connection', async (ws) => {
   }));
 
   game.players.push(newPlayer);
-  clients.push({id: newPlayerId, x: x, y: y, ws: ws });
+  clients.push(
+    {id: newPlayerId, 
+      x: x, 
+      y: y, 
+      ws: ws }
+  );
 
   // Notify other clients about new player
   wss.clients.forEach(client => {
@@ -148,6 +155,7 @@ app.get('/home', (req, res) => {
   if (!req.session.user) {
     return res.redirect('/login');
   }
+  username = req.session.user;
   res.sendFile(path.join(__dirname, 'public/templates/home.html'));
 });
 

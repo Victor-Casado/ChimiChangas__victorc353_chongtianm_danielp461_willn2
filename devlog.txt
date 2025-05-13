@@ -21,3 +21,6 @@ danielP -- 2025-05-08 21:05
 
 markM -- 2025-05-12 11:42
 - attempted to add gun animations
+
+markM -- 2025-05-13 11:42
+- Install guide in place

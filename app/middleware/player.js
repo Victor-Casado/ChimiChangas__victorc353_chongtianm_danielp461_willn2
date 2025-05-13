@@ -3,7 +3,7 @@ import {Controller} from './controller.js';
 export class Player
 {
     constructor(username, id, spriteAnimation, x, y, local, ws=null, orientation='front', dev=false, playerWidth='20', playerHeight='25')
-    {   
+    {
         this.username = username;
         this.walkSpeed = 2;
         this.sprintSpeed = 3.5;
@@ -12,12 +12,14 @@ export class Player
             x: x,
             y: y,
         };
-        
+
         this.id = id;
         this.spriteAnimation = spriteAnimation;
         this.orientation = orientation;
+	      this.inventory = new Array(5);
+        this.activeSlot = 0;
         this.animation = 'Idle';
-        
+
         if(spriteAnimation != null){
             this.sprite = new PIXI.AnimatedSprite(this.spriteAnimation.getTexture(this.orientation, 'Idle'));
             this.texts = {
@@ -64,7 +66,7 @@ export class Player
         let pressed = false;
         let newOrientation = this.orientation;
         let newAnimation = this.animation;
-    
+
         if (this.controller.keys.up.pressed) {
             this.position.y -= speed;
             newOrientation = 'behind';
@@ -89,7 +91,7 @@ export class Player
             newAnimation = '';
             pressed = true;
         }
-    
+
         if (!pressed) {
             newAnimation = 'Idle';
         }
@@ -97,13 +99,13 @@ export class Player
         if (newOrientation !== this.orientation || newAnimation !== this.animation) {
             this.orientation = newOrientation;
             this.animation = newAnimation;
-    
+
             this.updateOrientation();
         }
-    
+
         this.sprite.position.set(this.position.x, this.position.y);
         this.updateTextPos();
-        
+
         if(this.local && !this.dev){
             this.ws.send(JSON.stringify({
                 type: 'move',
@@ -111,7 +113,7 @@ export class Player
             }));
         }
     }
-    
+
     updateOrientation(){
         const newTextures = this.spriteAnimation.getTexture(this.orientation, this.animation);
 
@@ -120,8 +122,8 @@ export class Player
             this.sprite.play();
         }
 
-        this.sprite.animationSpeed = (this.animation === '') 
-            ? (this.controller.sprint ? 0.5 : 0.3) 
+        this.sprite.animationSpeed = (this.animation === '')
+            ? (this.controller.sprint ? 0.5 : 0.3)
             : 0.1;
 
         this.sprite.loop = true;
@@ -155,24 +157,24 @@ export class Player
         this.texts['itemInteraction'].x = this.position.x;
         this.texts['itemInteraction'].y = this.position.y + 200;
     }
-    
+
     refresh(player) {
         if (this.sprite) {
             this.sprite.x = player.x;
             this.sprite.y = player.y;
-    
+
             const sameOrientation = this.orientation === player.orientation;
             const sameAnimation = this.animation === player.animation;
-    
+
             if (!sameOrientation || !sameAnimation) {
                 this.orientation = player.orientation;
                 this.animation = player.animation;
                 this.updateOrientation();
             }
         }
-    
+
         this.position.x = player.x;
-        this.position.y = player.y;   
+        this.position.y = player.y;
     }
 
     nearbyChest(chest){

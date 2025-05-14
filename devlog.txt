@@ -24,3 +24,6 @@ markM -- 2025-05-12 11:42
 
 markM -- 2025-05-13 11:42
 - Install guide in place
+
+victorC -- 2025-05-13 20:12
+- foundational work towards guns

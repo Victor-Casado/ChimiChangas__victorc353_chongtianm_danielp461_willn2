@@ -6,6 +6,7 @@ import { SilverChest } from '../../middleware/animations/chests/silver.js';
 import { GoldChest } from '../../middleware/animations/chests/gold.js';
 import { DiamondChest } from '../../middleware/animations/chests/diamond.js';
 import { AK47 } from '../../middleware/items/guns/ak47.js';
+import { Structure } from '../../middleware/structure.js';
 
 (async () => {
     const app = new PIXI.Application();
@@ -22,6 +23,8 @@ import { AK47 } from '../../middleware/items/guns/ak47.js';
     container.pivot.y = container.height / 2;
 
     await Textures.loadAll();
+
+    let tree = new Structure(0, 10, 10, 'tree', container);
 
     const chests = [
         new WoodenChest(500, 500),

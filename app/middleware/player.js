@@ -55,6 +55,7 @@ export class Player
         this.local = local;
         this.dev = dev;
         this.controller = new Controller(local);
+        this.itemHolding = 0;
         this.numNearbyChest = 0;
         this.numNearbyItem = 0;
 
@@ -69,7 +70,7 @@ export class Player
         this.updatePosition();
         this.updateChest(chests);
         this.updateItem(items);
-        this.updateInventoryPos();
+        this.updateInventory();
     }
 
     updatePosition(){
@@ -141,10 +142,23 @@ export class Player
         this.sprite.anchor.set(0.5);
     }
 
-    updateInventoryPos(){
+    updateInventory(){
+        if(this.controller.keys.switchItem.pressed){
+            this.itemHolding = this.itemHolding >= this.inventory.length ? 0 : this.itemHolding + 1;
+        }
+        let i = 0;
         this.inventory.forEach((item => {
+            if(this.itemHolding == i){
+                item.isHeld = true;
+                item.getSprite().visible = true;
+            }
+            else{
+                item.isHeld = false;
+                item.getSprite().visible = false;
+            }
             item.getSprite().x = this.position.x;
             item.getSprite().y = this.position.y;
+            i++;
         }));
     }
 
@@ -174,9 +188,9 @@ export class Player
     checkItem(item){
         if(!item.isHeld && item.getSprite().visible && this.nearbyItem(item)){
             this.numNearbyItem++;
-            if(this.controller.keys.useItem.pressed){
-                item.isHeld = true;
+            if(this.controller.keys.pickUpItem.pressed){
                 this.inventory.push(item);
+                this.itemHolding = this.inventory.length - 1;
             }
         }
     }

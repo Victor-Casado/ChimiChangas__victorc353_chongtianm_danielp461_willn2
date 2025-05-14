@@ -9,16 +9,16 @@ export class ChestAnimation
 {
     constructor(rank, x, y)
     {
-        this.rank = rank;
-        this.path = ChestAnimation.getPath(this.rank);
-        this.items = [new AK47(x, y)];
-        this.opened = false;
-        this.animation = PIXI.Assets.cache.get(this.path).data.animations;
-        this.sprite = PIXI.AnimatedSprite.fromFrames(this.animation['chests']);
         this.position = {
             x: x,
             y: y,
         };
+        this.rank = rank;
+        this.path = ChestAnimation.getPath(this.rank);
+        this.items = [this.getRandomGun()];
+        this.opened = false;
+        this.animation = PIXI.Assets.cache.get(this.path).data.animations;
+        this.sprite = PIXI.AnimatedSprite.fromFrames(this.animation['chests']);
         this.sprite.x = this.position.x;
         this.sprite.y = this.position.y;
     }
@@ -29,11 +29,11 @@ export class ChestAnimation
 
     getRandomGun(){
         let guns = [
-            new AK47(this.x, this.y),
-            new M15(this.x, this.y),
-            new M24(this.x, this.y),
-            new Pistol(this.x, this.y),
-            new Shotgun(this.x, this.y)
+            new AK47(this.position.x, this.position.y),
+            new M15(this.position.x, this.position.y),
+            new M24(this.position.x, this.position.y),
+            new Pistol(this.position.x, this.position.y),
+            new Shotgun(this.position.x, this.position.y)
         ]
 
         const min = Math.ceil(0);

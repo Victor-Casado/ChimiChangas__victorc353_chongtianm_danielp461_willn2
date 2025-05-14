@@ -37,6 +37,7 @@ import { Structure } from '../../middleware/structure.js';
     chests.forEach((chest => {
         chest.getItemsArray().forEach((item => {
             items.push(item);
+            console.log(item);
             container.addChild(item.getSprite());
         }));
     }));

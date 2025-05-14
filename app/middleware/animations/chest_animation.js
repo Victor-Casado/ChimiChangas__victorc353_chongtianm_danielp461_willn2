@@ -5,6 +5,7 @@ export class ChestAnimation
     {
         this.rank = rank;
         this.path = ChestAnimation.getPath(this.rank);
+        this.items = [];
         this.opened = false;
         this.animation = PIXI.Assets.cache.get(this.path).data.animations;
         this.sprite = PIXI.AnimatedSprite.fromFrames(this.animation['chests']);
@@ -20,6 +21,9 @@ export class ChestAnimation
         return '/public/assets/ChestPack/animation/chest/' + rank + '/chest.json';
     }
 
+    getItemsArray(){
+      return this.items;
+    }
     getX(){
         return this.position.x;
     }
@@ -52,7 +56,9 @@ export class ChestAnimation
         if (this.sprite) {
             this.sprite.loop = false;
             this.sprite.onComplete = () => {
-                // ADD WEAPONS HERE
+              //placeholder item
+              //animate spawning and put it in place
+                this.array.push(new Gun(0, '/public/assets/GunsPack/Guns/AK47.png', this.x, this.y, 100, 100, 5, 5, 0, '/public/assets/GunsPack/Bullets/RifleAmmoBig.png'));
             };
             this.sprite.play();
             this.opened = true;

@@ -1,6 +1,6 @@
 export class Gun extends Item
 {
-    constructor(id, sprite, ws=null, dev=false, width='20', height='25', isHeld = false, x, y, damage, range, numBullets, cooldown, bulletType, bulletSpeed)
+    constructor(id, sprite, ws=null, dev=false, width='20', height='25', isHeld = false, x, y, damage, range, numBullets, cooldown, bulletSrc, bulletSpeed)
     {
         super(id, sprite, ws=null, dev=false, width='20', height='25', isHeld, x, y)
         this.damage = damage;
@@ -8,7 +8,7 @@ export class Gun extends Item
         this.numBullets = numBullets;
         this.bulletSpeed = bulletSpeed;
         this.cooldown = cooldown;
-        this.bulletType = bulletType;
+        this.bulletSrc = bulletSrc;
     }
 
     toJSON(){
@@ -20,7 +20,7 @@ export class Gun extends Item
             bulletSpeed: this.bulletSpeed,
             numBullets: this.numBullets,
             cooldown: this.cooldown,
-            bulletType: this.bulletType
+            bulletSrc: this.bulletSrc
         };
     }
 }

@@ -29,6 +29,13 @@ import { DiamondChest } from '../../middleware/animations/chests/diamond.js';
         new DiamondChest(400, 400)
     ]
 
+    items = [];
+    chests.forEach(addToItems);
+
+    function addToItems(chest){
+      items.push(chest.getItemsArray());
+    }
+
     // sprite animation load
     const spriteAnimation = new SpriteAnimation(1);
 
@@ -49,5 +56,5 @@ import { DiamondChest } from '../../middleware/animations/chests/diamond.js';
     app.ticker.add(() => {
         localPlayer.update(chests);
     });
-    
+
 })();

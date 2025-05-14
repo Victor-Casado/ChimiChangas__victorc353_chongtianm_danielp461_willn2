@@ -1,15 +1,20 @@
 import { ChestAnimation } from "./animations/chest_animation.js";
 import { SpriteAnimation } from "./animations/sprite_animation.js";
+import { Gun } from "./items/gun.js";
+import { Structure } from "./structure.js";
 
 var chestRanks = ['wooden', 'silver', 'gold', 'diamond']
 var playerSkins = ['1', '2', '3'];
 var orientations = ['front', 'behind', 'left', 'right'];
+var guns = ['AK47', 'M15', 'M24', 'Pistol', 'Shotgun'];
 
 export class Textures{
 
     static async loadAll(){
         await this.loadChests();
         await this.loadPlayerSkins();
+        await this.loadGuns();
+        await this.loadEnvironment();
     }
 
     static async loadChests(){
@@ -36,7 +41,30 @@ export class Textures{
         );
     }
 
-    static getApp(){
-        return app;
+    static async loadTexts(){
+        await PIXI.Assets.load(
+            'https://pixijs.com/assets/bitmap-font/desyrel.xml'
+        );
+    }
+
+    static async loadGuns(){
+        let gunPaths = [];
+        Object.keys(guns).forEach(gun => {
+            gunPaths.push(Gun.getPath(guns[gun]));
+        });
+
+        await PIXI.Assets.load(
+            gunPaths
+        );
+    }
+
+    static async loadEnvironment(){
+        const envPaths = [
+            Structure.getPath('tree')
+        ];
+
+        await PIXI.Assets.load(
+            envPaths
+        );
     }
 }

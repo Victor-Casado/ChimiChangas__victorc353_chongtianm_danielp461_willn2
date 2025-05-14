@@ -8,7 +8,9 @@ const keyMap = {
     ArrowDown: 'down',
     KeyD: 'right',
     ArrowRight: 'right',
-    KeyE: 'useItem'
+    KeyE: 'pickUpItem',
+    KeyC: 'openChest',
+    KeyF: "switchItem"
 };
 
 // Class for handling keyboard inputs.
@@ -22,7 +24,9 @@ export class Controller
             left: { pressed: false, doubleTap: false, timestamp: 0 },
             down: { pressed: false, doubleTap: false, timestamp: 0 },
             right: { pressed: false, doubleTap: false, timestamp: 0 },
-            useItem: {pressed: false, doubleTap: false, timestamp: 0}
+            pickUpItem: {pressed: false, doubleTap: false, timestamp: 0},
+            openChest: {pressed: false, doubleTap: false, timestamp: 0},
+            switchItem: {pressed: false, doubleTap: false, timestamp: 0}
         };
 
         this.sprint = false;

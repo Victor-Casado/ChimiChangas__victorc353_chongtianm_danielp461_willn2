@@ -39,15 +39,20 @@ export class Game {
       return new Game(true, null);
     }
 
-
-
-    loadPlayer(id, skinNum, x, y, active, ws, orientation){
+    loadPlayer(username, id, skinNum, x, y, active, ws, orientation){
       const localPlayerSprite = new SpriteAnimation(skinNum);
 
-      const player = new Player(id, localPlayerSprite, x, y, active, ws, orientation);
+      const player = new Player(username, id, localPlayerSprite, x, y, active, ws, orientation);
   
         
       this.container.addChild(player.sprite);
+      
+
+      const texts = player.getTexts();
+
+      Object.keys(texts).forEach(text => {
+        this.container.addChild(texts[text]);
+      });
       
       if(active){
         this.localPlayer = player;
@@ -57,6 +62,23 @@ export class Game {
       return player;
     }
 
+    removePlayer(id){
+      console.log("removing " + id);
+      for(let i = 0; i<this.players.length; ++i){
+        if(this.players[i].id == id){
+          const p = this.players[i];
+          p.destroy();
+
+          this.players.pop(i);
+        }
+      }
+
+    }
+
+    findPlayer(id){
+      return this.players.find(p => p.id == id);
+    }
+
     startLoop() {
       this.app.ticker.add(() => {
         this.players.forEach((player) => {
@@ -64,14 +86,12 @@ export class Game {
         });
         
         if(this.localPlayer){
-          
           this.container.x = this.app.screen.width / 2 - this.localPlayer.getPosX() * this.zoomLevel;
           this.container.y = this.app.screen.height / 2 - this.localPlayer.getPosY() * this.zoomLevel;
           
           this.localPlayer.position.x = Math.max(0, Math.min(this.app.screen.width - this.localPlayer.playerWidth, this.localPlayer.position.x));
           this.localPlayer.position.y = Math.max(0, Math.min(this.app.screen.height - this.localPlayer.playerHeight, this.localPlayer.position.y));
         }
-        
       });
     }
 

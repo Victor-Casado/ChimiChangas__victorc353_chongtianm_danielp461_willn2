@@ -1,5 +1,6 @@
 import { ChestAnimation } from "./animations/chest_animation.js";
 import { SpriteAnimation } from "./animations/sprite_animation.js";
+import { Gun } from "./items/gun.js";
 
 var chestRanks = ['wooden', 'silver', 'gold', 'diamond']
 var playerSkins = ['1', '2', '3'];
@@ -10,6 +11,7 @@ export class Textures{
     static async loadAll(){
         await this.loadChests();
         await this.loadPlayerSkins();
+        await this.loadGuns();
     }
 
     static async loadChests(){
@@ -31,6 +33,7 @@ export class Textures{
             });
         })
 
+        console.log(skinPaths);
         await PIXI.Assets.load(
             skinPaths
         );
@@ -42,7 +45,13 @@ export class Textures{
         );
     }
 
-    static getApp(){
-        return app;
+    static async loadGuns(){
+        const gunPaths = [
+            Gun.getPath('AK47')
+        ];
+        console.log(gunPaths);
+        await PIXI.Assets.load(
+            gunPaths
+        );
     }
 }

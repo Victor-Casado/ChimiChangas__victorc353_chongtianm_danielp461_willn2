@@ -1,25 +1,29 @@
-
 export class Item
 {
-    constructor(id, sprite, ws=null, dev=false, width='20', height='25', isHeld=false, x, y)
+    constructor(x, y, sprite, path, width, height, isHeld)
     {
-        this.id = id;
         this.x = x;
         this.y = y;
-        this.isHeld = isHeld;
+        this.sprite = sprite;
+        this.sprite.x = this.x;
+        this.sprite.y = this.y;
+        this.hideSprite();
+        this.path = path;
         this.width = width;
         this.height = height;
-        this.sprite = sprite;
-        this.dev = dev;
-
-        if(!dev){
-            this.ws = ws;
-        }
+        this.isHeld = isHeld;
     }
-
 
     getSprite(){
         return this.sprite;
+    }
+
+    hideSprite(){
+        this.sprite.visible = false;
+    }
+
+    showSprite(){
+        this.sprite.visible = true;
     }
 
     getId(){
@@ -32,7 +36,6 @@ export class Item
             x: this.x,
             y: this.y,
             isHeld: this.isHeld,
-            sprite: this.sprite,
         };
     }
 }

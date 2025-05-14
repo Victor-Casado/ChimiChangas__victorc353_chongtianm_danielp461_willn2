@@ -140,7 +140,7 @@ export class Player
     }
 
     checkChest(chest){
-        if(this.nearbyChest(chest)){
+        if(!chest.opened && this.nearbyChest(chest)){
             this.numNearbyChest++;
             if(this.controller.keys.useItem.pressed){
                 chest.openChest();
@@ -190,7 +190,7 @@ export class Player
 
     nearbyChest(chest){
         const dist = 35;
-        if(Math.abs(this.position.x - chest.position.x) < dist && Math.abs(this.position.y - chest.position.y) <dist){
+        if(Math.abs(this.position.x - chest.position.x) < dist && Math.abs(this.position.y - chest.position.y) < dist){
             return true;
         }
         return false;

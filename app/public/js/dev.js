@@ -5,6 +5,7 @@ import { WoodenChest } from '../../middleware/animations/chests/wooden.js';
 import { SilverChest } from '../../middleware/animations/chests/silver.js';
 import { GoldChest } from '../../middleware/animations/chests/gold.js';
 import { DiamondChest } from '../../middleware/animations/chests/diamond.js';
+import { AK47 } from '../../middleware/items/guns/ak47.js';
 
 (async () => {
     const app = new PIXI.Application();
@@ -29,12 +30,15 @@ import { DiamondChest } from '../../middleware/animations/chests/diamond.js';
         new DiamondChest(400, 400)
     ]
 
-    items = [];
-    chests.forEach(addToItems);
+    let items = [];
 
-    function addToItems(chest){
-      items.push(chest.getItemsArray());
-    }
+    chests.forEach((chest => {
+        chest.getItemsArray().forEach((item => {
+            console.log(item);
+            items.push(item);
+            container.addChild(item.getSprite());
+        }));
+    }));
 
     // sprite animation load
     const spriteAnimation = new SpriteAnimation(1);

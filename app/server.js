@@ -24,7 +24,6 @@ let clientId = 0;
 
 wss.on('connection', async (ws) => {
   console.log('Client connected');
-
   let newPlayer = null;
   let newPlayerId = 0;
   let playerExists = false;

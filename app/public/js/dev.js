@@ -5,7 +5,7 @@ import { WoodenChest } from '../../middleware/animations/chests/wooden.js';
 import { SilverChest } from '../../middleware/animations/chests/silver.js';
 import { GoldChest } from '../../middleware/animations/chests/gold.js';
 import { DiamondChest } from '../../middleware/animations/chests/diamond.js';
-import { Structure } from '../../middleware/structure.js';
+import { Tree } from '../../middleware/environment/tree.js';
 
 (async () => {
     const app = new PIXI.Application();
@@ -23,7 +23,11 @@ import { Structure } from '../../middleware/structure.js';
 
     await Textures.loadAll();
 
-    let tree = new Structure(0, 10, 10, 'tree', container);
+    new Tree(0, Math.random() * 1000, Math.random() * 600, 'tree', container);
+    new Tree(0, Math.random() * 1000, Math.random() * 600, 'tree', container);
+    new Tree(0, Math.random() * 1000, Math.random() * 600, 'tree', container);
+    new Tree(0, Math.random() * 1000, Math.random() * 600, 'tree', container);
+    
 
     const chests = [
         new WoodenChest(500, 500),

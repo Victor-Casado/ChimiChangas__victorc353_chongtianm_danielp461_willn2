@@ -1,7 +1,7 @@
 import { ChestAnimation } from "./animations/chest_animation.js";
 import { SpriteAnimation } from "./animations/sprite_animation.js";
 import { Gun } from "./items/gun.js";
-import { Structure } from "./structure.js";
+import { Structure } from "./environment/structure.js";
 
 var chestRanks = ['wooden', 'silver', 'gold', 'diamond']
 var playerSkins = ['1', '2', '3'];
@@ -60,7 +60,9 @@ export class Textures{
 
     static async loadEnvironment(){
         const envPaths = [
-            Structure.getPath('tree')
+            Structure.getPath('tree', 1),
+            Structure.getPath('tree', 2),
+            Structure.getPath('tree', 3)
         ];
 
         await PIXI.Assets.load(

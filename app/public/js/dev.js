@@ -5,7 +5,6 @@ import { WoodenChest } from '../../middleware/animations/chests/wooden.js';
 import { SilverChest } from '../../middleware/animations/chests/silver.js';
 import { GoldChest } from '../../middleware/animations/chests/gold.js';
 import { DiamondChest } from '../../middleware/animations/chests/diamond.js';
-import { AK47 } from '../../middleware/items/guns/ak47.js';
 import { Structure } from '../../middleware/structure.js';
 
 (async () => {
@@ -37,7 +36,6 @@ import { Structure } from '../../middleware/structure.js';
 
     chests.forEach((chest => {
         chest.getItemsArray().forEach((item => {
-            console.log(item);
             items.push(item);
             container.addChild(item.getSprite());
         }));
@@ -61,7 +59,7 @@ import { Structure } from '../../middleware/structure.js';
     });
 
     app.ticker.add(() => {
-        localPlayer.update(chests);
+        localPlayer.update(chests, items);
     });
 
 })();

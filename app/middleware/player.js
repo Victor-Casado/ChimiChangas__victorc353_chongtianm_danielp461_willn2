@@ -29,6 +29,14 @@ export class Player
                                     fill: 0xff1010,
                                     align: 'center',
                                 }}),
+                'chestInteraction': new PIXI.BitmapText({
+                                text: '',
+                                style: {
+                                    fontFamily: 'Arial',
+                                    fontSize: 24,
+                                    fill: 0xff1010,
+                                    align: 'center',
+                                }}),
                 'itemInteraction': new PIXI.BitmapText({
                                 text: '',
                                 style: {
@@ -48,15 +56,20 @@ export class Player
         this.dev = dev;
         this.controller = new Controller(local);
         this.numNearbyChest = 0;
+        this.numNearbyItem = 0;
+
+        this.inventory = [];
 
         if(!dev){
             this.ws = ws;
         }
     }
 
-    update(chests){
+    update(chests, items){
         this.updatePosition();
         this.updateChest(chests);
+        this.updateItem(items);
+        this.updateInventoryPos();
     }
 
     updatePosition(){
@@ -128,21 +141,50 @@ export class Player
         this.sprite.anchor.set(0.5);
     }
 
+    updateInventoryPos(){
+        this.inventory.forEach((item => {
+            item.getSprite().x = this.position.x;
+            item.getSprite().y = this.position.y;
+        }));
+    }
+
     updateChest(chests){
-        this.texts['itemInteraction'].text = '';
+        this.texts['chestInteraction'].text = '';
         this.numNearbyChest = 0;
         chests.forEach((chest => {
             this.checkChest(chest);
         }));
         if(this.numNearbyChest > 0){
-            this.texts['itemInteraction'].text = 'Press E to open chest';
+            this.texts['chestInteraction'].text = 'Press C to open chest';
+        }
+    }
+
+    updateItem(items){
+        this.texts['itemInteraction'].text = '';
+        this.numNearbyItem = 0;
+        items.forEach((item => {
+            this.checkItem(item);
+        }));
+        // make it so that it only gets closest item and put that in itemInteraction text
+        if(this.numNearbyItem > 0){
+            this.texts['itemInteraction'].text = 'Press E to pick up item';
+        }
+    }
+
+    checkItem(item){
+        if(!item.isHeld && item.getSprite().visible && this.nearbyItem(item)){
+            this.numNearbyItem++;
+            if(this.controller.keys.useItem.pressed){
+                item.isHeld = true;
+                this.inventory.push(item);
+            }
         }
     }
 
     checkChest(chest){
         if(!chest.opened && this.nearbyChest(chest)){
             this.numNearbyChest++;
-            if(this.controller.keys.useItem.pressed){
+            if(this.controller.keys.openChest.pressed){
                 chest.openChest();
             }
         }
@@ -151,6 +193,9 @@ export class Player
     updateTextPos(){
         this.texts['username'].x = this.position.x - this.playerWidth;
         this.texts['username'].y = this.position.y - this.playerHeight;
+
+        this.texts['chestInteraction'].x = this.position.x;
+        this.texts['chestInteraction'].y = this.position.y + 200;
 
         this.texts['itemInteraction'].x = this.position.x;
         this.texts['itemInteraction'].y = this.position.y + 200;
@@ -191,6 +236,14 @@ export class Player
     nearbyChest(chest){
         const dist = 35;
         if(Math.abs(this.position.x - chest.position.x) < dist && Math.abs(this.position.y - chest.position.y) < dist){
+            return true;
+        }
+        return false;
+    }
+
+    nearbyItem(item){
+        const dist = 20;
+        if(Math.abs(this.position.x - item.x) < dist && Math.abs(this.position.y - item.y) < dist){
             return true;
         }
         return false;

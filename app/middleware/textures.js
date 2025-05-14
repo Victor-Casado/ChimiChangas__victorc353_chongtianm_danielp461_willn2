@@ -6,6 +6,7 @@ import { Structure } from "./structure.js";
 var chestRanks = ['wooden', 'silver', 'gold', 'diamond']
 var playerSkins = ['1', '2', '3'];
 var orientations = ['front', 'behind', 'left', 'right'];
+var guns = ['AK47', 'M15', 'M24', 'Pistol', 'Shotgun'];
 
 export class Textures{
 
@@ -35,7 +36,6 @@ export class Textures{
             });
         })
 
-        console.log(skinPaths);
         await PIXI.Assets.load(
             skinPaths
         );
@@ -48,10 +48,11 @@ export class Textures{
     }
 
     static async loadGuns(){
-        const gunPaths = [
-            Gun.getPath('AK47')
-        ];
-        console.log(gunPaths);
+        let gunPaths = [];
+        Object.keys(guns).forEach(gun => {
+            gunPaths.push(Gun.getPath(guns[gun]));
+        });
+
         await PIXI.Assets.load(
             gunPaths
         );

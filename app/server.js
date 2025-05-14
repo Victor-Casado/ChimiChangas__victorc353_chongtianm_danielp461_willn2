@@ -66,8 +66,6 @@ wss.on('connection', async (ws) => {
     localUser: username
   }));
 
-  
-
   // Notify other clients about new player
   wss.clients.forEach(client => {
     if (client.readyState === WebSocket.OPEN && client !== ws) {
@@ -99,8 +97,6 @@ wss.on('connection', async (ws) => {
   ws.on('close', () => {
     console.log('Client disconnected');
     // Remove client from clients array
-    
-    
   
     // Notify other clients about disconnection
     wss.clients.forEach(client => {

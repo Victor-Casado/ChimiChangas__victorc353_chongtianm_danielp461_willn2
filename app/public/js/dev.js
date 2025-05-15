@@ -5,11 +5,11 @@ import { WoodenChest } from '../../middleware/animations/chests/wooden.js';
 import { SilverChest } from '../../middleware/animations/chests/silver.js';
 import { GoldChest } from '../../middleware/animations/chests/gold.js';
 import { DiamondChest } from '../../middleware/animations/chests/diamond.js';
-import { Structure } from '../../middleware/structure.js';
+import { Tree, Grass, Bush } from '../../middleware/environment/plant.js';
 
 (async () => {
     const app = new PIXI.Application();
-    await app.init({ background: '#1099bb', resizeTo: window });
+    await app.init({ background: '#78852b', resizeTo: window });
     document.body.appendChild(app.canvas);
 
     const container = new PIXI.Container();
@@ -23,7 +23,22 @@ import { Structure } from '../../middleware/structure.js';
 
     await Textures.loadAll();
 
-    let tree = new Structure(0, 10, 10, 'tree', container);
+    // new Tree(0, Math.random() * 1000, Math.random() * 600, container);
+    // new Tree(0, Math.random() * 1000, Math.random() * 600, container);
+    // new Tree(0, Math.random() * 1000, Math.random() * 600, container);
+    // new Tree(0, Math.random() * 1000, Math.random() * 600, container);
+    
+    for(let i = 0; i<8; ++i){
+        new Tree(0, Math.random() * window.innerWidth, Math.random() * window.innerHeight, container);
+    }
+
+    for(let i = 0; i<50; ++i){
+        new Grass(0, Math.random() * window.innerWidth, Math.random() * window.innerHeight, container);
+    }
+
+    for(let i = 0; i<15; ++i){
+        new Bush(0, Math.random() * window.innerWidth, Math.random() * window.innerHeight, container);
+    }
 
     const chests = [
         new WoodenChest(500, 500),

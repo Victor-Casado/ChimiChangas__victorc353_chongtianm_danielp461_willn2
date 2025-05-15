@@ -24,7 +24,6 @@ let clientId = 0;
 
 wss.on('connection', async (ws) => {
   console.log('Client connected');
-
   let newPlayer = null;
   let newPlayerId = 0;
   let playerExists = false;
@@ -181,12 +180,12 @@ app.get('/me', async (req, res) => {
     return res.status(401).json({ error: 'Not logged in' });
   }
 
-  res.json({ username: req.session.user });
+  // res.json({ username: req.session.user });
 });
 
 // POST handlers
 app.post('/signup', async (req, res) => {
-  const { username, password } = req.body;
+  // const { username, password } = req.body;
   let addedUser = await addUser(username, password);
 
   if (addedUser){
@@ -198,11 +197,11 @@ app.post('/signup', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-  const { username, password } = req.body;
+  // const { username, password } = req.body;
   try {
     const user = await fetchUser('username', username);
     if (user.password === password) {
-      req.session.user = username;
+      //  req.session.user = username;
       res.redirect('/home');
     } else {
       res.status(500).send('Username or password does not match');

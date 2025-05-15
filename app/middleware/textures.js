@@ -62,7 +62,19 @@ export class Textures{
         const envPaths = [
             Structure.getPath('tree', 1),
             Structure.getPath('tree', 2),
-            Structure.getPath('tree', 3)
+            Structure.getPath('tree', 3),
+            Structure.getPath('grass', 1),
+            Structure.getPath('grass', 2),
+            Structure.getPath('grass', 3),
+            Structure.getPath('grass', 4),
+            Structure.getPath('bush', 1),
+            Structure.getPath('bush', 2),
+            Structure.getPath('bush', 3),
+            Structure.getPath('bush', 4),
+            Structure.getPath('bush', 5),
+            Structure.getPath('bush', 6),
+
+
         ];
 
         await PIXI.Assets.load(

@@ -169,7 +169,7 @@ export class Player
             this.checkChest(chest);
         }));
         if(this.numNearbyChest > 0){
-            this.texts['chestInteraction'].text = 'Press C to open chest';
+            // this.texts['chestInteraction'].text = 'Press C to open chest';
         }
     }
 
@@ -181,7 +181,7 @@ export class Player
         }));
         // make it so that it only gets closest item and put that in itemInteraction text
         if(this.numNearbyItem > 0){
-            this.texts['itemInteraction'].text = 'Press E to pick up item';
+            // this.texts['itemInteraction'].text = 'Press E to pick up item';
         }
     }
 
@@ -256,7 +256,7 @@ export class Player
     }
 
     nearbyItem(item){
-        const dist = 20;
+        const dist = 30;
         if(Math.abs(this.position.x - item.x) < dist && Math.abs(this.position.y - item.y) < dist){
             return true;
         }

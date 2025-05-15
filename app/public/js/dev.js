@@ -27,7 +27,7 @@ import { Tree, Grass, Bush } from '../../middleware/environment/plant.js';
     // new Tree(0, Math.random() * 1000, Math.random() * 600, container);
     // new Tree(0, Math.random() * 1000, Math.random() * 600, container);
     // new Tree(0, Math.random() * 1000, Math.random() * 600, container);
-    
+
     for(let i = 0; i<8; ++i){
         new Tree(0, Math.random() * window.innerWidth, Math.random() * window.innerHeight, container);
     }
@@ -39,6 +39,8 @@ import { Tree, Grass, Bush } from '../../middleware/environment/plant.js';
     for(let i = 0; i<15; ++i){
         new Bush(0, Math.random() * window.innerWidth, Math.random() * window.innerHeight, container);
     }
+
+    let collTree = new Tree(0, 0, 0, container);
 
     const chests = [
         new WoodenChest(500, 500),
@@ -76,6 +78,8 @@ import { Tree, Grass, Bush } from '../../middleware/environment/plant.js';
 
     app.ticker.add(() => {
         localPlayer.update(chests, items);
+        console.log(localPlayer.collision(collTree));
+        // console.log(localPlayer.hitbox);
     });
 
 })();

@@ -72,9 +72,6 @@ export class Textures{
             Structure.getPath('bush', 3),
             Structure.getPath('bush', 4),
             Structure.getPath('bush', 5),
-            Structure.getPath('bush', 6),
-
-
         ];
 
         await PIXI.Assets.load(

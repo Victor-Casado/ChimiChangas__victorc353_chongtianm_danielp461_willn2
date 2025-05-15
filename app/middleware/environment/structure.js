@@ -1,3 +1,5 @@
+import {Hitbox} from '../hitbox.js';
+
 export class Structure{
     constructor(id, x, y, type, container, variant = 1) {
         this.id = id;
@@ -7,7 +9,6 @@ export class Structure{
         this.variant = variant;
         this.sprite = this.loadSprite(type, variant);
         this.container = container;
-
         this.container.addChild(this.sprite);
 
         this.updatePos();

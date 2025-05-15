@@ -6,6 +6,7 @@ import { SilverChest } from '../../middleware/animations/chests/silver.js';
 import { GoldChest } from '../../middleware/animations/chests/gold.js';
 import { DiamondChest } from '../../middleware/animations/chests/diamond.js';
 import { Tree, Grass, Bush } from '../../middleware/environment/plant.js';
+import { Hitbox } from '../../middleware/hitbox.js';
 
 (async () => {
     const app = new PIXI.Application();
@@ -21,23 +22,24 @@ import { Tree, Grass, Bush } from '../../middleware/environment/plant.js';
     container.pivot.x = container.width / 2;
     container.pivot.y = container.height / 2;
 
+    let structures = []
+
     await Textures.loadAll();
 
-    // new Tree(0, Math.random() * 1000, Math.random() * 600, container);
-    // new Tree(0, Math.random() * 1000, Math.random() * 600, container);
-    // new Tree(0, Math.random() * 1000, Math.random() * 600, container);
-    // new Tree(0, Math.random() * 1000, Math.random() * 600, container);
+    
+    const spriteAnimation = new SpriteAnimation(1);
+    const localPlayer = new Player('Topher', 0, spriteAnimation, app.screen.width / 2, app.screen.height / 2, true, null, 'front', true);
 
     for(let i = 0; i<8; ++i){
-        new Tree(0, Math.random() * window.innerWidth, Math.random() * window.innerHeight, container);
+        structures.push(new Tree(0, Math.random() * window.innerWidth, Math.random() * window.innerHeight, container));
     }
 
     for(let i = 0; i<50; ++i){
-        new Grass(0, Math.random() * window.innerWidth, Math.random() * window.innerHeight, container);
+        structures.push(new Grass(0, Math.random() * window.innerWidth, Math.random() * window.innerHeight, container));
     }
 
     for(let i = 0; i<15; ++i){
-        new Bush(0, Math.random() * window.innerWidth, Math.random() * window.innerHeight, container);
+        structures.push(new Bush(0, Math.random() * window.innerWidth, Math.random() * window.innerHeight, container));
     }
 
     let collTree = new Tree(0, 0, 0, container);
@@ -58,12 +60,9 @@ import { Tree, Grass, Bush } from '../../middleware/environment/plant.js';
             container.addChild(item.getSprite());
         }));
     }));
-
-    // sprite animation load
-    const spriteAnimation = new SpriteAnimation(1);
-
+    
     // player
-    const localPlayer = new Player('Topher', 0, spriteAnimation, app.screen.width / 2, app.screen.height / 2, true, null, 'front', true);
+    
 
     container.addChild(localPlayer.getSprite());
     chests.forEach((chest => {
@@ -76,9 +75,11 @@ import { Tree, Grass, Bush } from '../../middleware/environment/plant.js';
         container.addChild(texts[text]);
     });
 
+    container.setChildIndex(localPlayer.sprite, 0);
+
     app.ticker.add(() => {
-        localPlayer.update(chests, items);
-        console.log(localPlayer.collision(collTree));
+        localPlayer.update(structures, chests, items);
+        // console.log(Hitbox.collision(localPlayer, collTree));
         // console.log(localPlayer.hitbox);
     });
 

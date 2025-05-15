@@ -19,9 +19,7 @@ export class Player
         this.orientation = orientation;
         this.animation = 'Idle';
 
-        if(hitbox == null){
-          this.hitbox = new Hitbox(x, y, 20, 25);
-        }
+        
 
         if(spriteAnimation != null){
             this.sprite = new PIXI.AnimatedSprite(this.spriteAnimation.getTexture(this.orientation, 'Idle'));
@@ -66,57 +64,77 @@ export class Player
 
         this.inventory = [];
 
+        if(hitbox == null){
+            if(this.sprite){
+                this.hitbox = new Hitbox(x, y, this.sprite.width, this.sprite.height);
+            } else{
+                this.hitbox = new Hitbox(x, y, 20, 20);
+            }
+          
+        } else{
+            this.hitbox = hitbox;
+        }
+
         if(!dev){
             this.ws = ws;
         }
     }
 
-    update(chests, items){
-        this.updatePosition();
+    update(structures, chests, items){
+        this.updatePosition(structures);
         this.updateChest(chests);
         this.updateItem(items);
         this.updateInventory();
     }
 
-    updatePosition(){
+    updatePosition(structures){
         const speed = this.controller.sprint ? this.sprintSpeed : this.walkSpeed;
-        let pressed = false;
+
+        const oldX = this.position.x;
+        const oldY = this.position.y;
+
+        let deltaX = 0;
+        let deltaY = 0;
+
+        if (this.controller.keys.up.pressed)    deltaY -= speed;
+        if (this.controller.keys.down.pressed)  deltaY += speed;
+        if (this.controller.keys.left.pressed)  deltaX -= speed;
+        if (this.controller.keys.right.pressed) deltaX += speed;
+
         let newOrientation = this.orientation;
         let newAnimation = this.animation;
+        const pressed = deltaX !== 0 || deltaY !== 0;
 
-        if (this.controller.keys.up.pressed) {
-            this.position.y -= speed;
-            newOrientation = 'behind';
-            newAnimation = '';
-            pressed = true;
+        this.position.x += deltaX;
+        this.hitbox.x = this.position.x;
+
+        if (Hitbox.collision(this, structures)) {
+            this.position.x = oldX;
+            this.hitbox.x = oldX;
         }
-        if (this.controller.keys.down.pressed) {
-            this.position.y += speed;
-            newOrientation = 'front';
-            newAnimation = '';
-            pressed = true;
+
+        this.position.y += deltaY;
+        this.hitbox.y = this.position.y;
+
+        if (Hitbox.collision(this, structures)) {
+            this.position.y = oldY;
+            this.hitbox.y = oldY;
         }
-        if (this.controller.keys.left.pressed) {
-            this.position.x -= speed;
-            newOrientation = 'left';
-            newAnimation = '';
-            pressed = true;
-        }
-        if (this.controller.keys.right.pressed) {
-            this.position.x += speed;
-            newOrientation = 'right';
-            newAnimation = '';
-            pressed = true;
-        }
+
+        if (deltaY < 0) newOrientation = 'behind';
+        else if (deltaY > 0) newOrientation = 'front';
+        else if (deltaX < 0) newOrientation = 'left';
+        else if (deltaX > 0) newOrientation = 'right';
 
         if (!pressed) {
             newAnimation = 'Idle';
+        } else {
+            newAnimation = '';
         }
 
         if (newOrientation !== this.orientation || newAnimation !== this.animation) {
             this.orientation = newOrientation;
             this.animation = newAnimation;
-
             this.updateOrientation();
         }
 
@@ -129,10 +147,7 @@ export class Player
                 player: this.toJSON(),
             }));
         }
-
-        this.hitbox.x = this.position.x;
-        this.hitbox.y = this.position.y;
-    }
+}
 
     updateOrientation(){
         const newTextures = this.spriteAnimation.getTexture(this.orientation, this.animation);
@@ -272,16 +287,6 @@ export class Player
             return true;
         }
         return false;
-    }
-
-    collision(obj){
-      let player = this.hitbox;
-      let other = obj.sprite.getBounds();
-
-      return player.x + player.width > other.x &&
-              player.x < other.x + other.width &&
-              player.y + player.height > other.y &&
-              player.y < other.y + other.height;
     }
 
     getSprite(){

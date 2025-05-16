@@ -82,9 +82,9 @@ export class Game {
     }
 
     startLoop() {
-      this.app.ticker.add(() => {
+      this.app.ticker.add((delta) => {
         this.players.forEach((player) => {
-          player.updatePosition([]);
+          player.updatePosition([], delta);
         });
         this.localPlayer.update(this.structures, this.chests, this.localPlayer.inventory);
         // this.localPlayer.update(this.structures, this.chests, this.localPlayer.inventory);

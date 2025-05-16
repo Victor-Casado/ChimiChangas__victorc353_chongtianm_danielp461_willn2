@@ -27,3 +27,41 @@ export class Gun extends Item
         };
     }
 }
+
+class Bullet {
+    constructor(x, y, direction, gun) {
+        this.position = { x, y };
+
+        this.direction = direction;
+
+        this.speed = gun.bulletSpeed;  
+        this.damage = gun.damage;
+
+
+        this.sprite = new PIXI.Sprite(PIXI.Texture.WHITE); 
+        this.sprite.width = 5;
+        this.sprite.height = 5;
+        this.sprite.position.set(x, y);
+
+        this.alive = true; 
+
+        this.maxLife = 2;
+    }
+
+    update(delta) {
+        this.position.x += this.direction.x * this.speed * delta.deltaTime;
+        this.position.y += this.direction.y * this.speed * delta.deltaTime;
+
+        this.sprite.position.set(this.position.x, this.position.y);
+
+        this.maxLife -= delta.deltaTime;
+        if(this.maxLife < 0){
+            this.desetroy();
+        }
+    }
+
+    destroy() {
+        app.stage.removeChild(this.sprite);
+        this.alive = false;
+    }
+}

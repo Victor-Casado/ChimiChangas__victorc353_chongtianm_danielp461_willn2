@@ -75,8 +75,8 @@ import { Tree, Grass, Bush } from '../../middleware/environment/plant.js';
 
     container.setChildIndex(localPlayer.sprite, 0);
 
-    app.ticker.add(() => {
-        localPlayer.update(structures, chests, items);
+    app.ticker.add((delta) => {
+        localPlayer.update(structures, chests, items, delta);
     });
 
 })();

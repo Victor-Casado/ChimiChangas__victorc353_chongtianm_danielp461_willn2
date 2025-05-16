@@ -6,8 +6,8 @@ export class Player
     constructor(username, id, spriteAnimation, x, y, local, ws=null, orientation='front', dev=false, playerWidth='20', playerHeight='25', hitbox = null)
     {
         this.username = username;
-        this.walkSpeed = 2;
-        this.sprintSpeed = 3.5;
+        this.walkSpeed = 150;
+        this.sprintSpeed = 200;
 
         this.position = {
             x: x,
@@ -82,14 +82,14 @@ export class Player
         }
     }
 
-    update(structures, chests, items){
-        this.updatePosition(structures);
+    update(structures, chests, items, delta){
+        this.updatePosition(structures, delta);
         this.updateChest(chests);
         this.updateItem(items);
         this.updateInventory();
     }
 
-    updatePosition(structures){
+    updatePosition(structures, delta){
         const speed = this.controller.sprint ? this.sprintSpeed : this.walkSpeed;
 
         const oldX = this.position.x;
@@ -98,10 +98,12 @@ export class Player
         let deltaX = 0;
         let deltaY = 0;
 
-        if (this.controller.keys.up.pressed)    deltaY -= speed;
-        if (this.controller.keys.down.pressed)  deltaY += speed;
-        if (this.controller.keys.left.pressed)  deltaX -= speed;
-        if (this.controller.keys.right.pressed) deltaX += speed;
+        const frameSpeed = speed * (delta.deltaTime / 60);
+
+        if (this.controller.keys.up.pressed)    deltaY -= frameSpeed;
+        if (this.controller.keys.down.pressed)  deltaY += frameSpeed;
+        if (this.controller.keys.left.pressed)  deltaX -= frameSpeed;
+        if (this.controller.keys.right.pressed) deltaX += frameSpeed;
 
         let newOrientation = this.orientation;
         let newAnimation = this.animation;

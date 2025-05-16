@@ -14,11 +14,19 @@ export class Item
         this.isHeld = isHeld;
     }
 
-    updatePosition(x, y){
+    updateRotation(x, y){
+      const newY = this.y - y;
+      const newX = this.x - x;
+      this.sprite.scale.x = (newX < 0) ? 1 : -1;
+      this.sprite.rotation = Math.atan( (newY) / (newX) );
+    }
+
+    updatePosition(x, y, mouseX, mouseY){
         this.x = x;
         this.y = y;
         this.sprite.x = this.x;
         this.sprite.y = this.y;
+        this.updateRotation(mouseX, mouseY);
     }
 
     getSprite(){

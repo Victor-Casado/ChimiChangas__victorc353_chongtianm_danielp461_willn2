@@ -34,9 +34,17 @@ export class Controller
         if(active){
             window.addEventListener('keydown', (event) => this.keydownHandler(event));
             window.addEventListener('keyup', (event) => this.keyupHandler(event));
+            window.addEventListener('mousemove', (event) => this.mouseHandler(event));
         }
-    }
 
+        this.mouseX = null;
+        this.mouseY = null;
+    }
+    mouseHandler(event){
+      this.mouseX = event.clientX;
+      this.mouseY = event.clientY;
+      // console.log(`Mouse position: X = ${mouseX}, Y = ${mouseY}`);
+    }
     keydownHandler(event)
     {
         const key = keyMap[event.code];

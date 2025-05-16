@@ -11,23 +11,23 @@ export class Game {
 
       if (!isServer) {
         this.app = app;
-        
+
         this.container = new PIXI.Container();
         document.body.appendChild(this.app.canvas);
         this.app.stage.addChild(this.container);
-    
+
         this.container.x = 0;
         this.container.y = 0;
         this.container.pivot.x = this.container.width / 2;
         this.container.pivot.y = this.container.height / 2;
-    
+
         this.zoomLevel = 1.5;
         this.container.scale.set(this.zoomLevel);
-        
+
         this.localPlayer = null;
       }
     }
-  
+
     static async clientInit() {
       const app = new PIXI.Application();
       await app.init({ background: '#1099bb', resizeTo: window });
@@ -45,17 +45,17 @@ export class Game {
       const localPlayerSprite = new SpriteAnimation(skinNum);
 
       const player = new Player(username, id, localPlayerSprite, x, y, active, ws, orientation);
-  
-        
+
+
       this.container.addChild(player.sprite);
-      
+
 
       const texts = player.getTexts();
 
       Object.keys(texts).forEach(text => {
         this.container.addChild(texts[text]);
       });
-      
+
       if(active){
         this.localPlayer = player;
       }
@@ -84,13 +84,14 @@ export class Game {
     startLoop() {
       this.app.ticker.add(() => {
         this.players.forEach((player) => {
-          player.update(this.structures, this.chests, this.localPlayer.inventory);
+          player.updatePosition([]);
         });
+        this.localPlayer.update(this.structures, this.chests, this.localPlayer.inventory);
         // this.localPlayer.update(this.structures, this.chests, this.localPlayer.inventory);
         if(this.localPlayer){
           this.container.x = this.app.screen.width / 2 - this.localPlayer.getPosX() * this.zoomLevel;
           this.container.y = this.app.screen.height / 2 - this.localPlayer.getPosY() * this.zoomLevel;
-          
+
           this.localPlayer.position.x = Math.max(0, Math.min(this.app.screen.width - this.localPlayer.playerWidth, this.localPlayer.position.x));
           this.localPlayer.position.y = Math.max(0, Math.min(this.app.screen.height - this.localPlayer.playerHeight, this.localPlayer.position.y));
         }

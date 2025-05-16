@@ -19,7 +19,7 @@ export class Player
         this.orientation = orientation;
         this.animation = 'Idle';
 
-        
+
 
         if(spriteAnimation != null){
             this.sprite = new PIXI.AnimatedSprite(this.spriteAnimation.getTexture(this.orientation, 'Idle'));
@@ -72,7 +72,7 @@ export class Player
             } else{
                 this.hitbox = new Hitbox(x, y, 20, 20);
             }
-          
+
         } else{
             this.hitbox = hitbox;
         }
@@ -185,7 +185,7 @@ export class Player
                 item.isHeld = false;
                 item.getSprite().visible = false;
             }
-            item.updatePosition(this.position.x, this.position.y);
+            item.updatePosition(this.position.x, this.position.y, this.controller.mouseX, this.controller.mouseY);
             i++;
         }));
     }
@@ -283,7 +283,7 @@ export class Player
             this.hitbox.x = player.x;
             this.hitbox.y = player.y;
         }
-        
+
     }
 
     destroy(){

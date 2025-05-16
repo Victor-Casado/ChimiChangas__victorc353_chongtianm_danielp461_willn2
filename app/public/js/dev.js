@@ -6,7 +6,6 @@ import { SilverChest } from '../../middleware/animations/chests/silver.js';
 import { GoldChest } from '../../middleware/animations/chests/gold.js';
 import { DiamondChest } from '../../middleware/animations/chests/diamond.js';
 import { Tree, Grass, Bush } from '../../middleware/environment/plant.js';
-import { Hitbox } from '../../middleware/hitbox.js';
 
 (async () => {
     const app = new PIXI.Application();
@@ -56,7 +55,6 @@ import { Hitbox } from '../../middleware/hitbox.js';
     chests.forEach((chest => {
         chest.getItemsArray().forEach((item => {
             items.push(item);
-            console.log(item);
             container.addChild(item.getSprite());
         }));
     }));
@@ -79,8 +77,6 @@ import { Hitbox } from '../../middleware/hitbox.js';
 
     app.ticker.add(() => {
         localPlayer.update(structures, chests, items);
-        // console.log(Hitbox.collision(localPlayer, collTree));
-        // console.log(localPlayer.hitbox);
     });
 
 })();

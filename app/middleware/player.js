@@ -61,6 +61,8 @@ export class Player
         this.itemHolding = 0;
         this.numNearbyChest = 0;
         this.numNearbyItem = 0;
+        this.switchItemCooldown = 0;
+        this.droppedCooldown = 0;
 
         this.inventory = [];
 
@@ -166,8 +168,12 @@ export class Player
     }
 
     updateInventory(){
-        if(this.controller.keys.switchItem.pressed){
-            this.itemHolding = this.itemHolding >= this.inventory.length ? 0 : this.itemHolding + 1;
+        if(this.controller.keys.switchItem.pressed && this.switchItemCooldown <= 0){
+            this.itemHolding = (this.itemHolding + 1) % this.inventory.length;
+            this.switchItemCooldown = 200;
+        }
+        if(this.switchItemCooldown > 0){
+            this.switchItemCooldown -= 8;
         }
         let i = 0;
         this.inventory.forEach((item => {
@@ -179,8 +185,7 @@ export class Player
                 item.isHeld = false;
                 item.getSprite().visible = false;
             }
-            item.getSprite().x = this.position.x;
-            item.getSprite().y = this.position.y;
+            item.updatePosition(this.position.x, this.position.y);
             i++;
         }));
     }
@@ -192,7 +197,7 @@ export class Player
             this.checkChest(chest);
         }));
         if(this.numNearbyChest > 0){
-            // this.texts['chestInteraction'].text = 'Press C to open chest';
+            this.texts['chestInteraction'].text = 'Press C';
         }
     }
 
@@ -204,7 +209,22 @@ export class Player
         }));
         // make it so that it only gets closest item and put that in itemInteraction text
         if(this.numNearbyItem > 0){
-            // this.texts['itemInteraction'].text = 'Press E to pick up item';
+            this.texts['itemInteraction'].text = 'Press E';
+        }
+    }
+
+    dropItem(index){
+        if(index < 0 || index >= this.inventory.length){
+            return;
+        }
+        if(this.droppedCooldown <= 0){
+            const item = this.inventory[index];
+            item.getSprite().visible = true;
+            item.isHeld = false;
+            this.inventory.splice(index, 1);
+        }
+        else{
+            this.droppedCooldown -= 200;
         }
     }
 
@@ -212,6 +232,9 @@ export class Player
         if(!item.isHeld && item.getSprite().visible && this.nearbyItem(item)){
             this.numNearbyItem++;
             if(this.controller.keys.pickUpItem.pressed){
+                if(this.inventory.length == 3){
+                    this.dropItem(this.itemHolding);
+                }
                 this.inventory.push(item);
                 this.itemHolding = this.inventory.length - 1;
             }

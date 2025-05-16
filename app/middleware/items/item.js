@@ -14,6 +14,13 @@ export class Item
         this.isHeld = isHeld;
     }
 
+    updatePosition(x, y){
+        this.x = x;
+        this.y = y;
+        this.sprite.x = this.x;
+        this.sprite.y = this.y;
+    }
+
     getSprite(){
         return this.sprite;
     }

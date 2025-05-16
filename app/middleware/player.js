@@ -123,10 +123,16 @@ export class Player
             this.hitbox.y = oldY;
         }
 
-        if (deltaY < 0) newOrientation = 'behind';
-        else if (deltaY > 0) newOrientation = 'front';
-        else if (deltaX < 0) newOrientation = 'left';
-        else if (deltaX > 0) newOrientation = 'right';
+
+        if(this.inventory.length == 0){
+            if (deltaY < 0) newOrientation = 'behind';
+            else if (deltaY > 0) newOrientation = 'front';
+            else if (deltaX < 0) newOrientation = 'left';
+            else if (deltaX > 0) newOrientation = 'right';
+        } else{
+            newOrientation = this.inventory[this.itemHolding].orientation;
+        }
+        
 
         if (!pressed) {
             newAnimation = 'Idle';

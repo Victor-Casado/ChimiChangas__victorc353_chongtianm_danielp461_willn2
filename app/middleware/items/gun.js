@@ -17,6 +17,10 @@ export class Gun extends Item
         return '/public/assets/GunsPack/Guns/' + gunName + '.png';
     }
 
+    fire(targetX, targetY, container){
+        new Bullet(this.x, this.y, {x: targetX, y: targetY}, container);
+    }
+
     toJSON(){
         return {
             damage: this.damage,
@@ -29,7 +33,7 @@ export class Gun extends Item
 }
 
 class Bullet {
-    constructor(x, y, direction, gun) {
+    constructor(x, y, direction, gun, container) {
         this.position = { x, y };
 
         this.direction = direction;
@@ -46,6 +50,9 @@ class Bullet {
         this.alive = true; 
 
         this.maxLife = 2;
+
+        this.container = container;
+        this.container.addChild(this.sprite);
     }
 
     update(delta) {

@@ -23,6 +23,7 @@ export class Player
 
         if(spriteAnimation != null){
             this.sprite = new PIXI.AnimatedSprite(this.spriteAnimation.getTexture(this.orientation, 'Idle'));
+            this.sprite.scale = 1.5;
             this.texts = {
                 'username': new PIXI.BitmapText({
                                 text: username,

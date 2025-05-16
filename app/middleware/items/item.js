@@ -13,6 +13,7 @@ export class Item
         this.height = height;
         this.isHeld = isHeld;
         this.orientation = 'right'
+        this.sprite.pivot.set(-5, 5);
     }
 
     updateRotation(x, y){
@@ -27,22 +28,28 @@ export class Item
         if(newX < 0){
             if(deg > 45 && deg < 90){
                 this.orientation = 'front';
+                this.sprite.zIndex = 1;
             }
             else if(deg < 45 && deg > -45){
                 this.orientation = 'right';
+                this.sprite.zIndex = 1;
             } 
             else if(deg < -45 && deg > -90){
                 this.orientation = 'behind';
+                this.sprite.zIndex = -1;
             }
         } else{
             if(deg > 45 && deg < 90){
                 this.orientation = 'behind';
+                this.sprite.zIndex = -1;
             }
             else if(deg < 45 && deg > -45){
                 this.orientation = 'left';
+                this.sprite.zIndex = 1;
             } 
             else if(deg < -45 && deg > -90){
                 this.orientation = 'front';
+                this.sprite.zIndex = 1;
             }
         }
         

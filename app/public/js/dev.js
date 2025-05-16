@@ -9,7 +9,10 @@ import { Tree, Grass, Bush } from '../../middleware/environment/plant.js';
 
 (async () => {
     const app = new PIXI.Application();
-    await app.init({ background: '#78852b', resizeTo: window });
+    await app.init({ background: '#78852b', resizeTo: window, antialias: false, antialias: false, // 🔴 Important: disables smoothing
+    resolution: window.devicePixelRatio || 1,
+    autoDensity: true });
+    
     document.body.appendChild(app.canvas);
 
     const container = new PIXI.Container();

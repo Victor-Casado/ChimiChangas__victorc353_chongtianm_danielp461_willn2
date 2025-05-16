@@ -76,6 +76,7 @@ export class Bullet {
         this.shouldKill = false;
 
         this.hitbox = new Hitbox(this.x, this.y, 10, 10);
+        this.gun = gun;
     }
 
     update(delta) {
@@ -90,7 +91,7 @@ export class Bullet {
         this.sprite.y = this.y;
 
         this.lifeSpan += delta.deltaTime;
-        if(this.lifeSpan > 4){
+        if(this.lifeSpan > this.gun.getSprite().width / 7){
             this.sprite.visible = true;
         }
         if(this.maxLife < this.lifeSpan){

@@ -33,3 +33,6 @@ victorC -- 2025-05-15 12:00
 
 victorC -- 2025-05-16 11:44
 - gun rarities
+
+markM -- 2025-05-16 11:44
+- gun probabilties

@@ -57,7 +57,9 @@ function handleMessage(data) {
         const mover = game.players.find(p => p.id === data.player.id);
         //data.player = UPDATE DATA
         console.log('playerMoved: ' + data.player);
-        mover.refresh(data.player);
+        if(data.player && mover){
+            mover.refresh(data.player);
+        }
     }
     if(data.type==='playerDisconnected') {
         console.log("PLAYER DC");

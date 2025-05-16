@@ -79,8 +79,9 @@ wss.on('connection', async (ws) => {
           }));
         }
       });
+      console.log(`Player ${newPlayerId} connected`);
     }
-
+    
     if (message.type === 'move') {
       const p = game.players.find(p => p.getId() === message.player.id);
       if (p) {
@@ -97,7 +98,7 @@ wss.on('connection', async (ws) => {
     }
   });
 
-  console.log(`Player ${newPlayerId} connected`);
+  
 
   
 

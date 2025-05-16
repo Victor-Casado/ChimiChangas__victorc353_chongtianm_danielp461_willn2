@@ -19,7 +19,7 @@ export class Bush extends Structure{
             variant = Math.floor(Math.random() * (5 + 1)) + 1;
         }
         super(id, x, y, 'bush', container, variant);
-        this.hitbox = new Hitbox(x, y, this.sprite.width / 2 - 5, this.sprite.height / 2 - 5, this.sprite.width / 2, this.sprite.height / 2);
+        this.hitbox = new Hitbox(x, y, this.sprite.width / 2 - 5, this.sprite.height / 2 - 5, this.sprite.width / 2, this.sprite.height / 2 + 7);
         this.collision = true;
     }
 }
@@ -30,7 +30,7 @@ export class Tree extends Structure{
             variant = Math.floor(Math.random() * (2 + 1)) + 1;
         }
         super(id, x, y, 'tree', container, variant);
-        this.hitbox = new Hitbox(x, y, 10, this.sprite.height - 80, this.sprite.width / 2, 80);
+        this.hitbox = new Hitbox(x, y, 2, this.sprite.height - 75, this.sprite.width / 2 + 8, 80);
         this.collision = true;
     }
 }

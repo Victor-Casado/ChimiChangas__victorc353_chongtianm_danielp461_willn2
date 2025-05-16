@@ -7,6 +7,7 @@ import { GoldChest } from '../../middleware/animations/chests/gold.js';
 import { DiamondChest } from '../../middleware/animations/chests/diamond.js';
 import { Tree, Grass, Bush } from '../../middleware/environment/plant.js';
 import { bullets } from '../../middleware/items/gun.js';
+import { Hitbox } from '../../middleware/hitbox.js';
 
 (async () => {
     const app = new PIXI.Application();
@@ -86,6 +87,10 @@ import { bullets } from '../../middleware/items/gun.js';
                 bullet.update(delta);
             } else {
                 bullets.splice(index, 1); 
+            }
+            if(Hitbox.collision(bullet, structures)){
+                console.log("bang");
+                bullet.shouldKill = true;
             }
         });
     });

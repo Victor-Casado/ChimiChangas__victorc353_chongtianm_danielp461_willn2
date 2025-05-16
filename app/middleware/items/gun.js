@@ -1,4 +1,5 @@
 import { Item } from "./item.js";
+import { Hitbox } from '../hitbox.js';
 
 export const bullets = [];
 
@@ -72,11 +73,14 @@ export class Bullet {
 
         this.shouldKill = false;
 
+        this.hitbox = new Hitbox(this.x, this.y, 10, 10);
     }
 
     update(delta) {
-        
-        const frameSpeed = this.speed * (delta.deltaTime / 60); // Normalize to ~60fps
+        if(!this.alive){
+            return;
+        }
+        const frameSpeed = this.speed * (delta.deltaTime / 60); 
         this.x += this.dirX * frameSpeed;
         this.y += this.dirY * frameSpeed;
 
@@ -91,6 +95,9 @@ export class Bullet {
         if(this.shouldKill){
             this.destroy();
         }
+
+        this.hitbox.x = this.x;
+        this.hitbox.y = this.y;
     }
 
     destroy() {

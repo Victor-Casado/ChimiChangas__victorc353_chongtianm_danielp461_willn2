@@ -6,13 +6,14 @@ import { SilverChest } from '../../middleware/animations/chests/silver.js';
 import { GoldChest } from '../../middleware/animations/chests/gold.js';
 import { DiamondChest } from '../../middleware/animations/chests/diamond.js';
 import { Tree, Grass, Bush } from '../../middleware/environment/plant.js';
+import { bullets } from '../../middleware/items/gun.js';
 
 (async () => {
     const app = new PIXI.Application();
     await app.init({ background: '#78852b', resizeTo: window, antialias: false, antialias: false, // 🔴 Important: disables smoothing
     resolution: window.devicePixelRatio || 1,
     autoDensity: true });
-    
+
     document.body.appendChild(app.canvas);
 
     const container = new PIXI.Container();
@@ -80,6 +81,13 @@ import { Tree, Grass, Bush } from '../../middleware/environment/plant.js';
 
     app.ticker.add((delta) => {
         localPlayer.update(structures, chests, items, delta);
+        bullets.forEach((bullet, index) => {
+            if (bullet.alive) {
+                bullet.update(delta);
+            } else {
+                bullets.splice(index, 1); 
+            }
+        });
     });
 
 })();

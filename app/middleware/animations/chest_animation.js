@@ -3,6 +3,7 @@ import { M15 } from '../items/guns/m15.js';
 import { M24 } from '../items/guns/m24.js';
 import { Pistol } from '../items/guns/pistol.js';
 import { Shotgun } from '../items/guns/shotgun.js';
+import { Gun, Bullet } from '../items/gun.js';
 
 // Class for handling chess animations
 export class ChestAnimation

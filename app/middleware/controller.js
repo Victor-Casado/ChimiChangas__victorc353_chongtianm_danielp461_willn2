@@ -35,10 +35,18 @@ export class Controller
             window.addEventListener('keydown', (event) => this.keydownHandler(event));
             window.addEventListener('keyup', (event) => this.keyupHandler(event));
             window.addEventListener('mousemove', (event) => this.mouseHandler(event));
+            window.addEventListener('mousedown', (event) => this.clickHandler(event));
+            window.addEventListener('mouseup', (event) => { if (event.button === 0) this.clicked = false; });
         }
 
         this.mouseX = null;
         this.mouseY = null;
+        this.clicked = false;
+    }
+    clickHandler(event){
+        if (event.which === 1) {
+            this.clicked = true;
+        }
     }
     mouseHandler(event){
       this.mouseX = event.clientX;

@@ -24,7 +24,7 @@ export class Item
         this.sprite.rotation = angle;
 
         const deg = angle * (180 / Math.PI); 
-        console.log(deg);
+        
         if(newX < 0){
             if(deg > 45 && deg < 90){
                 this.orientation = 'front';

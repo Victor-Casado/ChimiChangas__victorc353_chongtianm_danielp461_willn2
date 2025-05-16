@@ -1,5 +1,7 @@
 import { Item } from "./item.js";
 
+export const bullets = [];
+
 export class Gun extends Item
 {
     constructor(x, y, width, height, isHeld, gunName, damage, range, numBullets, cooldown, bulletSpeed)
@@ -17,9 +19,16 @@ export class Gun extends Item
         return '/public/assets/GunsPack/Guns/' + gunName + '.png';
     }
 
-    fire(targetX, targetY, container){
-        new Bullet(this.x, this.y, {x: targetX, y: targetY}, container);
-    }
+    fire(targetX, targetY){
+        console.log("BAH");
+        const bullet = new Bullet(targetX, targetY, this);
+
+        this.sprite.parent.addChild(bullet.sprite);
+
+        bullets.push(bullet);
+
+        return bullet;
+    } 
 
     toJSON(){
         return {
@@ -32,11 +41,14 @@ export class Gun extends Item
     }
 }
 
-class Bullet {
-    constructor(x, y, direction, gun, container) {
-        this.position = { x, y };
+export class Bullet {
+    constructor(targetX, targetY, gun) {
+        const gunSprite = gun.getSprite(); 
+        this.x = gunSprite.x;
+        this.y = gunSprite.y;
 
-        this.direction = direction;
+        this.targetX = targetX;
+        this.targetY = targetY;
 
         this.speed = gun.bulletSpeed;  
         this.damage = gun.damage;
@@ -45,30 +57,45 @@ class Bullet {
         this.sprite = new PIXI.Sprite(PIXI.Texture.WHITE); 
         this.sprite.width = 5;
         this.sprite.height = 5;
-        this.sprite.position.set(x, y);
+        this.sprite.position.set(this.x, this.y);
 
         this.alive = true; 
 
-        this.maxLife = 2;
+        this.maxLife = 60;
 
-        this.container = container;
-        this.container.addChild(this.sprite);
+        const dx = targetX - this.x;
+        const dy = targetY - this.y;
+        const magnitude = Math.hypot(dx, dy);
+
+        this.dirX = dx / magnitude;
+        this.dirY = dy / magnitude;
+
+        this.shouldKill = false;
+
     }
 
     update(delta) {
-        this.position.x += this.direction.x * this.speed * delta.deltaTime;
-        this.position.y += this.direction.y * this.speed * delta.deltaTime;
+        
+        const frameSpeed = this.speed * (delta.deltaTime / 60); // Normalize to ~60fps
+        this.x += this.dirX * frameSpeed;
+        this.y += this.dirY * frameSpeed;
 
-        this.sprite.position.set(this.position.x, this.position.y);
+        this.sprite.x = this.x;
+        this.sprite.y = this.y;
 
         this.maxLife -= delta.deltaTime;
         if(this.maxLife < 0){
-            this.desetroy();
+            this.shouldKill = true;
+            // this.destroy();
+        }
+        if(this.shouldKill){
+            this.destroy();
         }
     }
 
     destroy() {
-        app.stage.removeChild(this.sprite);
+        this.sprite.destroy();
         this.alive = false;
+        
     }
 }

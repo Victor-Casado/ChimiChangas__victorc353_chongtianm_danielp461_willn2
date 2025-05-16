@@ -1,5 +1,6 @@
 import {Controller} from './controller.js';
 import {Hitbox} from './hitbox.js';
+import {Gun, Bullet} from './items/gun.js';
 
 export class Player
 {
@@ -88,6 +89,7 @@ export class Player
         this.updateChest(chests);
         this.updateItem(items);
         this.updateInventory();
+        this.updateGun();
     }
 
     updatePosition(structures, delta){
@@ -160,6 +162,20 @@ export class Player
         }
 }
 
+    updateGun(){
+        if (!this.inventory.length) return;
+
+        const heldItem = this.inventory[this.itemHolding];
+
+        // Check if it's a Gun instance and the mouse was clicked
+        if (heldItem instanceof Gun && this.controller.clicked) {
+            const gun = heldItem;
+
+            gun.fire(this.controller.mouseX, this.controller.mouseY, gun);
+
+            this.controller.clicked = false;
+        }
+    }
     updateOrientation(){
         const newTextures = this.spriteAnimation.getTexture(this.orientation, this.animation);
 

@@ -54,15 +54,17 @@ export class Bullet {
         this.speed = gun.bulletSpeed;  
         this.damage = gun.damage;
 
-
         this.sprite = new PIXI.Sprite(PIXI.Texture.WHITE); 
         this.sprite.width = 5;
         this.sprite.height = 5;
         this.sprite.position.set(this.x, this.y);
 
+        this.sprite.visible = false;
+
         this.alive = true; 
 
         this.maxLife = 60;
+        this.lifeSpan = 0;
 
         const dx = targetX - this.x;
         const dy = targetY - this.y;
@@ -87,8 +89,11 @@ export class Bullet {
         this.sprite.x = this.x;
         this.sprite.y = this.y;
 
-        this.maxLife -= delta.deltaTime;
-        if(this.maxLife < 0){
+        this.lifeSpan += delta.deltaTime;
+        if(this.lifeSpan > 4){
+            this.sprite.visible = true;
+        }
+        if(this.maxLife < this.lifeSpan){
             this.shouldKill = true;
             // this.destroy();
         }

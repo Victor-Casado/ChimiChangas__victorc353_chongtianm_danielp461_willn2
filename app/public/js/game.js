@@ -4,6 +4,16 @@ const ws = new WebSocket(`ws://${window.location.hostname}:8080`);
 let game = null;
 let messageQueue = [];
 
+ws.onopen = async () => {
+  const res = await fetch('/me');
+  const { username } = await res.json();
+
+  ws.send(JSON.stringify({
+    type: 'join',
+    username: username
+  }));
+};
+
 ws.onmessage = (event) => {
     const data = JSON.parse(event.data);
 
@@ -15,9 +25,10 @@ ws.onmessage = (event) => {
 };
 
 game = await Game.clientInit();
-game.startLoop();
+
 
 messageQueue.forEach(handleMessage);
+game.startLoop();
 messageQueue = [];
 
 function handleMessage(data) {
@@ -45,6 +56,7 @@ function handleMessage(data) {
         // console.log("Loading existing players:", data.clients);
         const mover = game.players.find(p => p.id === data.player.id);
         //data.player = UPDATE DATA
+        console.log('playerMoved: ' + data.player);
         mover.refresh(data.player);
     }
     if(data.type==='playerDisconnected') {

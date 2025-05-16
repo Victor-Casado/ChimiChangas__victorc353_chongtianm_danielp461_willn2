@@ -5,6 +5,8 @@ import { Textures } from './textures.js';
 export class Game {
     constructor(isServer, app) {
       this.players = [];
+      this.structures = [];
+      this.chests = [];
       this.isServer = isServer;
 
       if (!isServer) {
@@ -82,9 +84,9 @@ export class Game {
     startLoop() {
       this.app.ticker.add(() => {
         this.players.forEach((player) => {
-          player.update([], []);
+          player.update(this.structures, this.chests, this.localPlayer.inventory);
         });
-        
+        // this.localPlayer.update(this.structures, this.chests, this.localPlayer.inventory);
         if(this.localPlayer){
           this.container.x = this.app.screen.width / 2 - this.localPlayer.getPosX() * this.zoomLevel;
           this.container.y = this.app.screen.height / 2 - this.localPlayer.getPosY() * this.zoomLevel;

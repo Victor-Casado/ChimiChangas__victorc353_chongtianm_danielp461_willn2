@@ -239,25 +239,28 @@ export class Player
     }
 
     refresh(player) {
-        if (this.sprite) {
-            this.sprite.x = player.x;
-            this.sprite.y = player.y;
+        if(player){
+            if (this.sprite) {
+                this.sprite.x = player.x;
+                this.sprite.y = player.y;
 
-            const sameOrientation = this.orientation === player.orientation;
-            const sameAnimation = this.animation === player.animation;
+                const sameOrientation = this.orientation === player.orientation;
+                const sameAnimation = this.animation === player.animation;
 
-            if (!sameOrientation || !sameAnimation) {
-                this.orientation = player.orientation;
-                this.animation = player.animation;
-                this.updateOrientation();
+                if (!sameOrientation || !sameAnimation) {
+                    this.orientation = player.orientation;
+                    this.animation = player.animation;
+                    this.updateOrientation();
+                }
             }
+
+            this.position.x = player.x;
+            this.position.y = player.y;
+
+            this.hitbox.x = player.x;
+            this.hitbox.y = player.y;
         }
-
-        this.position.x = player.x;
-        this.position.y = player.y;
-
-        this.hitbox.x = player.x;
-        this.hitbox.y = player.y;
+        
     }
 
     destroy(){

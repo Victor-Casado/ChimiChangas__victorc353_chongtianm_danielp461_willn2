@@ -18,65 +18,69 @@ let game;
 
 const wss = new WebSocketServer({ port: 8080 });
 
-let username = '';
+
 let clients = [];
 let clientId = 0;
 
 wss.on('connection', async (ws) => {
   console.log('Client connected');
+
   let newPlayer = null;
   let newPlayerId = 0;
   let playerExists = false;
 
-  let players = game.players;
-  for (let i = 0; i < players.length; i++) {
-    let player = players[i];
-    if(player.username === username){
-      newPlayer = player;
-      newPlayerId = player.id;
-      playerExists = true;
-      break;
-    }
-  }
-  
-  if(!playerExists){
-    newPlayerId = clientId++;
-    newPlayer = new Player(username, newPlayerId, null, Math.random() * 400, Math.random() * 400, false, ws);
-    game.players.push(newPlayer);
-  }
-
-  clients.push(
-      {id: newPlayerId, 
-        x: newPlayer.x, 
-        y: newPlayer.y, 
-        ws: ws }
-    );
-
-  console.log(`Player ${newPlayerId} connected`);
-
-  ws.send(JSON.stringify({
-    type: 'you',
-    player: newPlayer.toJSON()
-  }));
-
-  ws.send(JSON.stringify({
-    type: 'existingPlayers',
-    clients: game.players.map(p => (p.toJSON())),
-    localUser: username
-  }));
-
-  // Notify other clients about new player
-  wss.clients.forEach(client => {
-    if (client.readyState === WebSocket.OPEN && client !== ws) {
-      client.send(JSON.stringify({
-        type: 'playerJoined',
-        player: newPlayer.toJSON(),
-      }));
-    }
-  });
-
   ws.on('message', (data) => {
     const message = JSON.parse(data);
+
+    if(message.type ==='join'){
+      const username = message.username;
+
+      let players = game.players;
+      for (let i = 0; i < players.length; i++) {
+        let player = players[i];
+        if(player.username === username){
+          newPlayer = player;
+          newPlayerId = player.id;
+          playerExists = true;
+          break;
+        }
+      }
+      
+      if(!playerExists){
+        newPlayerId = clientId++;
+        newPlayer = new Player(username, newPlayerId, null, Math.random() * 400, Math.random() * 400, false, ws);
+        game.players.push(newPlayer);
+      }
+
+      clients.push(
+        {id: newPlayerId, 
+          x: newPlayer.x, 
+          y: newPlayer.y, 
+          ws: ws }
+      );
+
+      ws.send(JSON.stringify({
+        type: 'you',
+        player: newPlayer.toJSON()
+      }));
+
+      ws.send(JSON.stringify({
+        type: 'existingPlayers',
+        clients: game.players.map(p => (p.toJSON())),
+        localUser: username
+      }));
+
+      // Notify other clients about new player
+      wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN && client !== ws) {
+          client.send(JSON.stringify({
+            type: 'playerJoined',
+            player: newPlayer.toJSON(),
+          }));
+        }
+      });
+    }
+
     if (message.type === 'move') {
       const p = game.players.find(p => p.getId() === message.player.id);
       if (p) {
@@ -93,32 +97,27 @@ wss.on('connection', async (ws) => {
     }
   });
 
-  ws.on('close', () => {
-    console.log('Client disconnected');
-    // Remove client from clients array
+  console.log(`Player ${newPlayerId} connected`);
+
   
-    // Notify other clients about disconnection
+
+  ws.on('close', () => {
+  console.log('Client disconnected');
+  const disconnectedClient = clients.find(c => c.ws === ws);
+  clients = clients.filter(c => c.ws !== ws);
+
+  if (disconnectedClient) {
+    game.findPlayer(disconnectedClient.id).destroy();
     wss.clients.forEach(client => {
-      // if (client.readyState === WebSocket.OPEN) {
-        // Find the disconnected client's id
-        const disconnectedClient = clients.find(c => c.ws === ws);
-        // console.log(ws);
-        if (disconnectedClient) {
-          console.log("dcc");
-          client.send(JSON.stringify({
-            type: 'playerDisconnected',
-            id: disconnectedClient.id,
-          }));
-        }
-      // }
-      clients = clients.filter(client => client.ws !== ws);
-      if(disconnectedClient){
-        game.findPlayer(disconnectedClient.id).destroy();
+      if (client.readyState === WebSocket.OPEN && client !== ws) {
+        client.send(JSON.stringify({
+          type: 'playerDisconnected',
+          id: disconnectedClient.id,
+        }));
       }
-      
     });
-    
-  });
+  }
+});
 
   ws.on('error', (error) => {
     console.error('WebSocket error:', error);
@@ -163,7 +162,7 @@ app.get('/home', (req, res) => {
   if (!req.session.user) {
     return res.redirect('/login');
   }
-  username = req.session.user;
+  let username = req.session.user;
   res.sendFile(path.join(__dirname, 'public/templates/home.html'));
 });
 
@@ -180,12 +179,12 @@ app.get('/me', async (req, res) => {
     return res.status(401).json({ error: 'Not logged in' });
   }
 
-  // res.json({ username: req.session.user });
+  res.json({ username: req.session.user });
 });
 
 // POST handlers
 app.post('/signup', async (req, res) => {
-  // const { username, password } = req.body;
+  const { username, password } = req.body;
   let addedUser = await addUser(username, password);
 
   if (addedUser){
@@ -197,11 +196,11 @@ app.post('/signup', async (req, res) => {
 });
 
 app.post('/login', async (req, res) => {
-  // const { username, password } = req.body;
+  const { username, password } = req.body;
   try {
     const user = await fetchUser('username', username);
     if (user.password === password) {
-      //  req.session.user = username;
+      req.session.user = username;
       res.redirect('/home');
     } else {
       res.status(500).send('Username or password does not match');

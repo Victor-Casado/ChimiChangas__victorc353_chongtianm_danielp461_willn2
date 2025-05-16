@@ -77,6 +77,7 @@ export class Bullet {
 
         this.hitbox = new Hitbox(this.x, this.y, 10, 10);
         this.gun = gun;
+        this.sprite.rotation = gunSprite.rotation;
     }
 
     update(delta) {

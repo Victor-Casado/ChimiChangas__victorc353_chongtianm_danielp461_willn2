@@ -18,7 +18,10 @@ import { Hitbox } from '../../middleware/hitbox.js';
     document.body.appendChild(app.canvas);
 
     const container = new PIXI.Container();
+    container.sortableChildren = true;
     app.stage.addChild(container);
+
+    
 
     container.x = 0;
     container.y = 0;

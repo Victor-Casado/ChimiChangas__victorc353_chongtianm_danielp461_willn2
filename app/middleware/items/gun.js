@@ -25,7 +25,7 @@ export class Gun extends Item
     fire(targetX, targetY){
         console.log("BAH");
         if(this.cooldownCurr < this.cooldown) return;
-        const bullet = new Bullet(targetX, targetY, this, 70);
+        const bullet = new Bullet(targetX, targetY, this);
 
         this.sprite.parent.addChild(bullet.sprite);
 
@@ -47,7 +47,7 @@ export class Gun extends Item
 }
 
 export class Bullet {
-    constructor(targetX, targetY, gun, expire) {
+    constructor(targetX, targetY, gun) {
         const gunSprite = gun.getSprite(); 
         this.x = gunSprite.x;
         this.y = gunSprite.y;
@@ -58,16 +58,19 @@ export class Bullet {
         this.speed = gun.bulletSpeed;  
         this.damage = gun.damage;
 
-        this.sprite = new PIXI.Sprite(PIXI.Texture.WHITE); 
-        this.sprite.width = 5;
-        this.sprite.height = 5;
+        this.sprite = this.initSprite(gun.gunName);
+        
+        
+        // this.sprite.width = 5;
+        // this.sprite.height = 5;
         this.sprite.position.set(this.x, this.y);
 
         this.sprite.visible = false;
+        
 
         this.alive = true; 
 
-        this.expire = expire;
+        this.expire = gun.range;
         this.lifeSpan = 0;
 
         const dx = targetX - this.x;
@@ -81,9 +84,13 @@ export class Bullet {
 
         this.hitbox = new Hitbox(this.x, this.y, 10, 10);
         this.gun = gun;
-        this.sprite.rotation = gunSprite.rotation;
+        this.sprite.rotation = Math.atan2(dy, dx);
     }
-
+    initSprite(type){
+        let sprite = new PIXI.Sprite(PIXI.Assets.get(Bullet.getPath(type))); 
+        sprite.anchor.set(0.5);
+        return sprite;
+    }
     update(delta) {
         if(!this.alive){
             return;
@@ -109,11 +116,18 @@ export class Bullet {
 
         this.hitbox.x = this.x;
         this.hitbox.y = this.y;
+
+        if(this.lifeSpan / this.expire > 0.8){
+            this.sprite.alpha -= 0.1;
+        }
     }
 
     destroy() {
         this.sprite.destroy();
         this.alive = false;
         
+    }
+    static getPath(type){
+        return '/public/assets/weapons/bullets/' + type + '.png';
     }
 }

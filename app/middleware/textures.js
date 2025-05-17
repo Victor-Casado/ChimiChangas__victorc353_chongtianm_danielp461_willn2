@@ -1,6 +1,6 @@
 import { ChestAnimation } from "./animations/chest_animation.js";
 import { SpriteAnimation } from "./animations/sprite_animation.js";
-import { Gun } from "./items/gun.js";
+import { Gun, Bullet } from "./items/gun.js";
 import { Structure } from "./environment/structure.js";
 
 var chestRanks = ['wooden', 'silver', 'gold', 'diamond']
@@ -15,6 +15,7 @@ export class Textures{
         await this.loadPlayerSkins();
         await this.loadGuns();
         await this.loadEnvironment();
+        await this.loadBullets();
     }
 
     static async loadChests(){
@@ -59,25 +60,33 @@ export class Textures{
     }
 
     static async loadEnvironment(){
-        const envPaths = [
-            Structure.getPath('tree', 1),
-            Structure.getPath('tree', 2),
-            Structure.getPath('tree', 3),
-            Structure.getPath('grass', 1),
-            Structure.getPath('grass', 2),
-            Structure.getPath('grass', 3),
-            Structure.getPath('grass', 4),
-            Structure.getPath('bush', 1),
-            Structure.getPath('bush', 2),
-            Structure.getPath('bush', 3),
-            Structure.getPath('bush', 4),
-            Structure.getPath('bush', 5),
-        ];
+        const types = {
+            tree: 3,
+            grass: 4,
+            bush: 5
+        };
+
+        const envPaths = [];
+
+        for (const type in types) {
+            const count = types[type];
+            for (let i = 1; i <= count; i++) {
+                envPaths.push(Structure.getPath(type, i));
+            }
+        }
+
+        await PIXI.Assets.load(envPaths);
+    }
+
+    static async loadBullets(){
+        let bulletPaths = [];
+        Object.keys(guns).forEach(gun => {
+            bulletPaths.push(Bullet.getPath(guns[gun]));
+        });
 
         await PIXI.Assets.load(
-            envPaths
+            bulletPaths
         );
     }
 
-    
 }

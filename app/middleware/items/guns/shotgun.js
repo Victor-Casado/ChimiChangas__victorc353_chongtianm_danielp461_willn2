@@ -4,7 +4,7 @@ export class Shotgun extends Gun
 {
     constructor(x, y, width='20', rarity=1, height='25', isHeld = false)
     {
-        super(x, y, width, height, isHeld, 'Shotgun', 100 * rarity, 100, 5, 60 / rarity, 500);
+        super(x, y, width, height, isHeld, 'Shotgun', 100 * rarity, 50, 5, 60 / rarity, 500);
         this.automatic = false;
     }
     fire(targetX, targetY) {

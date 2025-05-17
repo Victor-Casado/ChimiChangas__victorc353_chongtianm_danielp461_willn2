@@ -22,7 +22,7 @@ export class Gun extends Item
 
     fire(targetX, targetY){
         console.log("BAH");
-        const bullet = new Bullet(targetX, targetY, this);
+        const bullet = new Bullet(targetX, targetY, this, 70);
 
         this.sprite.parent.addChild(bullet.sprite);
 
@@ -43,7 +43,7 @@ export class Gun extends Item
 }
 
 export class Bullet {
-    constructor(targetX, targetY, gun) {
+    constructor(targetX, targetY, gun, expire) {
         const gunSprite = gun.getSprite(); 
         this.x = gunSprite.x;
         this.y = gunSprite.y;
@@ -63,7 +63,7 @@ export class Bullet {
 
         this.alive = true; 
 
-        this.maxLife = 60;
+        this.expire = expire;
         this.lifeSpan = 0;
 
         const dx = targetX - this.x;
@@ -95,7 +95,7 @@ export class Bullet {
         if(this.lifeSpan > this.gun.getSprite().width / 7){
             this.sprite.visible = true;
         }
-        if(this.maxLife < this.lifeSpan){
+        if(this.expire < this.lifeSpan){
             this.shouldKill = true;
             // this.destroy();
         }

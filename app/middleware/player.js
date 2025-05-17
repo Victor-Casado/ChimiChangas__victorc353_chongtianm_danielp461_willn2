@@ -1,6 +1,7 @@
 import {Controller} from './controller.js';
 import {Hitbox} from './hitbox.js';
 import {Gun, Bullet} from './items/gun.js';
+import { Shotgun } from './items/guns/shotgun.js';
 
 export class Player
 {
@@ -93,7 +94,7 @@ export class Player
         this.updatePosition(structures, delta);
         this.updateChest(chests);
         this.updateItem(items);
-        this.updateInventory();
+        this.updateInventory(delta);
         this.updateGun();
     }
 
@@ -172,13 +173,12 @@ export class Player
 
         const heldItem = this.inventory[this.itemHolding];
 
-        // Check if it's a Gun instance and the mouse was clicked
         if (heldItem instanceof Gun && this.controller.clicked) {
             const gun = heldItem;
 
             gun.fire(this.controller.mouseX, this.controller.mouseY, gun);
 
-            this.controller.clicked = false;
+            if(!gun.automatic) this.controller.clicked = false;
         }
     }
     updateOrientation(){
@@ -197,7 +197,7 @@ export class Player
         this.sprite.anchor.set(0.5);
     }
 
-    updateInventory(){
+    updateInventory(delta){
         if(this.controller.keys.switchItem.pressed && this.switchItemCooldown <= 0){
             this.itemHolding = (this.itemHolding + 1) % this.inventory.length;
             this.switchItemCooldown = 200;
@@ -214,6 +214,9 @@ export class Player
             else{
                 item.isHeld = false;
                 item.getSprite().visible = false;
+            }
+            if(item instanceof Gun){
+                item.cooldownCurr += delta.deltaTime;
             }
             item.updatePosition(this.position.x, this.position.y, this.controller.mouseX, this.controller.mouseY);
             i++;

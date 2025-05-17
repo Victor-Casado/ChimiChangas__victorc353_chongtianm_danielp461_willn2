@@ -13,7 +13,9 @@ export class Gun extends Item
         this.range = range;
         this.numBullets = numBullets;
         this.cooldown = cooldown;
+        this.cooldownCurr = cooldown;
         this.bulletSpeed = bulletSpeed;
+        this.automatic = true;
     }
 
     static getPath(gunName){
@@ -22,12 +24,14 @@ export class Gun extends Item
 
     fire(targetX, targetY){
         console.log("BAH");
+        if(this.cooldownCurr < this.cooldown) return;
         const bullet = new Bullet(targetX, targetY, this, 70);
 
         this.sprite.parent.addChild(bullet.sprite);
 
         bullets.push(bullet);
 
+        this.cooldownCurr = 0;
         return bullet;
     } 
 

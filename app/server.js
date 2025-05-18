@@ -60,7 +60,8 @@ wss.on('connection', async (ws) => {
 
       ws.send(JSON.stringify({
         type: 'you',
-        player: newPlayer.toJSON()
+        player: newPlayer.toJSON(),
+        gameState: game.stateJSON()
       }));
 
       ws.send(JSON.stringify({

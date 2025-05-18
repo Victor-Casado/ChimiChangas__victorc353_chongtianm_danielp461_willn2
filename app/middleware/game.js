@@ -1,6 +1,8 @@
 import {Player} from './player.js';
 import {SpriteAnimation} from './animations/sprite_animation.js';
 import { Textures } from './textures.js';
+import { Grass, Bush, Tree } from './environment/plant.js';
+import { Structure } from './environment/structure.js';
 
 export class Game {
     constructor(isServer, app) {
@@ -21,7 +23,7 @@ export class Game {
         this.container.pivot.x = this.container.width / 2;
         this.container.pivot.y = this.container.height / 2;
 
-        this.zoomLevel = 1.5;
+        this.zoomLevel = 1.2;
         this.container.scale.set(this.zoomLevel);
 
         this.localPlayer = null;
@@ -38,7 +40,24 @@ export class Game {
     }
 
     static async serverInit(){
-      return new Game(true, null);
+      
+      let game = new Game(true, null);
+
+      for(let i = 0; i<8; ++i){
+        let tree = new Tree(0, Math.random() * 500, Math.random() * 500, null);
+        game.structures.push(tree);
+      }
+
+      for(let i = 0; i<50; ++i){
+        game.structures.push(new Grass(0, Math.random() * 500, Math.random() * 500, null));
+      }
+
+      for(let i = 0; i<15; ++i){
+        let bush = new Bush(0, Math.random() * 500, Math.random() * 500, null);
+        game.structures.push(bush);
+      }
+
+      return game;
     }
 
     loadPlayer(username, id, skinNum, x, y, active, ws, orientation){
@@ -46,9 +65,7 @@ export class Game {
 
       const player = new Player(username, id, localPlayerSprite, x, y, active, ws, orientation);
 
-
       this.container.addChild(player.sprite);
-
 
       const texts = player.getTexts();
 
@@ -83,11 +100,10 @@ export class Game {
 
     startLoop() {
       this.app.ticker.add((delta) => {
-        this.players.forEach((player) => {
-          player.updatePosition([], delta);
-        });
+        // this.players.forEach((player) => {
+        //   player.updatePosition(this.structures, delta);
+        // });
         this.localPlayer.update(this.structures, this.chests, this.localPlayer.inventory, delta);
-        // this.localPlayer.update(this.structures, this.chests, this.localPlayer.inventory);
         if(this.localPlayer){
           this.container.x = this.app.screen.width / 2 - this.localPlayer.getPosX() * this.zoomLevel;
           this.container.y = this.app.screen.height / 2 - this.localPlayer.getPosY() * this.zoomLevel;
@@ -100,5 +116,30 @@ export class Game {
 
     getPlayers(){
       return this.players;
+    }
+
+    loadState(state){
+      state.structures.forEach((structure) => {
+        let struct;
+        if(structure.type === 'tree'){
+          struct = new Tree(structure.id, structure.x, structure.y, this.container, structure.variant);;
+        }
+        if(structure.type === 'grass'){
+          struct = new Grass(structure.id, structure.x, structure.y, this.container, structure.variant);;
+        }
+        if(structure.type === 'bush'){
+          struct = new Bush(structure.id, structure.x, structure.y, this.container, structure.variant);;
+        } 
+        console.log(struct.hitbox);
+        // struct.hitbox.makeVisible(this.container);
+        this.structures.push(struct);
+      });
+    }
+
+    stateJSON(){
+      return {
+        structures: this.structures.map(structure => structure.toJSON()),
+        chests: this.chests.map(chest => chest.toJSON())
+      }
     }
   }

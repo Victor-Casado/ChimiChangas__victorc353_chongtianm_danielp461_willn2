@@ -84,7 +84,7 @@ export class Player
         } else{
             this.hitbox = hitbox;
         }
-
+        ;
         if(!dev){
             this.ws = ws;
         }
@@ -319,7 +319,7 @@ export class Player
             this.hitbox.x = player.x;
             this.hitbox.y = player.y;
 
-            
+            this.updateTextPos();
         }
 
     }

@@ -35,6 +35,7 @@ messageQueue = [];
 function handleMessage(data) {
     console.log(data);
     if (data.type === 'you') {
+        game.loadState(data.gameState);
         game.loadPlayer(data.player.username, data.player.id, 1, data.player.x, data.player.y, true, ws, data.player.orientation);
     }
 

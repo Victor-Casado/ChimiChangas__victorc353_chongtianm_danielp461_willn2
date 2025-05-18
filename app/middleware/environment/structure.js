@@ -7,11 +7,13 @@ export class Structure{
         this.y = y;
         this.type = type;
         this.variant = variant;
-        this.sprite = this.loadSprite(type, variant);
         this.container = container;
-        this.container.addChild(this.sprite);
-
-        this.updatePos();
+        
+        if(this.container){
+            this.sprite = this.loadSprite(type, variant);
+            this.container.addChild(this.sprite);
+            this.updatePos();
+        }
     }
   
     loadSprite(type, variant) {
@@ -33,9 +35,7 @@ export class Structure{
             x: this.x,
             y: this.y,
             type: this.type,
-            sprite: this.sprite,
             variant: this.variant,
-            app: this.app,
         };
     }
 }

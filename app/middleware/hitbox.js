@@ -44,7 +44,7 @@ export class Hitbox{
       return false;
     }
 
-    visualise(container){
+    makeVisible(container){
       this.sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
       this.sprite.zIndex = 9999;
       this.sprite.alpha = 0.5;

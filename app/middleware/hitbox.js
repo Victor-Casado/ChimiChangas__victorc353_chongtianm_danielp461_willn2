@@ -6,6 +6,7 @@ export class Hitbox{
     this.height = height;
     this.offsetX = offsetX;
     this.offsetY = offsetY;
+    this.visualise = false;
   }
 
   set x(value){
@@ -41,5 +42,23 @@ export class Hitbox{
       
 
       return false;
+    }
+
+    visualise(container){
+      this.sprite = new PIXI.Sprite(PIXI.Texture.WHITE);
+      this.sprite.zIndex = 9999;
+      this.sprite.alpha = 0.5;
+      this.sprite.x = this.x;
+      this.sprite.y = this.y;
+      this.sprite.width = this.width;
+      this.sprite.height = this.height;
+
+      this.visual = true;
+      container.addChild(this.sprite);
+    }
+
+    update(){
+      this.sprite.x = this.x;
+      this.sprite.y = this.y;
     }
 }

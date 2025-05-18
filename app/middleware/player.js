@@ -76,7 +76,7 @@ export class Player
 
         if(hitbox == null){
             if(this.sprite){
-                this.hitbox = new Hitbox(x, y, this.sprite.width, this.sprite.height);
+                this.hitbox = new Hitbox(x, y, this.sprite.width, this.sprite.height, -this.sprite.width / 2, -this.sprite.height /2);
             } else{
                 this.hitbox = new Hitbox(x, y, 20, 20);
             }
@@ -165,6 +165,9 @@ export class Player
                 type: 'move',
                 player: this.toJSON(),
             }));
+        }
+        if(this.hitbox.visualise){
+            this.hitbox.update();
         }
 }
 
@@ -315,6 +318,8 @@ export class Player
 
             this.hitbox.x = player.x;
             this.hitbox.y = player.y;
+
+            
         }
 
     }

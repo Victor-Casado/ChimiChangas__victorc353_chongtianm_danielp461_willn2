@@ -36,9 +36,12 @@ import { Hitbox } from '../../middleware/hitbox.js';
     
     const spriteAnimation = new SpriteAnimation(1);
     const localPlayer = new Player('Topher', 0, spriteAnimation, app.screen.width / 2, app.screen.height / 2, true, null, 'front', true);
-
+    // localPlayer.sprite.anchor.set(0.5);
+    // localPlayer.hitbox.visualise(container);
     for(let i = 0; i<8; ++i){
-        structures.push(new Tree(0, Math.random() * window.innerWidth, Math.random() * window.innerHeight, container));
+        let tree = new Tree(0, Math.random() * window.innerWidth, Math.random() * window.innerHeight, container);
+        // tree.hitbox.visualise(container);
+        structures.push(tree);
     }
 
     for(let i = 0; i<50; ++i){
@@ -46,7 +49,9 @@ import { Hitbox } from '../../middleware/hitbox.js';
     }
 
     for(let i = 0; i<15; ++i){
-        structures.push(new Bush(0, Math.random() * window.innerWidth, Math.random() * window.innerHeight, container));
+        let bush = new Bush(0, Math.random() * window.innerWidth, Math.random() * window.innerHeight, container);
+        // bush.hitbox.visualise(container);
+        structures.push(bush);
     }
 
     let collTree = new Tree(0, 0, 0, container);

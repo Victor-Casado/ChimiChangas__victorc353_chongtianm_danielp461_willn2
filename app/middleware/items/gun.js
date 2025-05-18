@@ -82,7 +82,7 @@ export class Bullet {
 
         this.shouldKill = false;
 
-        this.hitbox = new Hitbox(this.x, this.y, 10, 10);
+        this.hitbox = new Hitbox(this.x, this.y, this.sprite.width, this.sprite.height);
         this.gun = gun;
         this.sprite.rotation = Math.atan2(dy, dx);
     }

@@ -1,5 +1,5 @@
 import { Game } from '../../middleware/game.js';
-import { Game } from '../../middleware/environment/plant.js';
+import { Grass,Bush,Tree } from '../../middleware/environment/plant.js';
 
 const ws = new WebSocket(`ws://${window.location.hostname}:8080`);
 let game = null;

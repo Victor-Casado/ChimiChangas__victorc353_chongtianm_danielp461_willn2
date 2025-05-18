@@ -7,7 +7,6 @@ import { addUser, fetchUser, updateUsername} from './db_scripts/login.js';
 import { Game }  from './middleware/game.js';
 import { Player }  from './middleware/player.js';
 
-
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 

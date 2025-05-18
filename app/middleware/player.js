@@ -21,8 +21,6 @@ export class Player
         this.orientation = orientation;
         this.animation = 'Idle';
 
-
-
         if(spriteAnimation != null){
             this.sprite = new PIXI.AnimatedSprite(this.spriteAnimation.getTexture(this.orientation, 'Idle'));
             this.sprite.scale = 1.5;
@@ -54,11 +52,13 @@ export class Player
                                 }})
             };
             this.updateTextPos();
+
+            this.texts.username.zIndex = 50;
+            this.texts.chestInteraction.zIndex = 50;
+            this.texts.itemInteraction.zIndex = 50;
         }
 
-        this.texts.username.zIndex = 50;
-        this.texts.chestInteraction.zIndex = 50;
-        this.texts.itemInteraction.zIndex = 50;
+        
 
         this.playerWidth = playerWidth;
         this.playerHeight = playerHeight;

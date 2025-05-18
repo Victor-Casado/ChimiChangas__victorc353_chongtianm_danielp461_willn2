@@ -30,7 +30,7 @@ export class Game {
 
     static async clientInit() {
       const app = new PIXI.Application();
-      await app.init({ background: '#1099bb', resizeTo: window });
+      await app.init({ background: '#78852b', resizeTo: window });
 
       await Textures.loadAll();
 
@@ -86,7 +86,7 @@ export class Game {
         this.players.forEach((player) => {
           player.updatePosition([], delta);
         });
-        this.localPlayer.update(this.structures, this.chests, this.localPlayer.inventory);
+        this.localPlayer.update(this.structures, this.chests, this.localPlayer.inventory, delta);
         // this.localPlayer.update(this.structures, this.chests, this.localPlayer.inventory);
         if(this.localPlayer){
           this.container.x = this.app.screen.width / 2 - this.localPlayer.getPosX() * this.zoomLevel;

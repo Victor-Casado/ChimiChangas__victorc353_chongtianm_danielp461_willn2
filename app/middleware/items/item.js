@@ -16,7 +16,7 @@ export class Item
         this.sprite.pivot.set(-5, 5);
     }
 
-    updateRotation(x, y){
+    updateRotation(x, y){ //point toward (x, y) and tell player which way to orientate
         const newY = this.y - y;
         const newX = this.x - x;
         this.sprite.scale.x = (newX < 0) ? 1 : -1;

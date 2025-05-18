@@ -7,9 +7,10 @@ export class Shotgun extends Gun
         super(x, y, width, height, isHeld, 'Shotgun', 100 * rarity, 50, 5, 60 / rarity, 500);
         this.automatic = false;
     }
+
+    //specialized fire method to handle shotgun spread
     fire(targetX, targetY) {
         if(this.cooldownCurr < this.cooldown) return;
-        console.log("BAH (shotgun)");
 
         const bulletsFired = [];
         const gunSprite = this.getSprite();

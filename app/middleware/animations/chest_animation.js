@@ -89,4 +89,33 @@ export class ChestAnimation
             this.opened = true;
         }
     }
+
+    static random(maxX, maxY){
+        const ranks = {
+            0: 'wooden',
+            1: 'silver',
+            2: 'gold',
+            3: 'diamond',
+        }
+        return {
+            rank: ranks[Math.floor(Math.random() * 3)],
+            x: Math.floor(Math.random() * maxX),
+            y: Math.floor(Math.random() * maxY),
+        }
+    }
+
+    loadItems(container, items){
+        this.getItemsArray().forEach((item => {
+            items.push(item);
+            container.addChild(item.getSprite());
+        }));
+    }
+
+    toJSON(){
+        return {
+            rank: this.rank,
+            x: this.x,
+            y: this.y
+        }
+    }
 }

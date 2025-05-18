@@ -72,20 +72,17 @@ import { Hitbox } from '../../middleware/hitbox.js';
         }));
     }));
     
-    // player
-    
-
-    container.addChild(localPlayer.getSprite());
     chests.forEach((chest => {
         container.addChild(chest.getSprite());
     }));
 
+    container.addChild(localPlayer.getSprite());
     const texts = localPlayer.getTexts();
 
     Object.keys(texts).forEach(text => {
         container.addChild(texts[text]);
     });
-
+    
     container.setChildIndex(localPlayer.sprite, 0);
 
     app.ticker.add((delta) => {

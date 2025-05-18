@@ -1,5 +1,6 @@
 import {Player} from './player.js';
 import {SpriteAnimation} from './animations/sprite_animation.js';
+import {ChestAnimation} from './animations/chest_animation.js';
 import { Textures } from './textures.js';
 import { Grass, Bush, Tree } from './environment/plant.js';
 import { Structure } from './environment/structure.js';
@@ -9,6 +10,7 @@ export class Game {
       this.players = [];
       this.structures = [];
       this.chests = [];
+      this.items = [];
       this.isServer = isServer;
 
       if (!isServer) {
@@ -55,6 +57,11 @@ export class Game {
       for(let i = 0; i<15; ++i){
         let bush = new Bush(0, Math.random() * 800, Math.random() * 800, null);
         game.structures.push(bush);
+      }
+
+      for(let i = 0; i<20; ++i){
+        const chest = ChestAnimation.random(800, 800);
+        game.chests.push(chest);
       }
 
       return game;
@@ -134,12 +141,21 @@ export class Game {
         // struct.hitbox.makeVisible(this.container);
         this.structures.push(struct);
       });
+
+      state.chests.forEach((chest) => {
+        let c = new ChestAnimation(chest.rank, chest.x, chest.y);
+        this.chests.push(c);
+
+        this.container.addChild(c.sprite);
+
+        c.loadItems(this.container, this.items);
+      });
     }
 
     stateJSON(){
       return {
         structures: this.structures.map(structure => structure.toJSON()),
-        chests: this.chests.map(chest => chest.toJSON())
+        chests: this.chests,
       }
     }
   }

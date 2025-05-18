@@ -44,16 +44,16 @@ export class Game {
       let game = new Game(true, null);
 
       for(let i = 0; i<8; ++i){
-        let tree = new Tree(0, Math.random() * 500, Math.random() * 500, null);
+        let tree = new Tree(0, Math.random() * 800, Math.random() * 800, null);
         game.structures.push(tree);
       }
 
       for(let i = 0; i<50; ++i){
-        game.structures.push(new Grass(0, Math.random() * 500, Math.random() * 500, null));
+        game.structures.push(new Grass(0, Math.random() * 800, Math.random() * 800, null));
       }
 
       for(let i = 0; i<15; ++i){
-        let bush = new Bush(0, Math.random() * 500, Math.random() * 500, null);
+        let bush = new Bush(0, Math.random() * 800, Math.random() * 800, null);
         game.structures.push(bush);
       }
 

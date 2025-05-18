@@ -319,7 +319,10 @@ export class Player
             this.hitbox.x = player.x;
             this.hitbox.y = player.y;
 
-            this.updateTextPos();
+            if(this.texts){
+                this.updateTextPos();
+            }
+            
         }
 
     }

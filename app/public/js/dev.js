@@ -11,7 +11,7 @@ import { Hitbox } from '../../middleware/hitbox.js';
 
 (async () => {
     const app = new PIXI.Application();
-    await app.init({ background: '#78852b', resizeTo: window, antialias: false, antialias: false, // 🔴 Important: disables smoothing
+    await app.init({ background: '#78852b', resizeTo: window, antialias: false, antialias: false,
     resolution: window.devicePixelRatio || 1,
     autoDensity: true });
 

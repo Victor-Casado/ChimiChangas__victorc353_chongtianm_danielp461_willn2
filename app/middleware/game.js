@@ -13,7 +13,8 @@ export class Game {
 
       if (!isServer) {
         this.app = app;
-
+        console.log(this.app.canvas.width);
+        console.log(this.app.canvas.height);
         this.container = new PIXI.Container();
         document.body.appendChild(this.app.canvas);
         this.app.stage.addChild(this.container);
@@ -40,20 +41,21 @@ export class Game {
     }
 
     static async serverInit(){
-      
+
       let game = new Game(true, null);
 
-      for(let i = 0; i<8; ++i){
-        let tree = new Tree(0, Math.random() * 500, Math.random() * 500, null);
+
+      for(let i = 0; i<40; ++i){
+        let tree = new Tree(0, Math.random() * 1900, Math.random() * 800, null);
         game.structures.push(tree);
       }
 
-      for(let i = 0; i<50; ++i){
-        game.structures.push(new Grass(0, Math.random() * 500, Math.random() * 500, null));
+      for(let i = 0; i<500; ++i){
+        game.structures.push(new Grass(0, Math.random() * 1900, Math.random() * 800, null));
       }
 
-      for(let i = 0; i<15; ++i){
-        let bush = new Bush(0, Math.random() * 500, Math.random() * 500, null);
+      for(let i = 0; i<150; ++i){
+        let bush = new Bush(0, Math.random() * 1900, Math.random() * 800, null);
         game.structures.push(bush);
       }
 
@@ -129,7 +131,7 @@ export class Game {
         }
         if(structure.type === 'bush'){
           struct = new Bush(structure.id, structure.x, structure.y, this.container, structure.variant);;
-        } 
+        }
         console.log(struct.hitbox);
         // struct.hitbox.makeVisible(this.container);
         this.structures.push(struct);

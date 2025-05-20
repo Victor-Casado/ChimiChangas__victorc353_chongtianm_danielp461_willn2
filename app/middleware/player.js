@@ -361,7 +361,8 @@ export class Player
             
 
             if(this.texts){
-                }
+                this.updateTextPos();
+            }
         }
 
     }

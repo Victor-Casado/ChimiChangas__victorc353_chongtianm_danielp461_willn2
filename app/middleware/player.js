@@ -1,6 +1,7 @@
 import {Controller} from './controller.js';
 import {Hitbox} from './hitbox.js';
 import {Gun, Bullet} from './items/gun.js';
+import {gunRegistry} from './registry.js';
 import { Shotgun } from './items/guns/shotgun.js';
 
 export class Player
@@ -311,6 +312,40 @@ export class Player
                     this.animation = player.animation;
                     this.updateOrientation();
                 }
+                
+                this.itemHolding = player.itemHolding;
+
+                console.log(player.inventory[player.itemHolding]);
+
+                // this.inventory = [];
+
+                // player.inventory.forEach((item) => {
+                //     let i;
+                //     if(item.type == 'gun'){
+                //         const Constructor = gunRegistry[item.gunName];
+                //         i = new Constructor(item.x, item.y, null, item.rarity, null, item.isHeld);
+                //     }
+                //     this.inventory.push(i);
+                // })
+
+                // console.log(this.inventory);
+
+                // let i = 0;
+                // this.inventory.forEach((item => {
+                //     if(this.itemHolding == i){
+                //         item.isHeld = true;
+                //         item.getSprite().visible = true;
+
+                //         console.log(item);
+                //     }
+                //     else{
+                //         item.isHeld = false;
+                //         item.getSprite().visible = false;
+                //     }
+
+                //     item.updatePosition(this.position.x, this.position.y, this.controller.mouseX, this.controller.mouseY);
+                //     i++;
+                // }));
             }
 
             this.position.x = player.x;
@@ -319,10 +354,15 @@ export class Player
             this.hitbox.x = player.x;
             this.hitbox.y = player.y;
 
+            // this.inventory = player.inventory.map(i => new )
+
+            // console.log(player.inventory);
+
+            
+
             if(this.texts){
                 this.updateTextPos();
             }
-            
         }
 
     }
@@ -393,6 +433,8 @@ export class Player
             orientation: this.orientation,
             animation: this.animation,
             local: this.local,
+            inventory: this.inventory.map(i => i.toJSON()),
+            itemHolding: this.itemHolding,
         };
     }
 }

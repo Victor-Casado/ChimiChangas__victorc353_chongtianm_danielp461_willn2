@@ -36,11 +36,12 @@ export class Gun extends Item
 
     toJSON(){
         return {
-            damage: this.damage,
-            range: this.range,
-            bulletSpeed: this.bulletSpeed,
-            numBullets: this.numBullets,
-            cooldown: this.cooldown,
+            type: 'gun',
+            gunName: this.gunName,
+            x: this.x,
+            y: this.y,
+            isHeld: this.isHeld,
+            rarity: this.rarity,
         };
     }
 }

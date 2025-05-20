@@ -110,7 +110,7 @@ export class Game {
         // this.players.forEach((player) => {
         //   player.updatePosition(this.structures, delta);
         // });
-        this.localPlayer.update(this.structures, this.chests, this.localPlayer.inventory, delta);
+        this.localPlayer.update(this.structures, this.chests, this.items, delta);
         if(this.localPlayer){
           this.container.x = this.app.screen.width / 2 - this.localPlayer.getPosX() * this.zoomLevel;
           this.container.y = this.app.screen.height / 2 - this.localPlayer.getPosY() * this.zoomLevel;

@@ -117,13 +117,18 @@ export class Game {
         // this.players.forEach((player) => {
         //   player.updatePosition(this.structures, delta);
         // });
-        this.localPlayer.update(this.structures, this.chests, this.items, delta);
+        
         if(this.localPlayer){
           this.container.x = this.app.screen.width / 2 - this.localPlayer.getPosX() * this.zoomLevel;
           this.container.y = this.app.screen.height / 2 - this.localPlayer.getPosY() * this.zoomLevel;
 
           this.localPlayer.position.x = Math.max(0, Math.min(this.app.screen.width - this.localPlayer.playerWidth, this.localPlayer.position.x));
           this.localPlayer.position.y = Math.max(0, Math.min(this.app.screen.height - this.localPlayer.playerHeight, this.localPlayer.position.y));
+          
+          const mouseScreen = new PIXI.Point(this.localPlayer.controller.mouseX, this.localPlayer.controller.mouseY);
+          const mouseWorld = this.containe.toLocal(mouseScreen);
+
+          this.localPlayer.update(this.structures, this.chests, this.items, delta, mouseWorld.x, mouseWorld.y);
         }
       });
     }

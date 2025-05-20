@@ -66,6 +66,9 @@ export class Player
         this.controller = new Controller(local);
         this.numNearbyChest = 0;
 
+        this.mouseX = 0;
+        this.mouseY = 0;
+
         if(hitbox == null){
             if(this.sprite){
                 this.hitbox = new Hitbox(x, y, this.sprite.width, this.sprite.height, -this.sprite.width / 2, -this.sprite.height /2);
@@ -84,10 +87,10 @@ export class Player
         this.inventory = new Inventory(this.controller);
     }
 
-    update(structures, chests, items, delta){
+    update(structures, chests, items, delta, mouseX, mouseY){
         this.updatePosition(structures, delta);
         this.updateChest(chests);
-        this.updateItem(items);
+        this.updateItem(items, mouseX, mouseY);
         this.inventory.update(delta);
         this.updateGun();
     }
@@ -205,12 +208,12 @@ export class Player
         }
     }
 
-    updateItem(items){
+    updateItem(items, mouseX, mouseY){
         this.texts['itemInteraction'].text = '';
         this.numNearbyItem = 0;
         items.forEach((item => {
             this.checkItem(item);
-            item.updatePosition(this.position.x, this.position.y, this.controller.mouseX, this.controller.mouseY);
+            item.updatePosition(this.position.x, this.position.y, mouseX, mouseY);
         }));
         // make it so that it only gets closest item and put that in itemInteraction text
         if(this.numNearbyItem > 0){
@@ -380,7 +383,7 @@ export class Player
             orientation: this.orientation,
             animation: this.animation,
             local: this.local,
-            inventory: this.inventory.map(i => i.toJSON()),
+            inventory: this.inventory.inventory.map(i => i.toJSON()),
             itemHolding: this.itemHolding,
         };
     }

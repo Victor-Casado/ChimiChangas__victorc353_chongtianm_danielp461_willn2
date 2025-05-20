@@ -57,10 +57,10 @@ import { Hitbox } from '../../middleware/hitbox.js';
     let collTree = new Tree(0, 0, 0, container);
 
     const chests = [
-        new WoodenChest(500, 500),
-        new SilverChest(600, 600),
-        new GoldChest(300, 300),
-        new DiamondChest(400, 400)
+        new WoodenChest(0, 500, 500),
+        new SilverChest(0, 600, 600),
+        new GoldChest(0, 300, 300),
+        new DiamondChest(0, 400, 400)
     ]
 
     let items = [];

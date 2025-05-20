@@ -126,7 +126,7 @@ export class Game {
           this.localPlayer.position.y = Math.max(0, Math.min(this.app.screen.height - this.localPlayer.playerHeight, this.localPlayer.position.y));
           
           const mouseScreen = new PIXI.Point(this.localPlayer.controller.mouseX, this.localPlayer.controller.mouseY);
-          const mouseWorld = this.containe.toLocal(mouseScreen);
+          const mouseWorld = this.container.toLocal(mouseScreen);
 
           this.localPlayer.update(this.structures, this.chests, this.items, delta, mouseWorld.x, mouseWorld.y);
         }

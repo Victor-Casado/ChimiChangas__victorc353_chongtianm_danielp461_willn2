@@ -43,7 +43,7 @@ export class Inventory{
             if(item instanceof Gun){
                 item.cooldownCurr += delta.deltaTime;
             }
-            item.updatePosition(this.player.position.x, this.player.position.y, this.controller.mouseX, this.controller.mouseY);
+            // item.updatePosition(this.player.position.x, this.player.position.y, this.controller.mouseX, this.controller.mouseY);
             i++;
         }));
     }

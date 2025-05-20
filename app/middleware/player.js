@@ -213,6 +213,9 @@ export class Player
         this.numNearbyItem = 0;
         items.forEach((item => {
             this.checkItem(item);
+            if(item.isHeld){
+                item.updatePosition(this.position.x, this.position.y, mouseX, mouseY);
+            }
         }));
         // make it so that it only gets closest item and put that in itemInteraction text
         if(this.numNearbyItem > 0){

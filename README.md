@@ -2,7 +2,7 @@
 
 DevoRoyale is a 2D online multiplayer game inspired by ZombsRoyale. In DevoRoyale, devos will team up and fight to the death with items they have accumulated from looting boxes and the bodies of defeated devos. But there’s a catch! The devos must not only face each other, but strategically avoid the ever-enclosing storm that forces all teams together. Last devos standing wins. The highest achieving devos will be placed upon a pedestal on the leaderboard, which keeps track of who has the most wins, kills, etc.
 
-## Install Guide
+## Usage Guide
 
 **Prerequisites**
 
@@ -23,17 +23,18 @@ SSH METHOD (requires the SSH key):
 ```
 git@github.com:Victor-Casado/ChimiChangas__victorc353_chongtianm_danielp461_willn2.git
 ```
-2. Navigate to project directory:
+### Launch Codes
+1. Navigate to project directory:
 
 ```
 cd PATH/TO/ChimiChangas__victorc353_chongtianm_danielp461_willn2
 ```
-3. Install dependencies
+2. Install dependencies
 
 ```
 npm install
 ```
-4. Launch the Game
+3. Launch the Game
    
 ```
 node app/server.js

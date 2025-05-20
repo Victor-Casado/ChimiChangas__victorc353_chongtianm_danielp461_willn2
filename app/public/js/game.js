@@ -36,12 +36,12 @@ function handleMessage(data) {
     // console.log(data);
     if (data.type === 'you') {
         game.loadState(data.gameState);
-        game.loadPlayer(data.player.username, data.player.id, 1, data.player.x, data.player.y, true, ws, data.player.orientation);
+        game.loadPlayer(data.player.username, data.player.id, 2, data.player.x, data.player.y, true, ws, data.player.orientation);
     }
 
     if (data.type === 'playerJoined') {
         console.log(`Player ${data.player.id} joined the lobby`);
-        game.loadPlayer(data.player.username, data.player.id, 1, data.player.x, data.player.y, false, null, data.player.orientation);
+        game.loadPlayer(data.player.username, data.player.id, 2, data.player.x, data.player.y, false, null, data.player.orientation);
     }
 
     if (data.type === 'existingPlayers') {

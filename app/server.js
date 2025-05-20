@@ -44,17 +44,17 @@ wss.on('connection', async (ws) => {
           break;
         }
       }
-      
+
       if(!playerExists){
         newPlayerId = clientId++;
-        newPlayer = new Player(username, newPlayerId, null, Math.random() * 400, Math.random() * 400, false, ws);
+        newPlayer = new Player(username, newPlayerId, null, Math.random() * 10, Math.random() * 10, false, ws);
         game.players.push(newPlayer);
       }
 
       clients.push(
-        {id: newPlayerId, 
-          x: newPlayer.x, 
-          y: newPlayer.y, 
+        {id: newPlayerId,
+          x: newPlayer.x,
+          y: newPlayer.y,
           ws: ws }
       );
 
@@ -81,7 +81,7 @@ wss.on('connection', async (ws) => {
       });
       console.log(`Player ${newPlayerId} connected`);
     }
-    
+
     if (message.type === 'move') {
       const p = game.players.find(p => p.getId() === message.player.id);
       if (p) {
@@ -98,9 +98,9 @@ wss.on('connection', async (ws) => {
     }
   });
 
-  
 
-  
+
+
 
   ws.on('close', () => {
   console.log('Client disconnected');

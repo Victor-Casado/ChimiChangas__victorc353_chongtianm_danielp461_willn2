@@ -202,12 +202,11 @@ export class Player
 
     updateInventory(delta){
         if(this.switchItemCooldown <= 0){
-            console.log('hi');
             if(this.controller.keys.firstItem.pressed && this.inventory.length > 0){
                 this.itemHolding = 0;
                 this.switchItemCooldown = 200;
             }
-            else if(this.controller.keys.secondItem.presse && this.inventory.length > 1){
+            else if(this.controller.keys.secondItem.pressed && this.inventory.length > 1){
                 this.itemHolding = 1;
                 this.switchItemCooldown = 200;
             }
@@ -217,7 +216,7 @@ export class Player
             }
         }
         else{
-            this.switchItemCooldown -= 8;
+            this.switchItemCooldown -= 10;
         }
         let i = 0;
         this.inventory.forEach((item => {

@@ -8,8 +8,9 @@ import { Gun, Bullet } from '../items/gun.js';
 // Class for handling chess animations
 export class ChestAnimation
 {
-    constructor(rank, x, y)
+    constructor(id, rank, x, y)
     {
+        this.id = id,
         this.position = {
             x: x,
             y: y,
@@ -87,6 +88,37 @@ export class ChestAnimation
             };
             this.sprite.play();
             this.opened = true;
+        }
+    }
+
+    static random(id, maxX, maxY){
+        const ranks = {
+            0: 'wooden',
+            1: 'silver',
+            2: 'gold',
+            3: 'diamond',
+        }
+        return {
+            id: id,
+            rank: ranks[Math.floor(Math.random() * 3)],
+            x: Math.floor(Math.random() * maxX),
+            y: Math.floor(Math.random() * maxY),
+        }
+    }
+
+    loadItems(container, items){
+        this.getItemsArray().forEach((item => {
+            items.push(item);
+            container.addChild(item.getSprite());
+        }));
+    }
+
+    toJSON(){
+        return {
+            rank: this.rank,
+            x: this.x,
+            y: this.y,
+            items: this.items.map(item => item.toJSON()),
         }
     }
 }

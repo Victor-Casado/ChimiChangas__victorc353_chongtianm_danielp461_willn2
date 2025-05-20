@@ -1,5 +1,6 @@
 import {Player} from './player.js';
 import {SpriteAnimation} from './animations/sprite_animation.js';
+import {ChestAnimation} from './animations/chest_animation.js';
 import { Textures } from './textures.js';
 import { Grass, Bush, Tree } from './environment/plant.js';
 import { Structure } from './environment/structure.js';
@@ -9,6 +10,7 @@ export class Game {
       this.players = [];
       this.structures = [];
       this.chests = [];
+      this.items = [];
       this.isServer = isServer;
 
       if (!isServer) {
@@ -44,10 +46,12 @@ export class Game {
 
       let game = new Game(true, null);
 
+      let structId = 0;
 
       for(let i = 0; i<40; ++i){
-        let tree = new Tree(0, Math.random() * 1885 + 15, Math.random() * 785 + 15, null);
+        let tree = new Tree(structId, Math.random() * 1885 + 15, Math.random() * 785 + 15, null);
         game.structures.push(tree);
+        structId++;
       }
 
       for(let i = 0; i<500; ++i){
@@ -55,8 +59,16 @@ export class Game {
       }
 
       for(let i = 0; i<150; ++i){
-        let bush = new Bush(0, Math.random() * 1885 + 15, Math.random() * 785 + 15, null);
+        let bush = new Bush(structId, Math.random() * 1885 + 15, Math.random() * 785 + 15, null);
         game.structures.push(bush);
+        structId++;
+      }
+
+      for(let i = 0; i<5; ++i){
+        const chest = ChestAnimation.random(structId, 800, 800);
+        game.chests.push(chest);
+        // console.log(chest);
+        structId++;
       }
 
       return game;
@@ -105,13 +117,18 @@ export class Game {
         // this.players.forEach((player) => {
         //   player.updatePosition(this.structures, delta);
         // });
-        this.localPlayer.update(this.structures, this.chests, this.localPlayer.inventory, delta);
+        
         if(this.localPlayer){
           this.container.x = this.app.screen.width / 2 - this.localPlayer.getPosX() * this.zoomLevel;
           this.container.y = this.app.screen.height / 2 - this.localPlayer.getPosY() * this.zoomLevel;
 
           this.localPlayer.position.x = Math.max(0, Math.min(this.app.screen.width - this.localPlayer.playerWidth, this.localPlayer.position.x));
           this.localPlayer.position.y = Math.max(0, Math.min(this.app.screen.height - this.localPlayer.playerHeight, this.localPlayer.position.y));
+          
+          const mouseScreen = new PIXI.Point(this.localPlayer.controller.mouseX, this.localPlayer.controller.mouseY);
+          const mouseWorld = this.containe.toLocal(mouseScreen);
+
+          this.localPlayer.update(this.structures, this.chests, this.items, delta, mouseWorld.x, mouseWorld.y);
         }
       });
     }
@@ -132,16 +149,37 @@ export class Game {
         if(structure.type === 'bush'){
           struct = new Bush(structure.id, structure.x, structure.y, this.container, structure.variant);;
         }
-        console.log(struct.hitbox);
+        // console.log(struct.hitbox);
         // struct.hitbox.makeVisible(this.container);
+        
         this.structures.push(struct);
       });
+
+      state.chests.forEach((chest) => {
+        console.log(chest.id);
+        let c = new ChestAnimation(chest.id, chest.rank, chest.x, chest.y);
+        // c.items = chest.items;
+        console.log(chest);
+        this.chests.push(c);
+
+        this.container.addChild(c.sprite);
+
+        c.loadItems(this.container, this.items);
+      });
+      this.chests[1].openChest();
+    }
+
+    refreshState(type, chest, id){
+      if(type == 'chest'){
+        // const items = chest.items;
+        this.chests[id].openChest();
+      }
     }
 
     stateJSON(){
       return {
         structures: this.structures.map(structure => structure.toJSON()),
-        chests: this.chests.map(chest => chest.toJSON())
+        chests: this.chests,
       }
     }
   }

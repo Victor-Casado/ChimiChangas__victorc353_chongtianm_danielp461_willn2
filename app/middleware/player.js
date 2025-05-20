@@ -66,6 +66,9 @@ export class Player
         this.controller = new Controller(local);
         this.numNearbyChest = 0;
 
+        this.mouseX = 0;
+        this.mouseY = 0;
+
         if(hitbox == null){
             if(this.sprite){
                 this.hitbox = new Hitbox(x, y, this.sprite.width, this.sprite.height, -this.sprite.width / 2, -this.sprite.height /2);
@@ -84,10 +87,10 @@ export class Player
         this.inventory = new Inventory(this);
     }
 
-    update(structures, chests, items, delta){
+    update(structures, chests, items, delta, mouseX, mouseY){
         this.updatePosition(structures, delta);
         this.updateChest(chests);
-        this.updateItem(items);
+        this.updateItem(items, mouseX, mouseY);
         this.inventory.update(delta);
         this.updateGun();
     }
@@ -205,7 +208,7 @@ export class Player
         }
     }
 
-    updateItem(items){
+    updateItem(items, mouseX, mouseY){
         this.texts['itemInteraction'].text = '';
         this.numNearbyItem = 0;
         items.forEach((item => {
@@ -260,8 +263,40 @@ export class Player
                     this.animation = player.animation;
                     this.updateOrientation();
                 }
-                this.updateTextPos();
+                
+                this.itemHolding = player.itemHolding;
 
+                console.log(player.inventory[player.itemHolding]);
+
+                // this.inventory = [];
+
+                // player.inventory.forEach((item) => {
+                //     let i;
+                //     if(item.type == 'gun'){
+                //         const Constructor = gunRegistry[item.gunName];
+                //         i = new Constructor(item.x, item.y, null, item.rarity, null, item.isHeld);
+                //     }
+                //     this.inventory.push(i);
+                // })
+
+                // console.log(this.inventory);
+
+                // let i = 0;
+                // this.inventory.forEach((item => {
+                //     if(this.itemHolding == i){
+                //         item.isHeld = true;
+                //         item.getSprite().visible = true;
+
+                //         console.log(item);
+                //     }
+                //     else{
+                //         item.isHeld = false;
+                //         item.getSprite().visible = false;
+                //     }
+
+                //     item.updatePosition(this.position.x, this.position.y, this.controller.mouseX, this.controller.mouseY);
+                //     i++;
+                // }));
             }
 
             this.position.x = player.x;
@@ -270,6 +305,15 @@ export class Player
             this.hitbox.x = player.x;
             this.hitbox.y = player.y;
 
+            // this.inventory = player.inventory.map(i => new )
+
+            // console.log(player.inventory);
+
+            
+
+            if(this.texts){
+                this.updateTextPos();
+            }
         }
 
     }
@@ -338,6 +382,8 @@ export class Player
             orientation: this.orientation,
             animation: this.animation,
             local: this.local,
+            inventory: this.inventory.inventory.map(i => i.toJSON()),
+            itemHolding: this.itemHolding,
         };
     }
 }

@@ -1,14 +1,15 @@
 import { Gun } from "./items/gun.js";
 
 export class Inventory{
-    constructor(controller){        
+    constructor(player){        
         this.inventory = [];
         this.itemHolding = 0;
         this.switchItemCooldown = 0;
         this.droppedCooldown = 0;
-        this.maxCapacity = 31231;
+        this.maxCapacity = 3;
 
-        this.controller = controller;
+        this.player = player;
+        this.controller = player.controller;
     }
 
     update(delta){
@@ -27,7 +28,7 @@ export class Inventory{
             }
         }
         else{
-            this.switchItemCooldown -= 10;
+            this.switchItemCooldown -= 25;
         }
         let i = 0;
         this.inventory.forEach((item => {
@@ -42,13 +43,18 @@ export class Inventory{
             if(item instanceof Gun){
                 item.cooldownCurr += delta.deltaTime;
             }
+            item.updatePosition(this.player.position.x, this.player.position.y, this.controller.mouseX, this.controller.mouseY);
             i++;
         }));
     }
 
     addItem(item){
-        if(this.inventory.length == this.maxCapacity){
+        if(this.inventory.length == this.maxCapacity && this.droppedCooldown <= 0){
             this.dropItem(this.itemHolding);
+        }
+        else if(this.inventory.length == this.maxCapacity && this.droppedCooldown > 0){
+            this.droppedCooldown -= 25;
+            return;
         }
         this.inventory.push(item);
         this.itemHolding = this.inventory.length - 1;
@@ -58,15 +64,11 @@ export class Inventory{
         if(index < 0 || index >= this.inventory.length){
             return;
         }
-        if(this.droppedCooldown > 0){
-            this.droppedCooldown -= 5;
-            return;
-        }
         const item = this.inventory[index];
         item.getSprite().visible = true;
         item.isHeld = false;
         this.inventory.splice(index, 1);
-        this.droppedCooldown = 200;
+        this.droppedCooldown = 100;
     }
 
     getHoldingItem(){

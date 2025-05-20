@@ -81,7 +81,7 @@ export class Player
             this.ws = ws;
         }
 
-        this.inventory = new Inventory(this.controller);
+        this.inventory = new Inventory(this);
     }
 
     update(structures, chests, items, delta){
@@ -210,7 +210,6 @@ export class Player
         this.numNearbyItem = 0;
         items.forEach((item => {
             this.checkItem(item);
-            item.updatePosition(this.position.x, this.position.y, this.controller.mouseX, this.controller.mouseY);
         }));
         // make it so that it only gets closest item and put that in itemInteraction text
         if(this.numNearbyItem > 0){

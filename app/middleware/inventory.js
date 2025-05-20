@@ -53,7 +53,7 @@ export class Inventory{
             this.dropItem(this.itemHolding);
         }
         else if(this.inventory.length == this.maxCapacity && this.droppedCooldown > 0){
-            this.droppedCooldown -= 25;
+            this.droppedCooldown -= 10;
             return;
         }
         this.inventory.push(item);
@@ -68,7 +68,7 @@ export class Inventory{
         item.getSprite().visible = true;
         item.isHeld = false;
         this.inventory.splice(index, 1);
-        this.droppedCooldown = 100;
+        this.droppedCooldown = 200;
     }
 
     getHoldingItem(){

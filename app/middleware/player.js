@@ -59,7 +59,7 @@ export class Player
             this.texts.itemInteraction.zIndex = 50;
         }
 
-        
+
 
         this.playerWidth = playerWidth;
         this.playerHeight = playerHeight;
@@ -144,7 +144,7 @@ export class Player
         } else{
             newOrientation = this.inventory[this.itemHolding].orientation;
         }
-        
+
 
         if (!pressed) {
             newAnimation = 'Idle';
@@ -361,8 +361,7 @@ export class Player
             
 
             if(this.texts){
-                this.updateTextPos();
-            }
+                }
         }
 
     }

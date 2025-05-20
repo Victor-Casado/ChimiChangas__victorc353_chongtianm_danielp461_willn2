@@ -46,24 +46,30 @@ export class Game {
 
       let game = new Game(true, null);
 
+      let structId = 0;
 
       for(let i = 0; i<40; ++i){
-        let tree = new Tree(0, Math.random() * 1900, Math.random() * 800, null);
+        let tree = new Tree(structId, Math.random() * 1900, Math.random() * 800, null);
         game.structures.push(tree);
+        structId++;
       }
 
       for(let i = 0; i<500; ++i){
-        game.structures.push(new Grass(0, Math.random() * 1900, Math.random() * 800, null));
+        game.structures.push(new Grass(structId, Math.random() * 1900, Math.random() * 800, null));
+        structId++;
       }
 
       for(let i = 0; i<150; ++i){
-        let bush = new Bush(0, Math.random() * 1900, Math.random() * 800, null);
+        let bush = new Bush(structId, Math.random() * 1900, Math.random() * 800, null);
         game.structures.push(bush);
+        structId++;
       }
 
-      for(let i = 0; i<20; ++i){
-        const chest = ChestAnimation.random(800, 800);
+      for(let i = 0; i<5; ++i){
+        const chest = ChestAnimation.random(structId, 800, 800);
         game.chests.push(chest);
+        // console.log(chest);
+        structId++;
       }
 
       return game;
@@ -139,19 +145,31 @@ export class Game {
         if(structure.type === 'bush'){
           struct = new Bush(structure.id, structure.x, structure.y, this.container, structure.variant);;
         }
-        console.log(struct.hitbox);
+        // console.log(struct.hitbox);
         // struct.hitbox.makeVisible(this.container);
+        
         this.structures.push(struct);
       });
 
       state.chests.forEach((chest) => {
-        let c = new ChestAnimation(chest.rank, chest.x, chest.y);
+        console.log(chest.id);
+        let c = new ChestAnimation(chest.id, chest.rank, chest.x, chest.y);
+        // c.items = chest.items;
+        console.log(chest);
         this.chests.push(c);
 
         this.container.addChild(c.sprite);
 
         c.loadItems(this.container, this.items);
       });
+      this.chests[1].openChest();
+    }
+
+    refreshState(type, chest, id){
+      if(type == 'chest'){
+        // const items = chest.items;
+        this.chests[id].openChest();
+      }
     }
 
     stateJSON(){

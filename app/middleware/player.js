@@ -201,11 +201,22 @@ export class Player
     }
 
     updateInventory(delta){
-        if(this.controller.keys.switchItem.pressed && this.switchItemCooldown <= 0){
-            this.itemHolding = (this.itemHolding + 1) % this.inventory.length;
-            this.switchItemCooldown = 200;
+        if(this.switchItemCooldown <= 0){
+            console.log('hi');
+            if(this.controller.keys.firstItem.pressed && this.inventory.length > 0){
+                this.itemHolding = 0;
+                this.switchItemCooldown = 200;
+            }
+            else if(this.controller.keys.secondItem.presse && this.inventory.length > 1){
+                this.itemHolding = 1;
+                this.switchItemCooldown = 200;
+            }
+            else if(this.controller.keys.thirdItem.pressed && this.inventory.length > 2){
+                this.itemHolding = 2;
+                this.switchItemCooldown = 200;
+            }
         }
-        if(this.switchItemCooldown > 0){
+        else{
             this.switchItemCooldown -= 8;
         }
         let i = 0;
@@ -253,26 +264,25 @@ export class Player
         if(index < 0 || index >= this.inventory.length){
             return;
         }
-        if(this.droppedCooldown <= 0){
-            const item = this.inventory[index];
-            item.getSprite().visible = true;
-            item.isHeld = false;
-            this.inventory.splice(index, 1);
-        }
-        else{
-            this.droppedCooldown -= 200;
-        }
+        const item = this.inventory[index];
+        item.getSprite().visible = true;
+        item.isHeld = false;
+        this.inventory.splice(index, 1);
+        this.droppedCooldown = 200;
     }
 
     checkItem(item){
         if(!item.isHeld && item.getSprite().visible && this.nearbyItem(item)){
             this.numNearbyItem++;
-            if(this.controller.keys.pickUpItem.pressed){
+            if(this.controller.keys.pickUpItem.pressed && this.droppedCooldown <= 0){
                 if(this.inventory.length == 3){
                     this.dropItem(this.itemHolding);
                 }
                 this.inventory.push(item);
                 this.itemHolding = this.inventory.length - 1;
+            }
+            if(this.droppedCooldown > 0){
+                this.droppedCooldown -= 5;
             }
         }
     }

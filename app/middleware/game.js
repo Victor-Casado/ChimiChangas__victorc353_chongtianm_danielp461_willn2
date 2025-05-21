@@ -32,6 +32,10 @@ export class Game {
         this.container.scale.set(this.zoomLevel);
 
         this.localPlayer = null;
+
+        const crosshair = 'url(\'https://pixijs.com/assets/bunny.png\'),auto';
+
+        this.app.renderer.events.cursorStyles.default = crosshair
       }
     }
 

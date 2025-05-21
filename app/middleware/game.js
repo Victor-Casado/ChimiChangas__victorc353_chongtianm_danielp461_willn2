@@ -33,7 +33,7 @@ export class Game {
 
         this.localPlayer = null;
 
-        const crosshair = 'url(\'https://pixijs.com/assets/bunny.png\'),auto';
+        const crosshair = "url('/public/assets/weapons/crosshair.png'),auto";
 
         this.app.renderer.events.cursorStyles.default = crosshair
       }
@@ -130,7 +130,7 @@ export class Game {
           this.localPlayer.position.x = Math.max(0, Math.min(this.app.screen.width - this.localPlayer.playerWidth, this.localPlayer.position.x));
           this.localPlayer.position.y = Math.max(0, Math.min(this.app.screen.height - this.localPlayer.playerHeight, this.localPlayer.position.y));
           
-          const mouseScreen = new PIXI.Point(this.localPlayer.controller.mouseX, this.localPlayer.controller.mouseY);
+          const mouseScreen = new PIXI.Point(this.localPlayer.controller.mouseX + 8, this.localPlayer.controller.mouseY + 8);
           const mouseWorld = this.container.toLocal(mouseScreen);
 
           this.localPlayer.mouseX = mouseWorld.x;

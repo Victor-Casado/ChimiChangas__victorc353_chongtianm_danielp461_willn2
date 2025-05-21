@@ -94,7 +94,6 @@ export class Bullet {
     //bullet movement through sky
     update(delta) {
         if(!this.alive){
-            console.log("DEAD");
             return;
         }
         const frameSpeed = this.speed * (delta.deltaTime / 60); //fixed movement speed

@@ -87,10 +87,10 @@ export class Player
         this.inventory = new Inventory(this);
     }
 
-    update(structures, chests, items, delta, mouseX, mouseY){
+    update(structures, chests, items, delta){
         this.updatePosition(structures, delta);
         this.updateChest(chests);
-        this.updateItem(items, mouseX, mouseY);
+        this.updateItem(items);
         this.inventory.update(delta);
         this.updateGun();
     }
@@ -170,13 +170,13 @@ export class Player
 
     updateGun(){
         if (!this.inventory.length()) return;
-
+        
         const heldItem = this.inventory.getHoldingItem();
-
+        
         if (heldItem instanceof Gun && this.controller.clicked) {
             const gun = heldItem;
-
-            gun.fire(this.controller.mouseX, this.controller.mouseY, gun);
+            
+            gun.fire(this.mouseX, this.mouseY, gun);
 
             if(!gun.automatic) this.controller.clicked = false;
         }
@@ -208,13 +208,13 @@ export class Player
         }
     }
 
-    updateItem(items, mouseX, mouseY){
+    updateItem(items){
         this.texts['itemInteraction'].text = '';
         this.numNearbyItem = 0;
         items.forEach((item => {
             this.checkItem(item);
             if(item.isHeld){
-                item.updatePosition(this.position.x, this.position.y, mouseX, mouseY);
+                item.updatePosition(this.position.x, this.position.y, this.mouseX, this.mouseY);
             }
         }));
         // make it so that it only gets closest item and put that in itemInteraction text

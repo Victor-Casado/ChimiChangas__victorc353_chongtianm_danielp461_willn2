@@ -4,6 +4,8 @@ import {ChestAnimation} from './animations/chest_animation.js';
 import { Textures } from './textures.js';
 import { Grass, Bush, Tree } from './environment/plant.js';
 import { Structure } from './environment/structure.js';
+import { bullets } from './items/gun.js';
+import { Hitbox } from './hitbox.js';
 
 export class Game {
     constructor(isServer, app) {
@@ -114,10 +116,9 @@ export class Game {
 
     startLoop() {
       this.app.ticker.add((delta) => {
-        // this.players.forEach((player) => {
-        //   player.updatePosition(this.structures, delta);
-        // });
         
+        this.updateBullets(delta);
+
         if(this.localPlayer){
           this.container.x = this.app.screen.width / 2 - this.localPlayer.getPosX() * this.zoomLevel;
           this.container.y = this.app.screen.height / 2 - this.localPlayer.getPosY() * this.zoomLevel;
@@ -128,11 +129,26 @@ export class Game {
           const mouseScreen = new PIXI.Point(this.localPlayer.controller.mouseX, this.localPlayer.controller.mouseY);
           const mouseWorld = this.container.toLocal(mouseScreen);
 
-          this.localPlayer.update(this.structures, this.chests, this.items, delta, mouseWorld.x, mouseWorld.y);
+          this.localPlayer.mouseX = mouseWorld.x;
+          this.localPlayer.mouseY = mouseWorld.y;
+
+          this.localPlayer.update(this.structures, this.chests, this.items, delta);
         }
       });
     }
-
+    updateBullets(delta){
+      bullets.forEach((bullet, index) => {
+          if (bullet.alive) {
+              bullet.update(delta);
+          } else {
+              bullets.splice(index, 1); 
+          }
+          if(Hitbox.collision(bullet, this.structures)){
+              console.log("bang");
+              bullet.shouldKill = true;
+          }
+      });
+    }
     getPlayers(){
       return this.players;
     }

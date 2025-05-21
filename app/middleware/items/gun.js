@@ -23,13 +23,15 @@ export class Gun extends Item
     }
 
     fire(targetX, targetY){
-        if(this.cooldownCurr < this.cooldown) return; //ignore fire if cooldown timer hasn't reached appropriate time
+        
+        if(this.cooldownCurr < this.cooldown) return; 
+    
         const bullet = new Bullet(targetX, targetY, this);
 
         this.sprite.parent.addChild(bullet.sprite);
-
+        
         bullets.push(bullet);
-
+       
         this.cooldownCurr = 0; //reset timer
         return bullet;
     } 
@@ -49,6 +51,7 @@ export class Gun extends Item
 export class Bullet {
     constructor(targetX, targetY, gun) {
         const gunSprite = gun.getSprite(); 
+        
         this.x = gunSprite.x;
         this.y = gunSprite.y;
 
@@ -91,6 +94,7 @@ export class Bullet {
     //bullet movement through sky
     update(delta) {
         if(!this.alive){
+            console.log("DEAD");
             return;
         }
         const frameSpeed = this.speed * (delta.deltaTime / 60); //fixed movement speed

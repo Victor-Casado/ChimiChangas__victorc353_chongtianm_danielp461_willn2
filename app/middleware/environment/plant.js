@@ -16,10 +16,10 @@ export class Grass extends Structure{
 
 export class Bush extends Structure{
     constructor(id, x, y, container, variant = 0){
-        
+
 
         if(variant == 0){
-            variant = Math.floor(Math.random() * (5 + 1)) + 1;
+            variant = Math.floor(Math.random() * (5)) + 1;
         }
         super(id, x, y, 'bush', container, variant);
         if(this.sprite){
@@ -31,7 +31,7 @@ export class Bush extends Structure{
             this.sprite.zIndex = 10;
             // this.hitbox.makeVisible(this.container);
         }
-        
+
     }
 }
 

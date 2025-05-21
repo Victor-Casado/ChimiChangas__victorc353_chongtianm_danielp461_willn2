@@ -70,8 +70,8 @@ export class Game {
         structId++;
       }
 
-      for(let i = 0; i<5; ++i){
-        const chest = ChestAnimation.random(structId, 800, 800);
+      for(let i = 0; i<50; ++i){
+        const chest = ChestAnimation.random(structId, 1900, 800);
         game.chests.push(chest);
         // console.log(chest);
         structId++;
@@ -98,6 +98,7 @@ export class Game {
       }
 
       this.players.push(player);
+      player.hitbox.makeVisible(this.container);
       return player;
     }
 
@@ -120,16 +121,17 @@ export class Game {
 
     startLoop() {
       this.app.ticker.add((delta) => {
-        
+
         this.updateBullets(delta);
 
         if(this.localPlayer){
+          //this.localPlayer.hitbox.update();
           this.container.x = this.app.screen.width / 2 - this.localPlayer.getPosX() * this.zoomLevel;
           this.container.y = this.app.screen.height / 2 - this.localPlayer.getPosY() * this.zoomLevel;
 
           this.localPlayer.position.x = Math.max(0, Math.min(this.app.screen.width - this.localPlayer.playerWidth, this.localPlayer.position.x));
           this.localPlayer.position.y = Math.max(0, Math.min(this.app.screen.height - this.localPlayer.playerHeight, this.localPlayer.position.y));
-          
+
           const mouseScreen = new PIXI.Point(this.localPlayer.controller.mouseX + 8, this.localPlayer.controller.mouseY + 8);
           const mouseWorld = this.container.toLocal(mouseScreen);
 
@@ -145,7 +147,7 @@ export class Game {
           if (bullet.alive) {
               bullet.update(delta);
           } else {
-              bullets.splice(index, 1); 
+              bullets.splice(index, 1);
           }
           if(Hitbox.collision(bullet, this.structures)){
               console.log("bang");
@@ -162,16 +164,19 @@ export class Game {
         let struct;
         if(structure.type === 'tree'){
           struct = new Tree(structure.id, structure.x, structure.y, this.container, structure.variant);;
+          //struct.hitbox.makeVisible(this.container);
         }
         if(structure.type === 'grass'){
           struct = new Grass(structure.id, structure.x, structure.y, this.container, structure.variant);;
+
         }
         if(structure.type === 'bush'){
           struct = new Bush(structure.id, structure.x, structure.y, this.container, structure.variant);;
+          //struct.hitbox.makeVisible(this.container);
         }
         // console.log(struct.hitbox);
         // struct.hitbox.makeVisible(this.container);
-        
+
         this.structures.push(struct);
       });
 

@@ -1,7 +1,7 @@
 import {Controller} from './controller.js';
 import {Hitbox} from './hitbox.js';
-import {Gun, Bullet} from './items/gun.js';
-import { Shotgun } from './items/guns/shotgun.js';
+import { Inventory } from './inventory.js';
+import {Gun} from './items/gun.js';
 
 export class Player
 {
@@ -58,21 +58,16 @@ export class Player
             this.texts.itemInteraction.zIndex = 50;
         }
 
-
-
         this.playerWidth = playerWidth;
         this.playerHeight = playerHeight;
 
         this.local = local;
         this.dev = dev;
         this.controller = new Controller(local);
-        this.itemHolding = 0;
         this.numNearbyChest = 0;
-        this.numNearbyItem = 0;
-        this.switchItemCooldown = 0;
-        this.droppedCooldown = 0;
 
-        this.inventory = [];
+        this.mouseX = 0;
+        this.mouseY = 0;
 
         if(hitbox == null){
             if(this.sprite){
@@ -88,13 +83,15 @@ export class Player
         if(!dev){
             this.ws = ws;
         }
+
+        this.inventory = new Inventory(this);
     }
 
     update(structures, chests, items, delta){
         this.updatePosition(structures, delta);
         this.updateChest(chests);
         this.updateItem(items);
-        this.updateInventory(delta);
+        this.inventory.update(delta);
         this.updateGun();
     }
 
@@ -135,13 +132,13 @@ export class Player
         }
 
 
-        if(this.inventory.length == 0){
+        if(this.inventory.length() == 0){
             if (deltaY < 0) newOrientation = 'behind';
             else if (deltaY > 0) newOrientation = 'front';
             else if (deltaX < 0) newOrientation = 'left';
             else if (deltaX > 0) newOrientation = 'right';
         } else{
-            newOrientation = this.inventory[this.itemHolding].orientation;
+            newOrientation = this.inventory.getHoldingItem().orientation;
         }
 
 
@@ -172,14 +169,14 @@ export class Player
 }
 
     updateGun(){
-        if (!this.inventory.length) return;
-
-        const heldItem = this.inventory[this.itemHolding];
-
+        if (!this.inventory.length()) return;
+        
+        const heldItem = this.inventory.getHoldingItem();
+        
         if (heldItem instanceof Gun && this.controller.clicked) {
             const gun = heldItem;
-
-            gun.fire(this.controller.mouseX, this.controller.mouseY, gun);
+            
+            gun.fire(this.mouseX, this.mouseY, gun);
 
             if(!gun.automatic) this.controller.clicked = false;
         }
@@ -200,32 +197,6 @@ export class Player
         this.sprite.anchor.set(0.5);
     }
 
-    updateInventory(delta){
-        if(this.controller.keys.switchItem.pressed && this.switchItemCooldown <= 0){
-            this.itemHolding = (this.itemHolding + 1) % this.inventory.length;
-            this.switchItemCooldown = 200;
-        }
-        if(this.switchItemCooldown > 0){
-            this.switchItemCooldown -= 8;
-        }
-        let i = 0;
-        this.inventory.forEach((item => {
-            if(this.itemHolding == i){
-                item.isHeld = true;
-                item.getSprite().visible = true;
-            }
-            else{
-                item.isHeld = false;
-                item.getSprite().visible = false;
-            }
-            if(item instanceof Gun){
-                item.cooldownCurr += delta.deltaTime;
-            }
-            item.updatePosition(this.position.x, this.position.y, this.controller.mouseX, this.controller.mouseY);
-            i++;
-        }));
-    }
-
     updateChest(chests){
         this.texts['chestInteraction'].text = '';
         this.numNearbyChest = 0;
@@ -242,6 +213,9 @@ export class Player
         this.numNearbyItem = 0;
         items.forEach((item => {
             this.checkItem(item);
+            // if(item.isHeld){
+            //     item.updatePosition(this.position.x, this.position.y, this.mouseX, this.mouseY);
+            // }
         }));
         // make it so that it only gets closest item and put that in itemInteraction text
         if(this.numNearbyItem > 0){
@@ -249,30 +223,11 @@ export class Player
         }
     }
 
-    dropItem(index){
-        if(index < 0 || index >= this.inventory.length){
-            return;
-        }
-        if(this.droppedCooldown <= 0){
-            const item = this.inventory[index];
-            item.getSprite().visible = true;
-            item.isHeld = false;
-            this.inventory.splice(index, 1);
-        }
-        else{
-            this.droppedCooldown -= 200;
-        }
-    }
-
     checkItem(item){
         if(!item.isHeld && item.getSprite().visible && this.nearbyItem(item)){
             this.numNearbyItem++;
             if(this.controller.keys.pickUpItem.pressed){
-                if(this.inventory.length == 3){
-                    this.dropItem(this.itemHolding);
-                }
-                this.inventory.push(item);
-                this.itemHolding = this.inventory.length - 1;
+                this.inventory.addItem(item);
             }
         }
     }
@@ -311,8 +266,40 @@ export class Player
                     this.animation = player.animation;
                     this.updateOrientation();
                 }
-                this.updateTextPos();
+                
+                this.itemHolding = player.itemHolding;
 
+                console.log(player.inventory[player.itemHolding]);
+
+                // this.inventory = [];
+
+                // player.inventory.forEach((item) => {
+                //     let i;
+                //     if(item.type == 'gun'){
+                //         const Constructor = gunRegistry[item.gunName];
+                //         i = new Constructor(item.x, item.y, null, item.rarity, null, item.isHeld);
+                //     }
+                //     this.inventory.push(i);
+                // })
+
+                // console.log(this.inventory);
+
+                // let i = 0;
+                // this.inventory.forEach((item => {
+                //     if(this.itemHolding == i){
+                //         item.isHeld = true;
+                //         item.getSprite().visible = true;
+
+                //         console.log(item);
+                //     }
+                //     else{
+                //         item.isHeld = false;
+                //         item.getSprite().visible = false;
+                //     }
+
+                //     item.updatePosition(this.position.x, this.position.y, this.controller.mouseX, this.controller.mouseY);
+                //     i++;
+                // }));
             }
 
             this.position.x = player.x;
@@ -321,6 +308,15 @@ export class Player
             this.hitbox.x = player.x;
             this.hitbox.y = player.y;
 
+            // this.inventory = player.inventory.map(i => new )
+
+            // console.log(player.inventory);
+
+            
+
+            if(this.texts){
+                this.updateTextPos();
+            }
         }
 
     }
@@ -330,8 +326,6 @@ export class Player
             this.sprite.destroy();
         }
         if(this.texts){
-            console.log(this.texts);
-            // console.log(this.texts.values());
             Object.values(this.texts).forEach(p => {
                 p.destroy();
             });
@@ -347,7 +341,7 @@ export class Player
     }
 
     nearbyItem(item){
-        const dist = 30;
+        const dist = 35;
         if(Math.abs(this.position.x - item.x) < dist && Math.abs(this.position.y - item.y) < dist){
             return true;
         }
@@ -391,6 +385,8 @@ export class Player
             orientation: this.orientation,
             animation: this.animation,
             local: this.local,
+            inventory: this.inventory.inventory.map(i => i.toJSON()),
+            itemHolding: this.itemHolding,
         };
     }
 }

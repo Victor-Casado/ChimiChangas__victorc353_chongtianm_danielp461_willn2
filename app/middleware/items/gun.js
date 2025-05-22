@@ -23,24 +23,27 @@ export class Gun extends Item
     }
 
     fire(targetX, targetY){
-        if(this.cooldownCurr < this.cooldown) return; //ignore fire if cooldown timer hasn't reached appropriate time
+        
+        if(this.cooldownCurr < this.cooldown) return; 
+    
         const bullet = new Bullet(targetX, targetY, this);
 
         this.sprite.parent.addChild(bullet.sprite);
-
+        
         bullets.push(bullet);
-
+       
         this.cooldownCurr = 0; //reset timer
         return bullet;
     } 
 
     toJSON(){
         return {
-            damage: this.damage,
-            range: this.range,
-            bulletSpeed: this.bulletSpeed,
-            numBullets: this.numBullets,
-            cooldown: this.cooldown,
+            type: 'gun',
+            gunName: this.gunName,
+            x: this.x,
+            y: this.y,
+            isHeld: this.isHeld,
+            rarity: this.rarity,
         };
     }
 }
@@ -48,6 +51,7 @@ export class Gun extends Item
 export class Bullet {
     constructor(targetX, targetY, gun) {
         const gunSprite = gun.getSprite(); 
+        
         this.x = gunSprite.x;
         this.y = gunSprite.y;
 

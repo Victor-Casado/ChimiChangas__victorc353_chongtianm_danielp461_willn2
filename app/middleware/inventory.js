@@ -30,6 +30,15 @@ export class Inventory{
         else{
             this.switchItemCooldown -= 25;
         }
+
+        this.inventory.forEach((item => {
+            if(item instanceof Gun){
+                item.cooldownCurr += delta.deltaTime;
+            }
+        }));
+        this.updateVisual();
+    }
+    updateVisual(){
         let i = 0;
         this.inventory.forEach((item => {
             if(this.itemHolding == i){
@@ -40,9 +49,7 @@ export class Inventory{
                 item.isHeld = false;
                 item.getSprite().visible = false;
             }
-            if(item instanceof Gun){
-                item.cooldownCurr += delta.deltaTime;
-            }
+            
             item.updatePosition(this.player.position.x, this.player.position.y, this.player.mouseX, this.player.mouseY);
             i++;
         }));
@@ -81,5 +88,12 @@ export class Inventory{
 
     length(){
         return this.inventory.length;
+    }
+
+    toJSON(){
+        return {
+            inventory: this.inventory.map(i => i.toJSON()),
+            itemHolding: this.itemHolding
+        }
     }
 }

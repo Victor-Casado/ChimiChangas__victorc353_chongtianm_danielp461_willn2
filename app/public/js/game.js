@@ -58,6 +58,7 @@ function handleMessage(data) {
         // console.log("Loading existing players:", data.clients);
         const mover = game.players.find(p => p.id === data.player.id);
         //data.player = UPDATE DATA
+        // console.log(data.player);
         // console.log('playerMoved: ' + data.player);
         if(data.player && mover){
             mover.refresh(data.player);

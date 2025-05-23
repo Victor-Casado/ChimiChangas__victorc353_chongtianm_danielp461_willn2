@@ -5,9 +5,9 @@ export const bullets = []; //global bullets array
 
 export class Gun extends Item
 {
-    constructor(x, y, width, height, isHeld, gunName, damage, range, numBullets, cooldown, bulletSpeed)
+    constructor(id, x, y, width, height, isHeld, gunName, damage, range, numBullets, cooldown, bulletSpeed)
     {
-        super(x, y, new PIXI.Sprite(PIXI.Assets.get(Gun.getPath(gunName))), Gun.getPath(gunName), width, height, isHeld);
+        super(id, x, y, new PIXI.Sprite(PIXI.Assets.get(Gun.getPath(gunName))), Gun.getPath(gunName), width, height, isHeld);
         this.gunName = gunName;
         this.damage = damage;
         this.range = range;

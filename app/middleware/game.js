@@ -198,10 +198,14 @@ export class Game {
       });
       this.chests[1].openChest(true);
 
-      // state.items.forEach((item) =>{
-      //   this.addItem(item);
-      //   this.items.push(item);
-      // });
+      let itemId = 0;
+
+      state.items.forEach((item) =>{
+        item.id = itemId;
+        const i = this.addItem(item);
+        this.items.push(i);
+        itemId++;
+      });
     }
 
     refreshChest(id, item){
@@ -211,11 +215,12 @@ export class Game {
     }
 
     addItem(item){
-      const i = new gunRegistry[item.gunName](item.x, item.y);
+      const i = new gunRegistry[item.gunName](item.id, item.x, item.y);
       console.log(i);
       i.sprite.visible = true;
       this.items.push(i);
       this.container.addChild(i.sprite);
+      return i;
     }
 
     sendState(){

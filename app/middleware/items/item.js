@@ -2,8 +2,9 @@ export const items = [];
 
 export class Item
 {
-    constructor(x, y, sprite, path, width, height, isHeld)
+    constructor(id, x, y, sprite, path, width, height, isHeld)
     {
+        this.id = id;
         this.x = x;
         this.y = y;
         this.sprite = sprite;

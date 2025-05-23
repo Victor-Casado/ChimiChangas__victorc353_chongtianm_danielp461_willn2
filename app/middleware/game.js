@@ -98,7 +98,7 @@ export class Game {
       }
 
       this.players.push(player);
-      player.hitbox.makeVisible(this.container);
+      // player.hitbox.makeVisible(this.container);
       return player;
     }
 

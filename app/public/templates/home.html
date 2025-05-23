@@ -17,6 +17,13 @@
 					<div class="absolute inset-0 bg-black opacity-50"></div>
 				</div>
 
+				<form action="/">
+<button class="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-full transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg">
+  Logout
+</form>
+</button>
+
+
 				<div class="relative z-10 flex flex-col justify-center items-center h-full text-center">
 					<h1 class="text-5xl font-bold leading-tight mb-4" id="greeting">
 						Loading...
@@ -25,7 +32,7 @@
 							fetch('../../me')
 								.then(res => res.json())
 								.then(data => {
-																document.getElementById('greeting').textContent = `Hi, ${data.username}!`;
+																document.getElementById('greeting').textContent = `Welcome, ${data.username}!`;
 															})
 								.catch(err => {
 																console.error('Error fetching /me:', err);
@@ -36,10 +43,34 @@
 						<a href="/game">JOIN GAME</a>
 
 					</h1>
+
+
 					<p class="text-lg text-gray-300 mb-8">May the Best Devo Prevail</p>
 					<a href="/game" class="bg-yellow-400 text-gray-900 hover:bg-yellow-300 py-2 px-6 rounded-full text-lg font-semibold transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">Join Game</a>
 
+                        <a href="#" class="bg-yellow-400 text-gray-900 hover:bg-yellow-300 py-2 px-6 rounded-full text-lg font-semibold transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg opacity-0"></a>
+                        <a href="#" class="bg-yellow-400 text-gray-900 hover:bg-yellow-300 py-2 px-6 rounded-full text-lg font-semibold transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg opacity-0"></a>
+
+
+					<div class="relative mx-auto max-w-md rounded-lg bg-gradient-to-tr from-pink-300 to-blue-300 p-0.5 shadow-lg">
+    <div class="bg-white p-7 rounded-md text-black">
+        <h1 class="font-bold text-xl mb-2">Controls</h1>
+        <p>
+<ol>
+                <li> Use WASD to move your character. </li>
+                <li> Press C to open a chest in close proximity. </li>
+                <li> Press E to pickup dropped weapons on ground. </li>
+        <li> Press 1, 2, or 3 to select weapons. Your inventory can only hold 3 guns!</li>
+
+</ol>
+        </p>
+    </div>
+</div>
+
 				</div>
+
+</div>
+
 			</div>
 
 			<!---

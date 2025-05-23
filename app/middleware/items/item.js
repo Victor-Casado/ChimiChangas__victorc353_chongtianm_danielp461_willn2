@@ -83,11 +83,22 @@ export class Item
         return this.id;
     }
 
+    refresh(item){
+        this.x = item.x;
+        this.y = item.y;
+        this.sprite.x = this.x;
+        this.sprite.y = this.y;
+        this.sprite.scale.x = item.sprite.scale;
+        this.sprite.rotation = item.sprite.rotation;
+        this.sprite.visible = item.sprite.visible;
+    }
+
     toJSON(){
         return {
             id: this.id,
             x: this.x,
             y: this.y,
+            visible: this.visible,
             isHeld: this.isHeld,
         };
     }

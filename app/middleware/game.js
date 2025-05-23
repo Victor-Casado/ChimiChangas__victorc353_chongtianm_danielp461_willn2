@@ -142,8 +142,15 @@ export class Game {
           this.localPlayer.update(this.structures, this.chests, this.items, delta);
 
           this.sendState();
+          this.sendItems(this.localPlayer.inventory.inventory);
         }
       });
+    }
+    sendItems(items){
+      this.localPlayer.ws.send(JSON.stringify({
+        type: 'itemState',
+        itemState: items.map(i => i.toJSON()),
+      }));
     }
     updateBullets(delta){
       bullets.forEach((bullet, index) => {
@@ -198,25 +205,28 @@ export class Game {
       });
       this.chests[1].openChest(true);
 
-      let itemId = 0;
-
       state.items.forEach((item) =>{
-        item.id = itemId;
+        item.id = this.items.length;
         const i = this.addItem(item);
         this.items.push(i);
-        itemId++;
       });
     }
 
     refreshChest(id, item){
-      console.log(this.chests);
+      // console.log(this.chests);
       // this.chests[id].items = item;
       this.chests[id].openChest(true);
     }
 
     addItem(item){
+      if(item.id == null){
+        item.id = this.items.length;
+      }
+      console.log(item.id);
       const i = new gunRegistry[item.gunName](item.id, item.x, item.y);
-      console.log(i);
+      // console.log('---');
+      // console.log(item);
+      // console.log('---');
       i.sprite.visible = true;
       this.items.push(i);
       this.container.addChild(i.sprite);

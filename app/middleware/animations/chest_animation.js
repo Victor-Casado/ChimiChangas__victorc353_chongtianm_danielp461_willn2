@@ -31,11 +31,11 @@ export class ChestAnimation
 
     getRandomGun(){
         let guns = [
-            new AK47(this.position.x, this.position.y),
-            new M15(this.position.x, this.position.y),
-            new M24(this.position.x, this.position.y),
-            new Pistol(this.position.x, this.position.y),
-            new Shotgun(this.position.x, this.position.y)
+            new AK47(null,this.position.x, this.position.y),
+            new M15(null,this.position.x, this.position.y),
+            new M24(null,this.position.x, this.position.y),
+            new Pistol(null,this.position.x, this.position.y),
+            new Shotgun(null,this.position.x, this.position.y)
         ]
 
         const min = Math.ceil(0);

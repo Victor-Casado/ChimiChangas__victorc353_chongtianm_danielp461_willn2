@@ -279,12 +279,6 @@ export class Player
 
                 const inventoryData = player.inventory;
                 this.inventory = new Inventory(this);
-
-                // inventoryData.inventory.forEach((item => {
-                //     console.log(item);
-                //     this.inventory.addItem(item);
-                // }));
-                // console.log(this.inventory);
                 this.inventory.updateVisual();
 
             }

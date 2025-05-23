@@ -124,7 +124,19 @@ wss.on('connection', async (ws) => {
           }));
         }
       });
+    }
 
+    if( message.type === 'itemState'){
+      const items = message.itemState;
+      // console.log(items);
+      wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN && client !== ws) {
+          client.send(JSON.stringify({
+            type: 'itemState',
+            items: items,
+          }));
+        }
+      });
     }
   });
 

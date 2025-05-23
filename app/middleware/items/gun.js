@@ -38,12 +38,14 @@ export class Gun extends Item
 
     toJSON(){
         return {
+            id: this.id,
             type: 'gun',
             gunName: this.gunName,
             x: this.x,
             y: this.y,
             isHeld: this.isHeld,
             rarity: this.rarity,
+            sprite: {rotation: this.sprite.rotation, visible: this.sprite.visible, scale: this.sprite.scale.x},
         };
     }
 }

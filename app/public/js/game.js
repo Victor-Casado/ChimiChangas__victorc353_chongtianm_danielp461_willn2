@@ -69,9 +69,17 @@ function handleMessage(data) {
       game.refreshChest(data.chest.id, data.chest.items);
     }
 
-     if (data.type === 'addItem') {
+    if (data.type === 'addItem') {
       console.log(data.item);
       game.addItem(data.item);
+    }
+
+    if (data.type === 'itemState') {
+      const items = data.items;
+      items.forEach((item) => {
+        console.log(item);
+        game.items[item.id].refresh(item);
+      });
     }
 
     if(data.type==='playerDisconnected') {

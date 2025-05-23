@@ -50,7 +50,7 @@ function handleMessage(data) {
             if(data.localUser !== playerData.username){
                 console.log('local user:', data.localUser);
                 console.log('player data:', playerData.username);
-                game.loadPlayer(playerData.username, playerData.id, 1, playerData.x, playerData.y, false, null, playerData.orientation);
+                game.loadPlayer(playerData.username, playerData.id, 2, playerData.x, playerData.y, false, null, playerData.orientation);
             }
         });
     }

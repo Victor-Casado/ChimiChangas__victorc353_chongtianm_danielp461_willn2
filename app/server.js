@@ -96,6 +96,18 @@ wss.on('connection', async (ws) => {
         });
       }
     }
+    if( message.type === 'chest'){
+      const chest = message.chest;
+
+      wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN && client !== ws) {
+          client.send(JSON.stringify({
+            type: 'openChest',
+            chest: chest,
+          }));
+        }
+      });
+    }
   });
 
 

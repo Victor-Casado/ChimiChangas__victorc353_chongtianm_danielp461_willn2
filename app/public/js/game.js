@@ -64,8 +64,12 @@ function handleMessage(data) {
             mover.refresh(data.player);
         }
     }
+    if (data.type === 'openChest') {
+      console.log(data.chest);
+      game.refreshChest(data.chest.id, data.chest.items);
+    }
     if(data.type==='playerDisconnected') {
         console.log("PLAYER DC");
-        game.removePlayer(data.id);       
+        game.removePlayer(data.id);
     }
 }

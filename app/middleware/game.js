@@ -69,12 +69,12 @@ export class Game {
         game.structures.push(bush);
         structId++;
       }
-
+      let chestId = 0;
       for(let i = 0; i<50; ++i){
-        const chest = ChestAnimation.random(structId, 1900, 800);
+        const chest = ChestAnimation.random(chestId, 1900, 800);
         game.chests.push(chest);
         // console.log(chest);
-        structId++;
+        chestId++;
       }
 
       return game;
@@ -139,6 +139,8 @@ export class Game {
           this.localPlayer.mouseY = mouseWorld.y;
 
           this.localPlayer.update(this.structures, this.chests, this.items, delta);
+
+          this.sendState();
         }
       });
     }
@@ -191,14 +193,20 @@ export class Game {
 
         c.loadItems(this.container, this.items);
       });
-      this.chests[1].openChest();
+      this.chests[1].openChest(true);
     }
 
-    refreshState(type, chest, id){
-      if(type == 'chest'){
-        // const items = chest.items;
-        this.chests[id].openChest();
-      }
+    refreshChest(id, item){
+      console.log(this.chests);
+      // this.chests[id].items = item;
+      this.chests[id].openChest(true);
+    }
+
+    sendState(){
+      this.localPlayer.ws.send(JSON.stringify({
+        type: 'gameState',
+        gameState: this.stateJSON(),
+      }));
     }
 
     stateJSON(){

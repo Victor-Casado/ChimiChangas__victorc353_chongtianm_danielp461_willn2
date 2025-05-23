@@ -44,7 +44,7 @@ export class ChestAnimation
 
         return guns[randNum];
     }
-    
+
 
     getItemsArray(){
       return this.items;
@@ -78,13 +78,16 @@ export class ChestAnimation
         return this.isOpened;
     }
 
-    openChest(){
+    openChest(empty){
         if (this.sprite) {
             this.sprite.loop = false;
             this.sprite.onComplete = () => {
-                this.items.forEach((item => {
-                    item.showSprite();
-                }));
+                if(!empty){
+                  this.items.forEach((item => {
+                      item.showSprite();
+                  }));
+                }
+
             };
             this.sprite.play();
             this.opened = true;
@@ -115,10 +118,12 @@ export class ChestAnimation
 
     toJSON(){
         return {
+            id: this.id,
             rank: this.rank,
             x: this.x,
             y: this.y,
             items: this.items.map(item => item.toJSON()),
+            opened: this.opened
         }
     }
 }

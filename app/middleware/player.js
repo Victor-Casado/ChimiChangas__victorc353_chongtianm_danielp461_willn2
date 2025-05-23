@@ -170,12 +170,12 @@ export class Player
 
     updateGun(){
         if (!this.inventory.length()) return;
-        
+
         const heldItem = this.inventory.getHoldingItem();
-        
+
         if (heldItem instanceof Gun && this.controller.clicked) {
             const gun = heldItem;
-            
+
             gun.fire(this.mouseX, this.mouseY, gun);
 
             if(!gun.automatic) this.controller.clicked = false;
@@ -236,7 +236,11 @@ export class Player
         if(!chest.opened && this.nearbyChest(chest)){
             this.numNearbyChest++;
             if(this.controller.keys.openChest.pressed){
-                chest.openChest();
+                chest.openChest(false);
+                this.ws.send(JSON.stringify({
+                    type: 'chest',
+                    chest: chest.toJSON(),
+                }));
             }
         }
     }
@@ -276,8 +280,8 @@ export class Player
                 // }));
                 // console.log(this.inventory);
                 this.inventory.updateVisual();
-                
-            }   
+
+            }
 
             this.position.x = player.x;
             this.position.y = player.y;
@@ -289,7 +293,7 @@ export class Player
 
             // console.log(player.inventory);
 
-            
+
 
             if(this.texts){
                 this.updateTextPos();

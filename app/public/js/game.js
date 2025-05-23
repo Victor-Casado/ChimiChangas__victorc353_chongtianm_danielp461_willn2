@@ -68,6 +68,12 @@ function handleMessage(data) {
       console.log(data.chest);
       game.refreshChest(data.chest.id, data.chest.items);
     }
+
+     if (data.type === 'addItem') {
+      console.log(data.item);
+      game.addItem(data.item);
+    }
+
     if(data.type==='playerDisconnected') {
         console.log("PLAYER DC");
         game.removePlayer(data.id);

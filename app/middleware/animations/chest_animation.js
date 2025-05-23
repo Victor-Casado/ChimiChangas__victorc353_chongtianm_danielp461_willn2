@@ -106,6 +106,7 @@ export class ChestAnimation
             rank: ranks[Math.floor(Math.random() * 3)],
             x: Math.floor(Math.random() * maxX),
             y: Math.floor(Math.random() * maxY),
+            opened: false,
         }
     }
 

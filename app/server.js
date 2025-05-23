@@ -96,7 +96,7 @@ wss.on('connection', async (ws) => {
         });
       }
     }
-    if( message.type === 'chest'){
+    if( message.type === 'openChest'){
       const chest = message.chest;
 
       wss.clients.forEach(client => {
@@ -107,6 +107,24 @@ wss.on('connection', async (ws) => {
           }));
         }
       });
+
+      game.chests[chest.id].opened = true;
+
+    }
+
+    if( message.type === 'addItem'){
+      const item = message.item;
+      game.items.push(item);
+      console.log('received addItem');
+      wss.clients.forEach(client => {
+        if (client.readyState === WebSocket.OPEN) {
+          client.send(JSON.stringify({
+            type: 'addItem',
+            item: item,
+          }));
+        }
+      });
+
     }
   });
 

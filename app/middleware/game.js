@@ -6,6 +6,7 @@ import { Grass, Bush, Tree } from './environment/plant.js';
 import { Structure } from './environment/structure.js';
 import { bullets } from './items/gun.js';
 import { Hitbox } from './hitbox.js';
+import { gunRegistry } from './registry.js';
 
 export class Game {
     constructor(isServer, app) {
@@ -185,7 +186,9 @@ export class Game {
       state.chests.forEach((chest) => {
         console.log(chest.id);
         let c = new ChestAnimation(chest.id, chest.rank, chest.x, chest.y);
-        // c.items = chest.items;
+        if(chest.opened){
+          c.openChest(true);
+        }
         console.log(chest);
         this.chests.push(c);
 
@@ -194,12 +197,25 @@ export class Game {
         c.loadItems(this.container, this.items);
       });
       this.chests[1].openChest(true);
+
+      // state.items.forEach((item) =>{
+      //   this.addItem(item);
+      //   this.items.push(item);
+      // });
     }
 
     refreshChest(id, item){
       console.log(this.chests);
       // this.chests[id].items = item;
       this.chests[id].openChest(true);
+    }
+
+    addItem(item){
+      const i = new gunRegistry[item.gunName](item.x, item.y);
+      console.log(i);
+      i.sprite.visible = true;
+      this.items.push(i);
+      this.container.addChild(i.sprite);
     }
 
     sendState(){
@@ -213,6 +229,7 @@ export class Game {
       return {
         structures: this.structures.map(structure => structure.toJSON()),
         chests: this.chests,
+        items: this.items,
       }
     }
   }

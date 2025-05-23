@@ -236,10 +236,16 @@ export class Player
         if(!chest.opened && this.nearbyChest(chest)){
             this.numNearbyChest++;
             if(this.controller.keys.openChest.pressed){
-                chest.openChest(false);
+                chest.openChest(true);
                 this.ws.send(JSON.stringify({
-                    type: 'chest',
+                    type: 'openChest',
                     chest: chest.toJSON(),
+                }));
+                const item = chest.items[0];
+                console.log("send addItem");
+                this.ws.send(JSON.stringify({
+                    type: 'addItem',
+                    item: item.toJSON(),
                 }));
             }
         }

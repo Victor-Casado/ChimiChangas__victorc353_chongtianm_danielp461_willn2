@@ -1,3 +1,5 @@
+export const items = [];
+
 export class Item
 {
     constructor(x, y, sprite, path, width, height, isHeld)

@@ -85,8 +85,7 @@ function handleMessage(data) {
     }
 
     if (data.type === 'fire') {
-        // console.log('ld');
-        game.items[data.gun.id].fire(data.x, data.y, true);  
+        game.items[data.gun.id].fire(data.x, data.y, true, null);  
     }
 
     if(data.type==='playerDisconnected') {

@@ -22,12 +22,21 @@ export class Gun extends Item
         return '/public/assets/weapons/guns/' + gunName + '.png';
     }
 
-    fire(targetX, targetY, absolute){
+    fire(targetX, targetY, absolute, ws){
         
         if(this.cooldownCurr < this.cooldown && !absolute) return; 
-    
+        
+        if(ws){
+            ws.send(JSON.stringify({
+                type: 'fire',
+                gun: this.toJSON(),
+                x: targetX,
+                y: targetY,
+            }));
+        }
+        
         const bullet = new Bullet(targetX, targetY, this);
-
+        // console.log(this.sprite);
         this.sprite.parent.addChild(bullet.sprite);
         
         bullets.push(bullet);

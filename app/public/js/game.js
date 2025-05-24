@@ -70,18 +70,23 @@ function handleMessage(data) {
     } 
 
     if (data.type === 'addItem') {
-      console.log(data.item);
+    //   console.log(data.item);
       game.addItem(data.item);
     }
 
     if (data.type === 'itemState') {
       const items = data.items;
       items.forEach((item) => {
-        console.log(item);
+        // console.log(item);
         if(game.items.length > item.id){
             game.items[item.id].refresh(item);
         }
       });
+    }
+
+    if (data.type === 'fire') {
+        // console.log('ld');
+        game.items[data.gun.id].fire(data.x, data.y, true);  
     }
 
     if(data.type==='playerDisconnected') {

@@ -176,7 +176,18 @@ export class Player
         if (heldItem instanceof Gun && this.controller.clicked) {
             const gun = heldItem;
 
-            gun.fire(this.mouseX, this.mouseY, gun);
+            if(gun.cooldownCurr > gun.cooldown){
+                this.ws.send(JSON.stringify({
+                    type: 'fire',
+                    gun: gun.toJSON(),
+                    x: this.mouseX,
+                    y: this.mouseY,
+                }));
+            }
+            gun.fire(this.mouseX, this.mouseY, false);
+            
+            
+
 
             if(!gun.automatic) this.controller.clicked = false;
         }

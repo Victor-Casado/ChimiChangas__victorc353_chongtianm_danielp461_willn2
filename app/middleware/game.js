@@ -196,7 +196,7 @@ export class Game {
         if(chest.opened){
           c.openChest(true);
         }
-        console.log(chest);
+        // console.log(chest);
         this.chests.push(c);
 
         this.container.addChild(c.sprite);
@@ -206,7 +206,6 @@ export class Game {
       // this.chests[1].openChest(false);
 
       state.items.forEach((item) => {
-        console.log(item);
         item.id = this.items.length;
         const i = this.addItem(item);
         this.items.push(i);
@@ -223,7 +222,7 @@ export class Game {
       if(item.id == null){
         item.id = this.items.length;
       }
-      console.log(item.id);
+      // console.log(item.id);
       const i = new gunRegistry[item.gunName](item.id, item.x, item.y);
       // console.log('---');
       // console.log(item);

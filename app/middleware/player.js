@@ -25,34 +25,43 @@ export class Player
             this.sprite = new PIXI.AnimatedSprite(this.spriteAnimation.getTexture(this.orientation, 'Idle'));
             this.sprite.scale = 1.5;
             this.sprite.zIndex = 3;
+            this.sprite.anchor.set(0.5);
             this.texts = {
                 'username': new PIXI.BitmapText({
                                 text: username,
                                 style: {
-                                    fontFamily: 'Arial',
+                                    fontFamily: 'Verdana',
                                     fontSize: 10,
-                                    fill: 0xff1010,
+                                    fill: 0x000000,
                                     align: 'center',
                                 }}),
                 'chestInteraction': new PIXI.BitmapText({
                                 text: '',
                                 style: {
-                                    fontFamily: 'Arial',
-                                    fontSize: 24,
-                                    fill: 0xff1010,
+                                    fontFamily: 'Verdana',
+                                    fontSize: 12,
+                                    fill: 0xFFFFFF,
                                     align: 'center',
                                 }}),
                 'itemInteraction': new PIXI.BitmapText({
                                 text: '',
                                 style: {
-                                    fontFamily: 'Arial',
-                                    fontSize: 24,
-                                    fill: 0xff1010,
+                                    fontFamily: 'Verdana',
+                                    fontSize: 12,
+                                    fill: 0xFFFFFF,
                                     align: 'center',
-                                }})
+                                }}),
             };
+
+            this.healthBarBackground = new PIXI.Graphics();
+            this.healthBar = new PIXI.Graphics();
+
+            this.sprite.addChild(this.healthBarBackground);
+            this.sprite.addChild(this.healthBar);
             this.updateTextPos();
 
+            this.healthBar.zIndex = 50;
+            this.healthBarBackground.zIndex = 50;
             this.texts.username.zIndex = 50;
             this.texts.chestInteraction.zIndex = 50;
             this.texts.itemInteraction.zIndex = 50;
@@ -69,6 +78,7 @@ export class Player
         this.mouseX = 0;
         this.mouseY = 0;
 
+        this.health = 50;
         if(hitbox == null){
             if(this.sprite){
                 this.hitbox = new Hitbox(x, y, this.sprite.width, this.sprite.height, -this.sprite.width / 2, -this.sprite.height /2);
@@ -93,6 +103,7 @@ export class Player
         this.updateItem(items);
         this.inventory.update(delta);
         this.updateGun();
+        this.updateHealthBar();
     }
 
     updatePosition(structures, delta){
@@ -167,7 +178,29 @@ export class Player
             this.hitbox.update();
         }
 }
+    updateHealthBar() {
+        const maxWidth = 18; 
+        const height = 2;   
+        const healthRatio = Math.max(this.health / 100, 0);
 
+        const x = -maxWidth / 2;
+        const y = this.sprite.height - 17; 
+
+        this.healthBarBackground.clear();
+
+        this.healthBarBackground.beginFill(0x000000); // black border
+        this.healthBarBackground.drawRect(x - 1, y - 1, maxWidth + 2, height + 2); // slightly larger
+        this.healthBarBackground.endFill();
+
+        this.healthBarBackground.beginFill(0x8F011B); 
+        this.healthBarBackground.drawRect(x, y, maxWidth, height);
+        this.healthBarBackground.endFill();
+
+        this.healthBar.clear();
+        this.healthBar.beginFill(0x228C22);
+        this.healthBar.drawRect(x, y, maxWidth * healthRatio, height);
+        this.healthBar.endFill();
+    }
     updateGun(){
         if (!this.inventory.length()) return;
 
@@ -200,7 +233,6 @@ export class Player
             : 0.1;
 
         this.sprite.loop = true;
-        this.sprite.anchor.set(0.5);
     }
 
     updateChest(chests){
@@ -255,14 +287,14 @@ export class Player
     }
 
     updateTextPos(){
-        this.texts['username'].x = this.position.x - this.playerWidth;
+        this.texts['username'].x = this.position.x - this.playerWidth + this.sprite.width / 2 - 2;
         this.texts['username'].y = this.position.y - this.playerHeight;
 
-        this.texts['chestInteraction'].x = this.position.x;
-        this.texts['chestInteraction'].y = this.position.y + 200;
+        this.texts['chestInteraction'].x = this.position.x - 22;
+        this.texts['chestInteraction'].y = this.position.y + 30;
 
-        this.texts['itemInteraction'].x = this.position.x;
-        this.texts['itemInteraction'].y = this.position.y + 200;
+        this.texts['itemInteraction'].x = this.position.x - 22;
+        this.texts['itemInteraction'].y = this.position.y + 40;
     }
 
     refresh(player) {
@@ -284,6 +316,8 @@ export class Player
                 this.inventory = new Inventory(this);
                 this.inventory.updateVisual();
 
+                this.updateHealthBar();
+
             }
 
             this.position.x = player.x;
@@ -292,6 +326,7 @@ export class Player
             this.hitbox.x = player.x;
             this.hitbox.y = player.y;
 
+            this.health = player.health;
             // this.inventory = player.inventory.map(i => new )
 
             // console.log(player.inventory);
@@ -369,7 +404,8 @@ export class Player
             orientation: this.orientation,
             animation: this.animation,
             local: this.local,
-            inventory: this.inventory.toJSON()
+            inventory: this.inventory.toJSON(),
+            health: this.health
         };
     }
 }

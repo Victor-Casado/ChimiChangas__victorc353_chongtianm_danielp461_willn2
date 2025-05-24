@@ -201,11 +201,12 @@ export class Game {
 
         this.container.addChild(c.sprite);
 
-        c.loadItems(this.container, this.items);
+        // c.loadItems(this.container, this.items);
       });
-      this.chests[1].openChest(true);
+      // this.chests[1].openChest(false);
 
-      state.items.forEach((item) =>{
+      state.items.forEach((item) => {
+        console.log(item);
         item.id = this.items.length;
         const i = this.addItem(item);
         this.items.push(i);

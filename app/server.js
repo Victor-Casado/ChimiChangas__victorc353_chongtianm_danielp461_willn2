@@ -115,6 +115,7 @@ wss.on('connection', async (ws) => {
     if( message.type === 'addItem'){
       const item = message.item;
       game.items.push(item);
+      console.log(item);
       console.log('received addItem');
       wss.clients.forEach(client => {
         if (client.readyState === WebSocket.OPEN) {
@@ -128,7 +129,10 @@ wss.on('connection', async (ws) => {
 
     if( message.type === 'itemState'){
       const items = message.itemState;
-      // console.log(items);
+      items.forEach((item) => {
+        game.items[item.id] = item;
+      });
+      console.log(items);
       wss.clients.forEach(client => {
         if (client.readyState === WebSocket.OPEN && client !== ws) {
           client.send(JSON.stringify({

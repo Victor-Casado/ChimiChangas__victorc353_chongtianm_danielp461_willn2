@@ -67,7 +67,7 @@ function handleMessage(data) {
     if (data.type === 'openChest') {
       console.log(data.chest);
       game.refreshChest(data.chest.id, data.chest.items);
-    }
+    } 
 
     if (data.type === 'addItem') {
       console.log(data.item);
@@ -78,7 +78,9 @@ function handleMessage(data) {
       const items = data.items;
       items.forEach((item) => {
         console.log(item);
-        game.items[item.id].refresh(item);
+        if(game.items.length > item.id){
+            game.items[item.id].refresh(item);
+        }
       });
     }
 

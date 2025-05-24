@@ -91,6 +91,7 @@ export class Item
         this.sprite.scale.x = item.sprite.scale;
         this.sprite.rotation = item.sprite.rotation;
         this.sprite.visible = item.sprite.visible;
+        this.isHeld = item.isHeld;
     }
 
     toJSON(){

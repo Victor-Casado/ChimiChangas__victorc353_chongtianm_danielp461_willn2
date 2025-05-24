@@ -208,7 +208,6 @@ export class Game {
       state.items.forEach((item) => {
         item.id = this.items.length;
         const i = this.addItem(item);
-        this.items.push(i);
       });
     }
 

@@ -9,8 +9,17 @@ export class Shotgun extends Gun
     }
 
     //specialized fire method to handle shotgun spread
-    fire(targetX, targetY, absolute) {
+    fire(targetX, targetY, absolute, ws) {
         if(this.cooldownCurr < this.cooldown && !absolute) return;
+        
+        if(ws){
+            ws.send(JSON.stringify({
+                type: 'fire',
+                gun: this.toJSON(),
+                x: targetX,
+                y: targetY,
+            }));
+        }
 
         const bulletsFired = [];
         const gunSprite = this.getSprite();

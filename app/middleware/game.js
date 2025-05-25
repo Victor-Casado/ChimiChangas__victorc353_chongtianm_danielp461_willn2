@@ -113,7 +113,16 @@ export class Game {
           this.players.pop(i);
         }
       }
+        
+    }
+    kill(id){
+      const player = this.players.find((player) => player.id == id);
+      player.alive = false;
+      console.log("killing" + id);
 
+      if(this.localPlayer && this.localPlayer.id == id){
+        window.location.href = '/home';
+      }
     }
 
     findPlayer(id){

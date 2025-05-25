@@ -98,6 +98,13 @@ function handleMessage(data) {
         }
     }
 
+    if (data.type === 'death') {
+        const dead = game.players.find(player => player.id === data.id);
+        if (dead) {
+            game.kill(dead.id);
+        }
+    }
+
     if(data.type==='playerDisconnected') {
         console.log("PLAYER DC");
         game.removePlayer(data.id);

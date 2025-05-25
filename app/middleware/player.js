@@ -96,15 +96,18 @@ export class Player
         }
 
         this.inventory = new Inventory(this);
+        this.alive = true;
     }
 
     update(structures, chests, items, delta){
-        this.updatePosition(structures, delta);
-        this.updateChest(chests);
-        this.updateItem(items);
-        this.inventory.update(delta);
-        this.updateGun();
-        this.updateHealthBar();
+        if(this.alive){
+            this.updatePosition(structures, delta);
+            this.updateChest(chests);
+            this.updateItem(items);
+            this.inventory.update(delta);
+            this.updateGun();
+            this.updateHealthBar();
+        }
     }
 
     updatePosition(structures, delta){

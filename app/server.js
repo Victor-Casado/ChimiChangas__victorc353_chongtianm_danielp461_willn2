@@ -33,14 +33,23 @@ wss.on('connection', async (ws) => {
 
     if(message.type ==='join'){
       const username = message.username;
-
+      console.log(username + " joined");
+      console.log(game.players);
       let players = game.players;
       for (let i = 0; i < players.length; i++) {
         let player = players[i];
         if(player.username === username){
-          newPlayer = player;
-          newPlayerId = player.id;
-          playerExists = true;
+          // if(player.alive){
+            newPlayer = player;
+            newPlayerId = player.id;
+            newPlayer.alive = true;
+            newPlayer.position.x = 0;
+            newPlayer.position.y = 0;
+            newPlayer.health = 100;
+            playerExists = true;
+          // } 
+          
+          
           break;
         }
       }
@@ -168,6 +177,17 @@ wss.on('connection', async (ws) => {
           }));
         }
       });
+      if(message.health <= 0){
+        game.kill(playerId);
+        wss.clients.forEach(client => {
+          if (client.readyState === WebSocket.OPEN) {
+            client.send(JSON.stringify({
+              type: 'death',
+              id: playerId,
+            }));
+          }
+        });
+      }
     }
   });
 
@@ -190,6 +210,7 @@ wss.on('connection', async (ws) => {
         }));
       }
     });
+    
   }
 });
 

@@ -33,8 +33,6 @@ wss.on('connection', async (ws) => {
 
     if(message.type ==='join'){
       const username = message.username;
-      console.log(username + " joined");
-      console.log(game.players);
       let players = game.players;
       for (let i = 0; i < players.length; i++) {
         let player = players[i];

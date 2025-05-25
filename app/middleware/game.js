@@ -118,13 +118,22 @@ export class Game {
     kill(id){
       const player = this.players.find((player) => player.id == id);
       player.alive = false;
-      console.log("killing" + id);
-
+      for (let i = player.inventory.length() - 1; i >= 0; --i) {
+        const item = player.inventory.dropItem(i);
+        item.x += Math.random() * 30 - 15;
+        item.y += Math.random() * 30 - 15;
+        item.sprite.rotation = Math.random() * 3;
+        this.updateItems(item);
+      }
       if(this.localPlayer && this.localPlayer.id == id){
         window.location.href = '/home';
       }
     }
-
+    updateItems(item){
+      this.items[item.id].refresh(item.toJSON());
+      // this.items[item.id].getSprite().visible = true;
+      // this.items[item.id].isHeld = false;
+    }
     findPlayer(id){
       return this.players.find(p => p.id == id);
     }

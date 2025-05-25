@@ -76,6 +76,8 @@ export class Inventory{
         item.isHeld = false;
         this.inventory.splice(index, 1);
         this.droppedCooldown = 200;
+
+        return item;
     }
 
     getHoldingItem(){

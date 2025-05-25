@@ -2,6 +2,7 @@ import {Controller} from './controller.js';
 import {Hitbox} from './hitbox.js';
 import { Inventory } from './inventory.js';
 import {Gun} from './items/gun.js';
+import { gunRegistry } from './registry.js';
 
 export class Player
 {
@@ -313,9 +314,13 @@ export class Player
                     this.updateOrientation();
                 }
 
-                const inventoryData = player.inventory;
+                const inventoryData = player.inventory.inventory;
                 this.inventory = new Inventory(this);
-                this.inventory.updateVisual();
+                inventoryData.forEach((item) => {
+                    const i = new gunRegistry[item.gunName](item.id, item.x, item.y);
+                    this.inventory.inventory.push(i);
+                })
+                // this.inventory.updateVisual();
 
                 this.updateHealthBar();
 

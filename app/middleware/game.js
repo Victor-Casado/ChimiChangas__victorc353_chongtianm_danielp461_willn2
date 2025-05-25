@@ -180,7 +180,7 @@ export class Game {
           const player = Hitbox.collision(bullet, this.players);
           if(bullet.shotBy != null && !bullet.shouldKill){
             if(player){
-              this.damage(player.id, 5);
+              this.damage(player.id, bullet.gun.damage);
               bullet.shouldKill = true;
             }
           }

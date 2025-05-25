@@ -4,7 +4,7 @@ export class Shotgun extends Gun
 {
     constructor(id, x, y, width='20', rarity=1, height='25', isHeld = false)
     {
-        super(id, x, y, width, height, isHeld, 'Shotgun', 100 * rarity, 50, 5, 60 / rarity, 500);
+        super(id, x, y, width, height, isHeld, 'Shotgun', 5 * rarity, 50, 5, 60 / rarity, 700);
         this.automatic = false;
     }
 
@@ -24,8 +24,8 @@ export class Shotgun extends Gun
         const bulletsFired = [];
         const gunSprite = this.getSprite();
 
-        const spreadCount = 5;        
-        const spreadAngle = 30;     
+        const spreadCount = 8;        
+        const spreadAngle = 25;     
         const angleStep = spreadAngle / (spreadCount - 1);
 
         const baseAngle = Math.atan2(targetY - gunSprite.y, targetX - gunSprite.x);

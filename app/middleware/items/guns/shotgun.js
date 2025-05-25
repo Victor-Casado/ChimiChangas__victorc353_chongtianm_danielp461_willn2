@@ -9,7 +9,7 @@ export class Shotgun extends Gun
     }
 
     //specialized fire method to handle shotgun spread
-    fire(targetX, targetY, absolute, ws) {
+    fire(targetX, targetY, absolute, ws, shotBy) {
         if(this.cooldownCurr < this.cooldown && !absolute) return;
         
         if(ws){
@@ -39,7 +39,7 @@ export class Shotgun extends Gun
             const spreadTargetX = gunSprite.x + Math.cos(spreadAngleRad);
             const spreadTargetY = gunSprite.y + Math.sin(spreadAngleRad);
 
-            const bullet = new Bullet(spreadTargetX, spreadTargetY, this, 40);
+            const bullet = new Bullet(spreadTargetX, spreadTargetY, this, shotBy);
             this.sprite.parent.addChild(bullet.sprite);
             bullets.push(bullet);
             bulletsFired.push(bullet);

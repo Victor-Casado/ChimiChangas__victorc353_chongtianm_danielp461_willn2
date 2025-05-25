@@ -35,13 +35,13 @@ export class Hitbox{
                   a.y + a.height > b.y &&
                   a.y < b.y + b.height;
 
-          if(collide) return true;
+          if(collide) return obj2;
         }
         
       }
       
 
-      return false;
+      return null;
     }
 
     makeVisible(container){

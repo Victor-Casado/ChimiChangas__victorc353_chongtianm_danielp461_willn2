@@ -22,7 +22,7 @@ export class Gun extends Item
         return '/public/assets/weapons/guns/' + gunName + '.png';
     }
 
-    fire(targetX, targetY, absolute, ws){
+    fire(targetX, targetY, absolute, ws, shotBy){
         
         if(this.cooldownCurr < this.cooldown && !absolute) return; 
         
@@ -35,7 +35,7 @@ export class Gun extends Item
             }));
         }
         
-        const bullet = new Bullet(targetX, targetY, this);
+        const bullet = new Bullet(targetX, targetY, this, shotBy);
         // console.log(this.sprite);
         this.sprite.parent.addChild(bullet.sprite);
         
@@ -60,9 +60,11 @@ export class Gun extends Item
 }
 
 export class Bullet {
-    constructor(targetX, targetY, gun) {
+    constructor(targetX, targetY, gun, shotBy) {
         const gunSprite = gun.getSprite(); 
         
+        this.shotBy = shotBy;
+
         this.x = gunSprite.x;
         this.y = gunSprite.y;
 

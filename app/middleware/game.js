@@ -81,9 +81,8 @@ export class Game {
       return game;
     }
 
-    loadPlayer(username, id, skinNum, x, y, active, ws, orientation){
+    loadPlayer(username, id, skinNum, x, y, active, ws, orientation, health){
       const localPlayerSprite = new SpriteAnimation(skinNum);
-
       const player = new Player(username, id, localPlayerSprite, x, y, active, ws, orientation);
 
       this.container.addChild(player.sprite);
@@ -97,6 +96,7 @@ export class Game {
       if(active){
         this.localPlayer = player;
       }
+      player.health = health;
 
       this.players.push(player);
       // player.hitbox.makeVisible(this.container);
@@ -126,7 +126,7 @@ export class Game {
         this.updateBullets(delta);
 
         if(this.localPlayer){
-          //this.localPlayer.hitbox.update();
+
           this.container.x = this.app.screen.width / 2 - this.localPlayer.getPosX() * this.zoomLevel;
           this.container.y = this.app.screen.height / 2 - this.localPlayer.getPosY() * this.zoomLevel;
 
@@ -159,11 +159,26 @@ export class Game {
           } else {
               bullets.splice(index, 1);
           }
-          if(Hitbox.collision(bullet, this.structures)){
-              console.log("bang");
+          const player = Hitbox.collision(bullet, this.players);
+          if(bullet.shotBy != null && !bullet.shouldKill){
+            if(player){
+              this.damage(player.id, 5);
+              bullet.shouldKill = true;
+            }
+          }
+          const struct = Hitbox.collision(bullet, this.structures);
+          if(struct){
               bullet.shouldKill = true;
           }
       });
+    }
+    damage(id, damage){
+      this.players.find((player) => player.id == id).health -= damage;
+      this.localPlayer.ws.send(JSON.stringify({
+        type: 'health',
+        id: id,
+        health: this.players.find((player) => player.id == id).health,
+      }));
     }
     getPlayers(){
       return this.players;

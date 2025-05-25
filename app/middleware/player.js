@@ -78,7 +78,8 @@ export class Player
         this.mouseX = 0;
         this.mouseY = 0;
 
-        this.health = 50;
+        // this.health = 100;
+        this.collision = !local;
         if(hitbox == null){
             if(this.sprite){
                 this.hitbox = new Hitbox(x, y, this.sprite.width, this.sprite.height, -this.sprite.width / 2, -this.sprite.height /2);
@@ -212,10 +213,7 @@ export class Player
             // if(gun.cooldownCurr > gun.cooldown){
                 
             // }
-            gun.fire(this.mouseX, this.mouseY, false, this.ws);
-            
-            
-
+            gun.fire(this.mouseX, this.mouseY, false, this.ws, this.id);
 
             if(!gun.automatic) this.controller.clicked = false;
         }

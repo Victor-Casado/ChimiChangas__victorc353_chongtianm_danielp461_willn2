@@ -36,12 +36,15 @@ function handleMessage(data) {
     // console.log(data);
     if (data.type === 'you') {
         game.loadState(data.gameState);
-        game.loadPlayer(data.player.username, data.player.id, 2, data.player.x, data.player.y, true, ws, data.player.orientation);
+        if(!data.player.health){
+            data.player.health = 100;
+        }
+        game.loadPlayer(data.player.username, data.player.id, 2, data.player.x, data.player.y, true, ws, data.player.orientation, data.player.health);
     }
 
     if (data.type === 'playerJoined') {
         console.log(`Player ${data.player.id} joined the lobby`);
-        game.loadPlayer(data.player.username, data.player.id, 2, data.player.x, data.player.y, false, null, data.player.orientation);
+        game.loadPlayer(data.player.username, data.player.id, 2, data.player.x, data.player.y, false, null, data.player.orientation, data.player.health);
     }
 
     if (data.type === 'existingPlayers') {
@@ -50,7 +53,7 @@ function handleMessage(data) {
             if(data.localUser !== playerData.username){
                 console.log('local user:', data.localUser);
                 console.log('player data:', playerData.username);
-                game.loadPlayer(playerData.username, playerData.id, 2, playerData.x, playerData.y, false, null, playerData.orientation);
+                game.loadPlayer(playerData.username, playerData.id, 2, playerData.x, playerData.y, false, null, playerData.orientation, playerData.health);
             }
         });
     }
@@ -86,6 +89,13 @@ function handleMessage(data) {
 
     if (data.type === 'fire') {
         game.items[data.gun.id].fire(data.x, data.y, true, null);  
+    }
+
+    if (data.type === 'health') {
+        const targetPlayer = game.players.find(player => player.id === data.id);
+        if (targetPlayer) {
+            targetPlayer.health = data.health;
+        }
     }
 
     if(data.type==='playerDisconnected') {

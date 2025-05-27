@@ -117,7 +117,7 @@ export class Game {
     }
     kill(id){
       const player = this.players.find((player) => player.id == id);
-      this.removePlayer(player.id);
+      
       if(player.alive){
         player.alive = false;
         console.log('kill');
@@ -136,6 +136,7 @@ export class Game {
           window.location.href = '/home';
         }
       }
+      this.removePlayer(player.id);
       
     }
 

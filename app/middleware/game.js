@@ -117,23 +117,27 @@ export class Game {
     }
     kill(id){
       const player = this.players.find((player) => player.id == id);
-      player.alive = false;
-      for (let i = player.inventory.length() - 1; i >= 0; --i) {
-        const item = player.inventory.dropItem(i);
-        item.x += Math.random() * 30 - 15;
-        item.y += Math.random() * 30 - 15;
-        item.sprite.rotation = Math.random() * 3;
-        this.updateItems(item);
+      if(player.alive){
+        player.alive = false;
+        console.log('kill');
+        for (let i = player.inventory.length() - 1; i >= 0; --i) {
+          
+          let itemData = player.inventory.inventory[i].toJSON();
+          player.inventory.dropItem(i);
+          itemData.isHeld = false;
+          itemData.sprite.visible = true;
+
+          console.log('Before refresh:', this.items[itemData.id]);
+          this.items[itemData.id].refresh(itemData);
+          console.log('After refresh:', this.items[itemData.id]);
+        }
+        if(this.localPlayer && this.localPlayer.id == id){
+          window.location.href = '/home';
+        }
       }
-      if(this.localPlayer && this.localPlayer.id == id){
-        window.location.href = '/home';
-      }
+      
     }
-    updateItems(item){
-      this.items[item.id].refresh(item.toJSON());
-      // this.items[item.id].getSprite().visible = true;
-      // this.items[item.id].isHeld = false;
-    }
+
     findPlayer(id){
       return this.players.find(p => p.id == id);
     }
@@ -141,9 +145,8 @@ export class Game {
     startLoop() {
       this.app.ticker.add((delta) => {
 
-        this.updateBullets(delta);
-
-        if(this.localPlayer){
+        if(this.localPlayer && this.localPlayer.alive){
+          this.updateBullets(delta);
 
           this.container.x = this.app.screen.width / 2 - this.localPlayer.getPosX() * this.zoomLevel;
           this.container.y = this.app.screen.height / 2 - this.localPlayer.getPosY() * this.zoomLevel;
@@ -161,14 +164,19 @@ export class Game {
 
           this.sendState();
           this.sendItems(this.localPlayer.inventory.inventory);
+
+          // console.log(this.items);
         }
       });
     }
     sendItems(items){
-      this.localPlayer.ws.send(JSON.stringify({
-        type: 'itemState',
-        itemState: items.map(i => i.toJSON()),
-      }));
+      if(this.localPlayer.alive){
+        this.localPlayer.ws.send(JSON.stringify({
+          type: 'itemState',
+          itemState: items.map(i => i.toJSON()),
+        }));
+      }
+      
     }
     updateBullets(delta){
       bullets.forEach((bullet, index) => {
@@ -266,6 +274,7 @@ export class Game {
     }
 
     sendState(){
+      if (!this.localPlayer.alive) return;
       this.localPlayer.ws.send(JSON.stringify({
         type: 'gameState',
         gameState: this.stateJSON(),

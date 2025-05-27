@@ -79,7 +79,7 @@ export class Player
         this.mouseX = 0;
         this.mouseY = 0;
 
-        // this.health = 100;
+        this.alive = true;
         this.collision = !local;
         if(hitbox == null){
             if(this.sprite){
@@ -173,7 +173,7 @@ export class Player
         this.sprite.position.set(this.position.x, this.position.y);
         this.updateTextPos();
 
-        if(this.local && !this.dev){
+        if(this.local && !this.dev && this.alive){
             this.ws.send(JSON.stringify({
                 type: 'move',
                 player: this.toJSON(),
@@ -300,7 +300,7 @@ export class Player
     }
 
     refresh(player) {
-        if(player){
+        if(player && player.alive){
             if (this.sprite) {
                 this.sprite.x = player.x;
                 this.sprite.y = player.y;
@@ -314,12 +314,15 @@ export class Player
                     this.updateOrientation();
                 }
 
-                const inventoryData = player.inventory.inventory;
-                this.inventory = new Inventory(this);
-                inventoryData.forEach((item) => {
-                    const i = new gunRegistry[item.gunName](item.id, item.x, item.y);
-                    this.inventory.inventory.push(i);
-                })
+                if(player.alive){
+                    const inventoryData = player.inventory.inventory;
+                    this.inventory = new Inventory(this);
+                    inventoryData.forEach((item) => {
+                        const i = new gunRegistry[item.gunName](item.id, item.x, item.y);
+                        this.inventory.inventory.push(i);
+                    })
+                }
+                
                 // this.inventory.updateVisual();
 
                 this.updateHealthBar();
@@ -360,6 +363,7 @@ export class Player
     nearbyChest(chest){
         const dist = 35;
         if(Math.abs(this.position.x - chest.position.x) < dist && Math.abs(this.position.y - chest.position.y) < dist){
+
             return true;
         }
         return false;
@@ -411,7 +415,8 @@ export class Player
             animation: this.animation,
             local: this.local,
             inventory: this.inventory.toJSON(),
-            health: this.health
+            health: this.health,
+            alive: this.alive
         };
     }
 }

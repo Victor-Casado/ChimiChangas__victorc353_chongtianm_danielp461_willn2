@@ -39,6 +39,7 @@ export class Inventory{
         this.updateVisual();
     }
     updateVisual(){
+        if(!this.player.alive) return;
         let i = 0;
         this.inventory.forEach((item => {
             if(this.itemHolding == i){

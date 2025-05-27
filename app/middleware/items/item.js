@@ -99,8 +99,7 @@ export class Item
             id: this.id,
             x: this.x,
             y: this.y,
-            sprite: {rotation: this.sprite.rotation, scale: this.sprite.scale.x},
-            visible: this.visible,
+            sprite: {rotation: this.sprite.rotation, scale: this.sprite.scale.x, visible: this.sprite.visible},
             isHeld: this.isHeld,
         };
     }

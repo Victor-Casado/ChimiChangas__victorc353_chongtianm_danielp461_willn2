@@ -199,7 +199,11 @@ wss.on('connection', async (ws) => {
   clients = clients.filter(c => c.ws !== ws);
 
   if (disconnectedClient) {
-    game.findPlayer(disconnectedClient.id).destroy();
+    const player = game.findPlayer(disconnectedClient.id);
+    if(player){
+      player.destroy();
+    }
+    // game.findPlayer(disconnectedClient.id).destroy();
     wss.clients.forEach(client => {
       if (client.readyState === WebSocket.OPEN && client !== ws) {
         client.send(JSON.stringify({

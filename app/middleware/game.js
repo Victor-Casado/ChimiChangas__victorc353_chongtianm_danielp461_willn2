@@ -65,7 +65,7 @@ export class Game {
         game.structures.push(new Grass(0, Math.random() * 1885 + 15, Math.random() * 785 + 15, null));
       }
 
-      for(let i = 0; i<150; ++i){
+      for(let i = 0; i<75; ++i){
         let bush = new Bush(structId, Math.random() * 1885 + 15, Math.random() * 785 + 15, null);
         game.structures.push(bush);
         structId++;

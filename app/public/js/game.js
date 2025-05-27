@@ -32,14 +32,14 @@ messageQueue.forEach(handleMessage);
 game.startLoop();
 messageQueue = [];
 
-function handleMessage(data) {
+async function handleMessage(data) {
     // console.log(data);
     if (data.type === 'you') {
         game.loadState(data.gameState);
         if(!data.player.health){
             data.player.health = 100;
         }
-        game.loadPlayer(data.player.username, data.player.id, 2, data.player.x, data.player.y, true, ws, data.player.orientation, data.player.health);
+        await game.loadPlayer(data.player.username, data.player.id, 2, data.player.x, data.player.y, true, ws, data.player.orientation, data.player.health);
     }
 
     if (data.type === 'playerJoined') {

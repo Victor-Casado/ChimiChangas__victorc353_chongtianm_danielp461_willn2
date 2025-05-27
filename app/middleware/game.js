@@ -117,6 +117,7 @@ export class Game {
     }
     kill(id){
       const player = this.players.find((player) => player.id == id);
+      this.removePlayer(player.id);
       if(player.alive){
         player.alive = false;
         console.log('kill');

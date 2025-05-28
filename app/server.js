@@ -101,6 +101,9 @@ wss.on('connection', async (ws) => {
             }));
           }
         });
+      } else{
+        newPlayer = new Player(username, username, null, message.player.position.x, message.player.position.y, false, ws);
+        game.players.push(newPlayer);
       }
     }
     if( message.type === 'openChest'){

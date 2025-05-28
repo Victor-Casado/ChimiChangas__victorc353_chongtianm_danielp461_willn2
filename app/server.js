@@ -102,7 +102,7 @@ wss.on('connection', async (ws) => {
           }
         });
       } else{
-        newPlayer = new Player(message.username, message.username, null, message.player.position.x, message.player.position.y, false, ws);
+        newPlayer = new Player(message.username, message.username, null, message.player.x, message.player.y, false, ws);
         game.players.push(newPlayer);
       }
     }

@@ -205,11 +205,11 @@ wss.on('connection', async (ws) => {
     const player = game.findPlayer(disconnectedClient.id);
     if(player){
       player.destroy();
-      for(let i = 0; i < game.players.length; i++){
-        if(game.players[i] == player){
-          game.players.splice(i, 1);
-        }
-      }
+      // for(let i = 0; i < game.players.length; i++){
+      //   if(game.players[i] == player){
+      //     game.players.splice(i, 1);
+      //   }
+      // }
     }
     // game.findPlayer(disconnectedClient.id).destroy();
     wss.clients.forEach(client => {

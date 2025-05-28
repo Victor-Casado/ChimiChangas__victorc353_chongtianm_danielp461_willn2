@@ -281,7 +281,14 @@ export class Player
                     chest: chest.toJSON(),
                 }));
                 const item = chest.items[0];
-                console.log("send addItem");
+                
+                const gunRank = {
+                    'wooden': 0.6,
+                    'silver': 1,
+                    'gold': 1.5,
+                }
+                item.rarity = gunRank[chest.getRank()];
+                
                 this.ws.send(JSON.stringify({
                     type: 'addItem',
                     item: item.toJSON(),
@@ -400,17 +407,31 @@ export class Player
     
             const slot = new PIXI.Graphics();
             const isSelected = (i === this.inventory.itemHolding);
-    
-            slot.beginFill(isSelected ? 0xFFFF00 : 0x444444);
-            slot.lineStyle(2, 0x000000);
-            slot.drawRect(0, 0, slotSize, slotSize);
+            
+            const rarityColor = {
+                0.6: 0xdcdcdc,
+                1: 0x99ff8f,
+                1.5: 0xffd03f
+            }
+
+            const item = this.inventory.inventory[i];
+            
+            if(item){
+                // console.log(item.rarity);
+                slot.beginFill(rarityColor[item.rarity]);
+            }
+            
+            if(isSelected){
+                slot.lineStyle(2, 0x000000);
+            }
+                slot.drawRect(0, 0, slotSize, slotSize);
             slot.endFill();
     
             slot.x = slotX;
             slot.y = startY;
             this.inventoryContainer.addChild(slot);
     
-            const item = this.inventory.inventory[i];
+            
             if (item && item.getSprite) {
                 const icon = item.getSprite();
                 if (icon && icon.texture) {

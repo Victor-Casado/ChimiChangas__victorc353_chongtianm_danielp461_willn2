@@ -272,11 +272,9 @@ export class Game {
       if(item.id == null){
         item.id = this.items.length;
       }
-      // console.log(item.id);
-      const i = new gunRegistry[item.gunName](item.id, item.x, item.y);
-      // console.log('---');
-      // console.log(item);
-      // console.log('---');
+      console.log(item.rarity);
+      const i = new gunRegistry[item.gunName](item.id, item.x, item.y, 20, item.rarity, 25);
+      // i.rarity = item.rarity;
       i.sprite.visible = true;
       this.items.push(i);
       this.container.addChild(i.sprite);

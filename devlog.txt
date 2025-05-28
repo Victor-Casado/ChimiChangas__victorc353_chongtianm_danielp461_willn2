@@ -42,3 +42,6 @@ victorC -- 2025-05-20 11:20
 
 markM -- 2025-05-22 11:44
 - Frontend design
+
+markM -- 2025-05-28
+- Error handling frontend design

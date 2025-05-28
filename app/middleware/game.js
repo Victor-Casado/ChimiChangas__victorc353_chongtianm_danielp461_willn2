@@ -151,7 +151,6 @@ export class Game {
 
     startLoop() {
       this.app.ticker.add((delta) => {
-
         if(this.localPlayer && this.localPlayer.alive){
           this.updateBullets(delta);
 
@@ -176,6 +175,7 @@ export class Game {
         }
       });
     }
+
     sendItems(items){
       if(this.localPlayer.alive){
         this.localPlayer.ws.send(JSON.stringify({
@@ -185,6 +185,7 @@ export class Game {
       }
       
     }
+
     updateBullets(delta){
       bullets.forEach((bullet, index) => {
           if (bullet.alive) {
@@ -205,6 +206,7 @@ export class Game {
           }
       });
     }
+
     damage(id, damage){
       this.players.find((player) => player.id == id).health -= damage;
       this.localPlayer.ws.send(JSON.stringify({
@@ -213,6 +215,7 @@ export class Game {
         health: this.players.find((player) => player.id == id).health,
       }));
     }
+    
     getPlayers(){
       return this.players;
     }

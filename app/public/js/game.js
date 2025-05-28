@@ -1,5 +1,4 @@
 import { Game } from '../../middleware/game.js';
-import { Grass,Bush,Tree } from '../../middleware/environment/plant.js';
 
 const ws = new WebSocket(`ws://${window.location.hostname}:8080`);
 let game = null;
@@ -26,7 +25,6 @@ ws.onmessage = (event) => {
 };
 
 game = await Game.clientInit();
-
 
 messageQueue.forEach(handleMessage);
 game.startLoop();

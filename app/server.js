@@ -17,9 +17,7 @@ let game;
 
 const wss = new WebSocketServer({ port: 8080 });
 
-
 let clients = [];
-let clientId = 0;
 
 wss.on('connection', async (ws) => {
   console.log('Client connected');
@@ -34,6 +32,7 @@ wss.on('connection', async (ws) => {
     if(message.type ==='join'){
       const username = message.username;
       let players = game.players;
+      console.log(players)
       for (let i = 0; i < players.length; i++) {
         let player = players[i];
         if(player.username === username){
@@ -46,8 +45,6 @@ wss.on('connection', async (ws) => {
             newPlayer.health = 100;
             playerExists = true;
           // }
-
-
           break;
         }
       }
@@ -87,9 +84,9 @@ wss.on('connection', async (ws) => {
         }
       });
       console.log(`Player ${username} connected`);
-      console.log(clients)
+      // console.log(clients)
       //console.log(game.stateJSON())
-      console.log(newPlayer.toJSON())
+      // console.log(newPlayer.toJSON())
     }
 
     if (message.type === 'move') {
@@ -205,6 +202,11 @@ wss.on('connection', async (ws) => {
     const player = game.findPlayer(disconnectedClient.id);
     if(player){
       player.destroy();
+      for(let i = 0; i < game.players.length; i++){
+        if(game.players[i] == player){
+          game.players.splice(i, 1);
+        }
+      }
     }
     // game.findPlayer(disconnectedClient.id).destroy();
     wss.clients.forEach(client => {

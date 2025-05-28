@@ -33,27 +33,27 @@ wss.on('connection', async (ws) => {
       const username = message.username;
       let players = game.players;
       console.log("Players in game", players)
-      for (let i = 0; i < players.length; i++) {
-        let player = players[i];
-        if(player.username === username){
-          // if(player.alive){
-            newPlayer = player;
-            //newPlayerId = player.id;
-            newPlayer.alive = true;
-            newPlayer.position.x = 0;
-            newPlayer.position.y = 0;
-            newPlayer.health = 100;
-            playerExists = false;
-          // }
-          break;
-        }
-      }
+      // for (let i = 0; i < players.length; i++) {
+      //   let player = players[i];
+      //   if(player.username === username){
+      //     // if(player.alive){
+      //       newPlayer = player;
+      //       //newPlayerId = player.id;
+      //       newPlayer.alive = true;
+      //       newPlayer.position.x = 0;
+      //       newPlayer.position.y = 0;
+      //       newPlayer.health = 100;
+      //       playerExists = false;
+      //     // }
+      //     break;
+      //   }
+      // }
 
-      if(!playerExists){
+      // if(!playerExists){
         //newPlayerId = clientId++;
         newPlayer = new Player(username, username, null, Math.random() * 10, Math.random() * 10, false, ws);
         game.players.push(newPlayer);
-      }
+      // }
 
       clients.push(
         {id: username,
@@ -205,6 +205,7 @@ wss.on('connection', async (ws) => {
     const player = game.findPlayer(disconnectedClient.id);
     if(player){
       player.destroy();
+      game.removePlayer(player.id);
       // for(let i = 0; i < game.players.length; i++){
       //   if(game.players[i] == player){
       //     game.players.splice(i, 1);

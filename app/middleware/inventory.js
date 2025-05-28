@@ -58,7 +58,8 @@ export class Inventory{
 
     addItem(item){
         if(this.inventory.length == this.maxCapacity && this.droppedCooldown <= 0){
-            this.dropItem(this.itemHolding);
+            this.dropItem(this.itemHolding, item);
+            return;
         }
         else if(this.inventory.length == this.maxCapacity && this.droppedCooldown > 0){
             this.droppedCooldown -= 10;
@@ -68,17 +69,16 @@ export class Inventory{
         this.itemHolding = this.inventory.length - 1;
     }
 
-    dropItem(index){
+    dropItem(index, item){
         if(index < 0 || index >= this.inventory.length){
             return;
         }
-        const item = this.inventory[index];
-        item.getSprite().visible = true;
-        item.isHeld = false;
-        this.inventory.splice(index, 1);
+        const dropItem = this.inventory[index];
+        dropItem.getSprite().visible = true;
+        dropItem.isHeld = false;
+        this.inventory[index] = item;
         this.droppedCooldown = 200;
-
-        return item;
+        return dropItem;
     }
 
     getHoldingItem(){

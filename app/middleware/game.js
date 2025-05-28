@@ -100,6 +100,11 @@ export class Game {
 
       this.players.push(player);
       // player.hitbox.makeVisible(this.container);
+
+      player.inventoryContainer = new PIXI.Container();
+      player.inventoryContainer.zIndex = 100;
+      this.app.stage.addChild(player.inventoryContainer);
+      
       return player;
     }
 

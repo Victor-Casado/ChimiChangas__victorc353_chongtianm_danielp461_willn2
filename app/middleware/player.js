@@ -106,6 +106,7 @@ export class Player
             this.updateChest(chests);
             this.updateItem(items);
             this.inventory.update(delta);
+            this.inventoryUI();
             this.updateGun();
             this.updateHealthBar();
         }
@@ -206,6 +207,7 @@ export class Player
         this.healthBar.drawRect(x, y, maxWidth * healthRatio, height);
         this.healthBar.endFill();
     }
+
     updateGun(){
         if (!this.inventory.length()) return;
 
@@ -376,6 +378,73 @@ export class Player
         }
         return false;
     }
+
+    inventoryUI() {
+        if (!this.inventoryContainer) return;
+    
+        this.inventoryContainer.removeChildren();
+    
+        const slotSize = 55;
+        const padding = 10;
+        const totalSlots = 3;
+    
+        const screenWidth = window.innerWidth;
+        const screenHeight = window.innerHeight;
+    
+        // Bottom-right corner
+        const startX = screenWidth - ((slotSize + padding) * totalSlots);
+        const startY = screenHeight - slotSize - 30;
+    
+        for (let i = 0; i < totalSlots; i++) {
+            const slotX = startX + i * (slotSize + padding);
+    
+            const slot = new PIXI.Graphics();
+            const isSelected = (i === this.inventory.itemHolding);
+    
+            slot.beginFill(isSelected ? 0xFFFF00 : 0x444444);
+            slot.lineStyle(2, 0x000000);
+            slot.drawRect(0, 0, slotSize, slotSize);
+            slot.endFill();
+    
+            slot.x = slotX;
+            slot.y = startY;
+            this.inventoryContainer.addChild(slot);
+    
+            const item = this.inventory.inventory[i];
+            if (item && item.getSprite) {
+                const icon = item.getSprite();
+                if (icon && icon.texture) {
+                    const originalWidth = icon.texture.width;
+                    const originalHeight = icon.texture.height;
+                    const maxIconSize = slotSize - 8;
+    
+                    const scale = Math.min(
+                        maxIconSize / originalWidth,
+                        maxIconSize / originalHeight
+                    );
+    
+                    const sprite = new PIXI.Sprite(icon.texture);
+                    sprite.anchor.set(0.5);
+                    sprite.scale.set(scale);
+                    sprite.x = slot.x + slotSize / 2;
+                    sprite.y = slot.y + slotSize / 2;
+                    this.inventoryContainer.addChild(sprite);
+                }
+            }
+    
+            const label = new PIXI.Text(`${i + 1}`, {
+                fontSize: 12,
+                fill: 0xffffff,
+                align: 'center',
+            });
+            label.anchor.set(0.5);
+            label.x = slot.x + slotSize / 2;
+            label.y = slot.y + slotSize + 12;
+            this.inventoryContainer.addChild(label);
+        }
+    }
+    
+    
 
     getSprite(){
         return this.sprite;

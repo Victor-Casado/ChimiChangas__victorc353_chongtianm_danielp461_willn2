@@ -32,7 +32,7 @@ wss.on('connection', async (ws) => {
     if(message.type ==='join'){
       const username = message.username;
       let players = game.players;
-      console.log(players)
+      console.log("Players in game", players)
       for (let i = 0; i < players.length; i++) {
         let player = players[i];
         if(player.username === username){
@@ -291,27 +291,58 @@ app.get('/me', async (req, res) => {
 app.post('/signup', async (req, res) => {
   const { username, password } = req.body;
   let addedUser = await addUser(username, password);
-
+  const txt = `
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<center>
+<h1>
+Username Already Exists <br><br>
+</h1>
+<form action="/">
+<button class="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-full transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg">
+  Home
+</form>
+</button>
+<br>
+<img src="https://www.freeiconspng.com/uploads/smiley-sad-face-png-26.png">
+</center>
+`
   if (addedUser){
     res.redirect('/login');
   }
   else {
-    res.status(500).send('Username already exists');
+    res.status(500).send(txt);
   }
 });
 
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  try {
+  
+  const txt = `
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+<center>
+<h1>
+Username or password does not match <br><br>
+</h1>
+<form action="/">
+<button class="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-full transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg">
+  Home
+</form>
+</button>
+<br>
+<img src="https://www.freeiconspng.com/uploads/smiley-sad-face-png-26.png">
+</center>
+`
+
+try {
     const user = await fetchUser('username', username);
     if (user.password === password) {
       req.session.user = username;
       res.redirect('/home');
     } else {
-      res.status(500).send('Username or password does not match');
+      res.status(500).send(txt);
     }
   } catch (err) {
-    res.status(500).send('Username or password does not match');
+    res.status(500).send(txt);
   }
 });
 

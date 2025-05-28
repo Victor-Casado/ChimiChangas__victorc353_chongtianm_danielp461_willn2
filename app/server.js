@@ -104,6 +104,14 @@ wss.on('connection', async (ws) => {
       } else{
         newPlayer = new Player(message.username, message.username, null, message.player.x, message.player.y, false, ws);
         game.players.push(newPlayer);
+        wss.clients.forEach(client => {
+          if (client.readyState === WebSocket.OPEN && client !== ws) {
+            client.send(JSON.stringify({
+              type: 'playerJoined',
+              player: newPlayer.toJSON(),
+            }));
+          }
+        });
       }
     }
     if( message.type === 'openChest'){

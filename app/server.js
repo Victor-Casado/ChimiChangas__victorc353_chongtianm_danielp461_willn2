@@ -25,7 +25,7 @@ wss.on('connection', async (ws) => {
   console.log('Client connected');
 
   let newPlayer = null;
-  let newPlayerId = 0;
+  //let newPlayerId = 0;
   let playerExists = false;
 
   ws.on('message', (data) => {
@@ -39,27 +39,27 @@ wss.on('connection', async (ws) => {
         if(player.username === username){
           // if(player.alive){
             newPlayer = player;
-            newPlayerId = player.id;
+            //newPlayerId = player.id;
             newPlayer.alive = true;
             newPlayer.position.x = 0;
             newPlayer.position.y = 0;
             newPlayer.health = 100;
             playerExists = true;
-          // } 
-          
-          
+          // }
+
+
           break;
         }
       }
 
       if(!playerExists){
-        newPlayerId = clientId++;
-        newPlayer = new Player(username, newPlayerId, null, Math.random() * 10, Math.random() * 10, false, ws);
+        //newPlayerId = clientId++;
+        newPlayer = new Player(username, username, null, Math.random() * 10, Math.random() * 10, false, ws);
         game.players.push(newPlayer);
       }
 
       clients.push(
-        {id: newPlayerId,
+        {id: username,
           x: newPlayer.x,
           y: newPlayer.y,
           ws: ws }
@@ -86,7 +86,10 @@ wss.on('connection', async (ws) => {
           }));
         }
       });
-      console.log(`Player ${newPlayerId} connected`);
+      console.log(`Player ${username} connected`);
+      console.log(clients)
+      //console.log(game.stateJSON())
+      console.log(newPlayer.toJSON())
     }
 
     if (message.type === 'move') {
@@ -163,7 +166,7 @@ wss.on('connection', async (ws) => {
     }
 
     if( message.type === 'health'){
-      
+
       const playerId = message.id;
       game.players.find((player) => player.id == playerId).health = message.health;
       wss.clients.forEach(client => {
@@ -212,7 +215,7 @@ wss.on('connection', async (ws) => {
         }));
       }
     });
-    
+
   }
 });
 

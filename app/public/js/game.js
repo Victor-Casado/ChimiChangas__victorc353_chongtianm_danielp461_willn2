@@ -35,6 +35,8 @@ messageQueue = [];
 async function handleMessage(data) {
     // console.log(data);
     if (data.type === 'you') {
+        console.log("=== Incoming YOU player data ===");
+        console.log("Your player:", data.player);
         game.loadState(data.gameState);
         if(!data.player.health){
             data.player.health = 100;
@@ -43,13 +45,18 @@ async function handleMessage(data) {
     }
 
     if (data.type === 'playerJoined') {
-        console.log(`Player ${data.player.id} joined the lobby`);
+        //console.log(`Player ${data.player.id} joined the lobby`);
         game.loadPlayer(data.player.username, data.player.id, 2, data.player.x, data.player.y, false, null, data.player.orientation, data.player.health);
     }
 
     if (data.type === 'existingPlayers') {
-        console.log("Loading existing players:", data.clients);
+        console.log("=== Incoming existingPlayers data ===");
+        console.log("localUser:", data.localUser);
+        console.log("All players:", data.clients.map(p => ({ username: p.username, id: p.id, x: p.x, y: p.y })));
+
+        //console.log("Loading existing players:", data.clients);
         data.clients.forEach(playerData => {
+          console.log("Player from server:", playerData);
             if(data.localUser !== playerData.username){
                 console.log('local user:', data.localUser);
                 console.log('player data:', playerData.username);
@@ -70,7 +77,7 @@ async function handleMessage(data) {
     if (data.type === 'openChest') {
       console.log(data.chest);
       game.refreshChest(data.chest.id, data.chest.items);
-    } 
+    }
 
     if (data.type === 'addItem') {
     //   console.log(data.item);
@@ -88,7 +95,7 @@ async function handleMessage(data) {
     }
 
     if (data.type === 'fire') {
-        game.items[data.gun.id].fire(data.x, data.y, true, null);  
+        game.items[data.gun.id].fire(data.x, data.y, true, null);
     }
 
     if (data.type === 'health') {

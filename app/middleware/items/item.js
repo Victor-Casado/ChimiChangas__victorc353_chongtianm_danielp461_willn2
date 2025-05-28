@@ -101,6 +101,7 @@ export class Item
             y: this.y,
             sprite: {rotation: this.sprite.rotation, scale: this.sprite.scale.x, visible: this.sprite.visible},
             isHeld: this.isHeld,
+            rarity: this.rarity,
         };
     }
 }

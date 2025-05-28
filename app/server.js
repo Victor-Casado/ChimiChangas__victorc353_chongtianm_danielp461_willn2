@@ -43,7 +43,7 @@ wss.on('connection', async (ws) => {
             newPlayer.position.x = 0;
             newPlayer.position.y = 0;
             newPlayer.health = 100;
-            playerExists = true;
+            playerExists = false;
           // }
           break;
         }
@@ -165,7 +165,10 @@ wss.on('connection', async (ws) => {
     if( message.type === 'health'){
 
       const playerId = message.id;
-      game.players.find((player) => player.id == playerId).health = message.health;
+      if(game.players.find((player) => player.id == playerId) == null){
+	return;
+      }
+	game.players.find((player) => player.id == playerId).health = message.health;
       wss.clients.forEach(client => {
         if (client.readyState === WebSocket.OPEN && client !== ws) {
           client.send(JSON.stringify({

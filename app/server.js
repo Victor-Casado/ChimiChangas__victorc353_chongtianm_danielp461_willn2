@@ -43,7 +43,7 @@ wss.on('connection', async (ws) => {
             newPlayer.position.x = 0;
             newPlayer.position.y = 0;
             newPlayer.health = 100;
-            playerExists = true;
+            playerExists = false;
           // }
           break;
         }

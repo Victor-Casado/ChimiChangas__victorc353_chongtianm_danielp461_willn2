@@ -99,10 +99,10 @@ export class Game {
       player.health = health;
 
 
-      console.log("[loadPlayer] Adding player:", player);
-      if (!player) {
-          console.warn("Attempting to add undefined player!", { username, id, skinNum, x, y, active, orientation, health });
-      }
+      //console.log("[loadPlayer] Adding player:", player);
+      //if (!player) {
+        //  console.warn("Attempting to add undefined player!", { username, id, skinNum, x, y, active, orientation, health });
+      //}
       this.players.push(player);
       // player.hitbox.makeVisible(this.container);
 
@@ -114,7 +114,7 @@ export class Game {
     }
 
     removePlayer(id){
-      console.log("removing " + id);
+      //console.log("removing " + id);
 
 
       for(let i = 0; i<this.players.length; ++i){
@@ -125,14 +125,14 @@ export class Game {
           this.players.splice(i, 1);
         }
       }
-      console.log("Players in game:")
-      for (let i = 0; i < this.players.length; i++){
-        console.log("   " + this.players[i].id)
-      }
+      //console.log("Players in game:")
+      //for (let i = 0; i < this.players.length; i++){
+        //console.log("   " + this.players[i].id)
+      //}
     }
     kill(id){
       const player = this.players.find((player) => player.id == id);
-      console.log("player dying:" + player.id)
+      //console.log("player dying:" + player.id)
       if(player.alive){
         player.alive = false;
         //console.log('kill');
@@ -143,9 +143,9 @@ export class Game {
           itemData.isHeld = false;
           itemData.sprite.visible = true;
 
-          console.log('Before refresh:', this.items[itemData.id]);
+          //console.log('Before refresh:', this.items[itemData.id]);
           this.items[itemData.id].refresh(itemData);
-          console.log('After refresh:', this.items[itemData.id]);
+          //console.log('After refresh:', this.items[itemData.id]);
         }
         if(this.localPlayer && this.localPlayer.id == id){
           window.location.href = '/home';

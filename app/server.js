@@ -20,7 +20,7 @@ const wss = new WebSocketServer({ port: 8080 });
 let clients = [];
 
 wss.on('connection', async (ws) => {
-  console.log('Client connected');
+  //console.log('Client connected');
 
   let newPlayer = null;
   //let newPlayerId = 0;
@@ -30,7 +30,7 @@ wss.on('connection', async (ws) => {
     const message = JSON.parse(data);
 
     if(message.type ==='join'){
-      console.log(message)
+      //console.log(message)
 
       const username = message.username;
       let players = game.players;
@@ -85,15 +85,15 @@ wss.on('connection', async (ws) => {
           }));
         }
       });
-      console.log(`Player ${username} connected`);
+      //console.log(`Player ${username} connected`);
       // console.log(clients)
       //console.log(game.stateJSON())
       // console.log(newPlayer.toJSON())
 
-      console.log("Players in game:")
-      for (let i = 0; i < players.length; i++){
-        console.log("   " + players[i].id)
-      }
+      //console.log("Players in game:")
+      //for (let i = 0; i < players.length; i++){
+        //console.log("   " + players[i].id)
+    //  }
     }
 
     if (message.type === 'move') {
@@ -204,7 +204,7 @@ wss.on('connection', async (ws) => {
 
 
   ws.on('close', () => {
-  console.log('Client disconnected');
+  //console.log('Client disconnected');
   const disconnectedClient = clients.find(c => c.ws === ws);
   clients = clients.filter(c => c.ws !== ws);
 
@@ -356,5 +356,5 @@ try {
 
 const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log('Listening on port:', port);
+  //console.log('Listening on port:', port);
 });

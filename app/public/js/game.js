@@ -33,8 +33,8 @@ messageQueue = [];
 async function handleMessage(data) {
     // console.log(data);
     if (data.type === 'you') {
-        console.log("=== Incoming YOU player data ===");
-        console.log("Your player:", data.player);
+        //console.log("=== Incoming YOU player data ===");
+        //console.log("Your player:", data.player);
         game.loadState(data.gameState);
         if(!data.player.health){
             data.player.health = 100;
@@ -43,21 +43,21 @@ async function handleMessage(data) {
     }
 
     if (data.type === 'playerJoined') {
-        console.log(`Player ${data.player.id} joined the lobby`);
+        //console.log(`Player ${data.player.id} joined the lobby`);
         game.loadPlayer(data.player.username, data.player.id, 2, data.player.x, data.player.y, false, null, data.player.orientation, data.player.health);
     }
 
     if (data.type === 'existingPlayers') {
-        console.log("=== Incoming existingPlayers data ===");
-        console.log("localUser:", data.localUser);
-        console.log("All players:", data.clients.map(p => ({ username: p.username, id: p.id, x: p.x, y: p.y })));
+        //console.log("=== Incoming existingPlayers data ===");
+        //console.log("localUser:", data.localUser);
+        //console.log("All players:", data.clients.map(p => ({ username: p.username, id: p.id, x: p.x, y: p.y })));
 
         //console.log("Loading existing players:", data.clients);
         data.clients.forEach(playerData => {
-          console.log("Player from server:", playerData);
+          //console.log("Player from server:", playerData);
             if(data.localUser !== playerData.username){
-                console.log('local user:', data.localUser);
-                console.log('player data:', playerData.username);
+                //console.log('local user:', data.localUser);
+                //console.log('player data:', playerData.username);
                 game.loadPlayer(playerData.username, playerData.id, 2, playerData.x, playerData.y, false, null, playerData.orientation, playerData.health);
             }
         });
@@ -111,7 +111,7 @@ async function handleMessage(data) {
     }
 
     if(data.type==='playerDisconnected') {
-        console.log("PLAYER DC");
+        //console.log("PLAYER DC");
         game.removePlayer(data.id);
     }
 }

@@ -19,6 +19,14 @@ const wss = new WebSocketServer({ port: 8080 });
 
 let clients = [];
 
+const VISIBILITY_RADIUS = 800;
+
+function isWithinRadius(p1, p2, radius) {
+  const dx = p1.x - p2.x;
+  const dy = p1.y - p2.y;
+  return dx * dx + dy * dy <= radius * radius;
+}
+
 wss.on('connection', async (ws) => {
   //console.log('Client connected');
 
@@ -33,26 +41,7 @@ wss.on('connection', async (ws) => {
       //console.log(message)
 
       const username = message.username;
-      let players = game.players;
 
-      // for (let i = 0; i < players.length; i++) {
-      //   let player = players[i];
-      //   if(player.username === username){
-      //     // if(player.alive){
-      //       newPlayer = player;
-      //       //newPlayerId = player.id;
-      //       newPlayer.alive = true;
-      //       newPlayer.position.x = 0;
-      //       newPlayer.position.y = 0;
-      //       newPlayer.health = 100;
-      //       playerExists = false;
-      //     // }
-      //     break;
-      //   }
-      // }
-
-      // if(!playerExists){
-        //newPlayerId = clientId++;
         var random = Math.random()
         //console.log(random)
         if (random < 1.1){
@@ -101,27 +90,30 @@ wss.on('connection', async (ws) => {
           }));
         }
       });
-      //console.log(`Player ${username} connected`);
-      // console.log(clients)
-      //console.log(game.stateJSON())
-      // console.log(newPlayer.toJSON())
-
-      //console.log("Players in game:")
-      //for (let i = 0; i < players.length; i++){
-        //console.log("   " + players[i].id)
-    //  }
     }
 
     if (message.type === 'move') {
       const p = game.players.find(p => p.getId() === message.player.id);
       if (p) {
         p.refresh(message.player);
+
         wss.clients.forEach(client => {
           if (client.readyState === WebSocket.OPEN && client !== ws) {
-            client.send(JSON.stringify({
-              type: 'playerMoved',
-              player: message.player,
-            }));
+            const targetClient = clients.find(c => c.ws === client);
+            if (!targetClient || targetClient.id === message.player.id) return;
+
+            const sender = game.players.find(p => p.getId() === message.player.id);
+            const receiver = game.players.find(p => p.getId() === targetClient.id);
+
+            if (!sender || !receiver) return;
+
+            if (isWithinRadius(sender.position, receiver.position, VISIBILITY_RADIUS)) {
+              client.send(JSON.stringify({
+                type: 'playerMoved',
+                player: message.player,
+              }));
+            }
+
           }
         });
       }
@@ -169,6 +161,7 @@ wss.on('connection', async (ws) => {
         }
       });
     }
+
 
     if( message.type === 'fire'){
       const gun = message.gun;

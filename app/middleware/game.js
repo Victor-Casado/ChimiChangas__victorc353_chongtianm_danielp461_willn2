@@ -18,8 +18,8 @@ export class Game {
 
       if (!isServer) {
         this.app = app;
-        console.log(this.app.canvas.width);
-        console.log(this.app.canvas.height);
+        //console.log(this.app.canvas.width);
+        //console.log(this.app.canvas.height);
         this.container = new PIXI.Container();
         document.body.appendChild(this.app.canvas);
         this.app.stage.addChild(this.container);
@@ -98,36 +98,46 @@ export class Game {
       }
       player.health = health;
 
+
+      console.log("[loadPlayer] Adding player:", player);
+      if (!player) {
+          console.warn("Attempting to add undefined player!", { username, id, skinNum, x, y, active, orientation, health });
+      }
       this.players.push(player);
       // player.hitbox.makeVisible(this.container);
 
       player.inventoryContainer = new PIXI.Container();
       player.inventoryContainer.zIndex = 100;
       this.app.stage.addChild(player.inventoryContainer);
-      
+
       return player;
     }
 
     removePlayer(id){
       console.log("removing " + id);
+
+
       for(let i = 0; i<this.players.length; ++i){
         if(this.players[i].id == id){
           const p = this.players[i];
           p.destroy();
 
-          this.players.pop(i);
+          this.players.splice(i, 1);
         }
       }
-        
+      console.log("Players in game:")
+      for (let i = 0; i < this.players.length; i++){
+        console.log("   " + this.players[i].id)
+      }
     }
     kill(id){
       const player = this.players.find((player) => player.id == id);
-      
+      console.log("player dying:" + player.id)
       if(player.alive){
         player.alive = false;
-        console.log('kill');
+        //console.log('kill');
         for (let i = player.inventory.length() - 1; i >= 0; --i) {
-          
+
           let itemData = player.inventory.inventory[i].toJSON();
           player.inventory.dropItem(i);
           itemData.isHeld = false;
@@ -142,7 +152,7 @@ export class Game {
         }
       }
       this.removePlayer(player.id);
-      
+
     }
 
     findPlayer(id){
@@ -183,7 +193,7 @@ export class Game {
           itemState: items.map(i => i.toJSON()),
         }));
       }
-      
+
     }
 
     updateBullets(delta){
@@ -215,7 +225,7 @@ export class Game {
         health: this.players.find((player) => player.id == id).health,
       }));
     }
-    
+
     getPlayers(){
       return this.players;
     }
@@ -242,7 +252,7 @@ export class Game {
       });
 
       state.chests.forEach((chest) => {
-        console.log(chest.id);
+        //console.log(chest.id);
         let c = new ChestAnimation(chest.id, chest.rank, chest.x, chest.y);
         if(chest.opened){
           c.openChest(true);
@@ -272,7 +282,7 @@ export class Game {
       if(item.id == null){
         item.id = this.items.length;
       }
-      console.log(item.rarity);
+      //console.log(item.rarity);
       const i = new gunRegistry[item.gunName](item.id, item.x, item.y, 20, item.rarity, 25);
       // i.rarity = item.rarity;
       i.sprite.visible = true;

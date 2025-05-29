@@ -43,7 +43,7 @@ async function handleMessage(data) {
     }
 
     if (data.type === 'playerJoined') {
-        //console.log(`Player ${data.player.id} joined the lobby`);
+        console.log(`Player ${data.player.id} joined the lobby`);
         game.loadPlayer(data.player.username, data.player.id, 2, data.player.x, data.player.y, false, null, data.player.orientation, data.player.health);
     }
 
@@ -73,7 +73,7 @@ async function handleMessage(data) {
         }
     }
     if (data.type === 'openChest') {
-      console.log(data.chest);
+    //  console.log(data.chest);
       game.refreshChest(data.chest.id, data.chest.items);
     }
 

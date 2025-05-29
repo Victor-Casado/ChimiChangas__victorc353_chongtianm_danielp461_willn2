@@ -30,9 +30,11 @@ wss.on('connection', async (ws) => {
     const message = JSON.parse(data);
 
     if(message.type ==='join'){
+      console.log(message)
+
       const username = message.username;
       let players = game.players;
-      console.log("Players in game", players)
+
       // for (let i = 0; i < players.length; i++) {
       //   let player = players[i];
       //   if(player.username === username){
@@ -87,6 +89,11 @@ wss.on('connection', async (ws) => {
       // console.log(clients)
       //console.log(game.stateJSON())
       // console.log(newPlayer.toJSON())
+
+      console.log("Players in game:")
+      for (let i = 0; i < players.length; i++){
+        console.log("   " + players[i].id)
+      }
     }
 
     if (message.type === 'move') {
@@ -98,17 +105,6 @@ wss.on('connection', async (ws) => {
             client.send(JSON.stringify({
               type: 'playerMoved',
               player: message.player,
-            }));
-          }
-        });
-      } else{
-        newPlayer = new Player(message.username, message.username, null, message.player.x, message.player.y, false, ws);
-        game.players.push(newPlayer);
-        wss.clients.forEach(client => {
-          if (client.readyState === WebSocket.OPEN && client !== ws) {
-            client.send(JSON.stringify({
-              type: 'playerJoined',
-              player: newPlayer.toJSON(),
             }));
           }
         });
@@ -328,7 +324,7 @@ Username Already Exists <br><br>
 
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
-  
+
   const txt = `
 <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 <center>

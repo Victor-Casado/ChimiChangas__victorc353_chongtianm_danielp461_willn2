@@ -53,7 +53,23 @@ wss.on('connection', async (ws) => {
 
       // if(!playerExists){
         //newPlayerId = clientId++;
-        newPlayer = new Player(username, username, null, Math.random() * 10, Math.random() * 10, false, ws);
+        var random = Math.random()
+        //console.log(random)
+        if (random < 1.1){
+          newPlayer = new Player(username, username, null, 1900, 800, false, ws);
+        }
+        if (random < .75){
+          newPlayer = new Player(username, username, null, 0, 800, false, ws);
+        }
+
+        if (random < .5){
+          newPlayer = new Player(username, username, null, 1900, 0, false, ws);
+        }
+
+
+        if (random < .25){
+          newPlayer = new Player(username, username, null,0, 0, false, ws);
+        }
         game.players.push(newPlayer);
       // }
 

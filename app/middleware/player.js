@@ -283,7 +283,7 @@ export class Player
                 const item = chest.items[0];
                 
                 const gunRank = {
-                    'wooden': 0.6,
+                    'wooden': 0.8,
                     'silver': 1,
                     'gold': 1.5,
                 }

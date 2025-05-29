@@ -91,7 +91,7 @@ export class Bullet {
 
         this.shouldKill = false;
 
-        this.hitbox = new Hitbox(this.x, this.y, this.sprite.width, this.sprite.height); //currently does not account for rotation
+        this.hitbox = new Hitbox(this.x, this.y, 15, 15); //currently does not account for rotation
 
         this.gun = gun;
 
@@ -119,7 +119,7 @@ export class Bullet {
 
         this.lifeSpan += delta.deltaTime;
 
-        if(this.lifeSpan > this.gun.getSprite().width / 7){ //make sprite visible once object reaches gun muzzle
+        if(this.lifeSpan > this.gun.getSprite().width / (7 * this.speed / 600) ){ //make sprite visible once object reaches gun muzzle
             this.sprite.visible = true;
         }
 

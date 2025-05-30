@@ -1,6 +1,6 @@
 import { Game } from '../../middleware/game.js';
 
-const ws = new WebSocket(`ws://${window.location.hostname}:8080`);
+const ws = new WebSocket(`wss://${window.location.hostname}:8080`);
 let game = null;
 let messageQueue = [];
 

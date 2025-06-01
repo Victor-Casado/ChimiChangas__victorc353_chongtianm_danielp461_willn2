@@ -38,6 +38,14 @@ function broadcastPlayerCount(roomCode) {
   });
 }
 
+const VISIBILITY_RADIUS = 800;
+
+function isWithinRadius(p1, p2, radius) {
+  const dx = p1.x - p2.x;
+  const dy = p1.y - p2.y;
+  return dx * dx + dy * dy <= radius * radius;
+}
+
 wss.on('connection', async (ws) => {
   let roomCode = null;
   let newPlayer = null;
@@ -48,6 +56,7 @@ wss.on('connection', async (ws) => {
     // JOIN HANDLER: roomCode is sent by client
     if(message.type === 'join'){
       const username = message.username;
+<<<<<<< HEAD
       roomCode = (message.roomCode || '').toUpperCase();
       if (!roomCode) {
         ws.send(JSON.stringify({ type: 'error', error: 'No room code provided' }));
@@ -70,6 +79,28 @@ wss.on('connection', async (ws) => {
         ws.close();
         return;
       }
+=======
+
+        var random = Math.random()
+        //console.log(random)
+        if (random < 1.1){
+          newPlayer = new Player(username, username, null, 1900, 800, false, ws);
+        }
+        if (random < .75){
+          newPlayer = new Player(username, username, null, 0, 800, false, ws);
+        }
+
+        if (random < .5){
+          newPlayer = new Player(username, username, null, 1900, 0, false, ws);
+        }
+
+
+        if (random < .25){
+          newPlayer = new Player(username, username, null,0, 0, false, ws);
+        }
+        game.players.push(newPlayer);
+      // }
+>>>>>>> 0089b09defc9819547d604c4d095ddf01c7bbe1c
 
       // Spawn the new player at random locations
       let random = Math.random();
@@ -116,8 +147,11 @@ wss.on('connection', async (ws) => {
           }));
         }
       });
+<<<<<<< HEAD
 
       broadcastPlayerCount(roomCode);
+=======
+>>>>>>> 0089b09defc9819547d604c4d095ddf01c7bbe1c
     }
 
     // All other message types must operate on the correct room
@@ -131,9 +165,15 @@ wss.on('connection', async (ws) => {
       if (p) {
         p.refresh(message.player);
 
+<<<<<<< HEAD
         clients.forEach(clientObj => {
           if (clientObj.ws.readyState === WebSocket.OPEN && clientObj.ws !== ws) {
             const targetClient = clientObj;
+=======
+        wss.clients.forEach(client => {
+          if (client.readyState === WebSocket.OPEN && client !== ws) {
+            const targetClient = clients.find(c => c.ws === client);
+>>>>>>> 0089b09defc9819547d604c4d095ddf01c7bbe1c
             if (!targetClient || targetClient.id === message.player.id) return;
 
             const sender = game.players.find(p => p.getId() === message.player.id);
@@ -142,11 +182,19 @@ wss.on('connection', async (ws) => {
             if (!sender || !receiver) return;
 
             if (isWithinRadius(sender.position, receiver.position, VISIBILITY_RADIUS)) {
+<<<<<<< HEAD
               clientObj.ws.send(JSON.stringify({
+=======
+              client.send(JSON.stringify({
+>>>>>>> 0089b09defc9819547d604c4d095ddf01c7bbe1c
                 type: 'playerMoved',
                 player: message.player,
               }));
             }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 0089b09defc9819547d604c4d095ddf01c7bbe1c
           }
         });
       }
@@ -195,7 +243,8 @@ wss.on('connection', async (ws) => {
       });
     }
 
-    if (message.type === 'fire') {
+
+    if( message.type === 'fire'){
       const gun = message.gun;
       clients.forEach(clientObj => {
         if (clientObj.ws.readyState === WebSocket.OPEN && clientObj.ws !== ws) {

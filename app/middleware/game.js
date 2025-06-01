@@ -56,17 +56,17 @@ export class Game {
       let structId = 0;
 
       for(let i = 0; i<40; ++i){
-        let tree = new Tree(structId, Math.random() * 1885 + 15, Math.random() * 785 + 15, null);
+        let tree = new Tree(structId, Math.random() * 1870 + 15, Math.random() * 770 + 15, null);
         game.structures.push(tree);
         structId++;
       }
 
       for(let i = 0; i<500; ++i){
-        game.structures.push(new Grass(0, Math.random() * 1885 + 15, Math.random() * 785 + 15, null));
+        game.structures.push(new Grass(0, Math.random() * 1870 + 15, Math.random() * 770 + 15, null));
       }
 
       for(let i = 0; i<75; ++i){
-        let bush = new Bush(structId, Math.random() * 1885 + 15, Math.random() * 785 + 15, null);
+        let bush = new Bush(structId, Math.random() * 1870 + 15, Math.random() * 770 + 15, null);
         game.structures.push(bush);
         structId++;
       }

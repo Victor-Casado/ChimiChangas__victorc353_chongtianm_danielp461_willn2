@@ -10,112 +10,154 @@ import { Player }  from './middleware/player.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-let game;
-(async () => {
-  game = await Game.serverInit();
-})();
-
 const wss = new WebSocketServer({ port: 8080 });
 
-let clients = [];
+const MAX_PLAYERS = 2;
+const VISIBILITY_RADIUS = 800;
+
+// Main rooms structure: { [roomCode]: { game, clients: [{id, x, y, ws}], ... } }
+const rooms = {};
+
+function isWithinRadius(p1, p2, radius) {
+  const dx = p1.x - p2.x;
+  const dy = p1.y - p2.y;
+  return dx * dx + dy * dy <= radius * radius;
+}
+
+function broadcastPlayerCount(roomCode) {
+  const room = rooms[roomCode];
+  if (!room) return;
+  room.clients.forEach(clientObj => {
+    if (clientObj.ws.readyState === WebSocket.OPEN) {
+      clientObj.ws.send(JSON.stringify({
+        type: 'playerCount',
+        count: room.clients.length,
+        max: MAX_PLAYERS
+      }));
+    }
+  });
+}
 
 wss.on('connection', async (ws) => {
-  //console.log('Client connected');
-
+  let roomCode = null;
   let newPlayer = null;
-  //let newPlayerId = 0;
-  let playerExists = false;
 
-  ws.on('message', (data) => {
+  ws.on('message', async (data) => {
     const message = JSON.parse(data);
 
-    if(message.type ==='join'){
-      //console.log(message)
-
+    // JOIN HANDLER: roomCode is sent by client
+    if(message.type === 'join'){
       const username = message.username;
-      let players = game.players;
+      roomCode = (message.roomCode || '').toUpperCase();
+      if (!roomCode) {
+        ws.send(JSON.stringify({ type: 'error', error: 'No room code provided' }));
+        ws.close();
+        return;
+      }
 
-      // for (let i = 0; i < players.length; i++) {
-      //   let player = players[i];
-      //   if(player.username === username){
-      //     // if(player.alive){
-      //       newPlayer = player;
-      //       //newPlayerId = player.id;
-      //       newPlayer.alive = true;
-      //       newPlayer.position.x = 0;
-      //       newPlayer.position.y = 0;
-      //       newPlayer.health = 100;
-      //       playerExists = false;
-      //     // }
-      //     break;
-      //   }
-      // }
+      // Create room if doesn't exist
+      if (!rooms[roomCode]) {
+        rooms[roomCode] = {
+          game: await Game.serverInit(),
+          clients: []
+        };
+      }
+      const room = rooms[roomCode];
 
-      // if(!playerExists){
-        //newPlayerId = clientId++;
-        newPlayer = new Player(username, username, null, Math.random() * 10, Math.random() * 10, false, ws);
-        game.players.push(newPlayer);
-      // }
+      // Enforce max players per room
+      if (room.clients.length >= MAX_PLAYERS) {
+        ws.send(JSON.stringify({ type: 'roomFull' }));
+        ws.close();
+        return;
+      }
 
-      clients.push(
-        {id: username,
-          x: newPlayer.x,
-          y: newPlayer.y,
-          ws: ws }
-      );
+      // Spawn the new player at random locations
+      let random = Math.random();
+      if (random < 1.1){
+        newPlayer = new Player(username, username, null, 1900, 800, false, ws);
+      }
+      if (random < .75){
+        newPlayer = new Player(username, username, null, 0, 800, false, ws);
+      }
+      if (random < .5){
+        newPlayer = new Player(username, username, null, 1900, 0, false, ws);
+      }
+      if (random < .25){
+        newPlayer = new Player(username, username, null,0, 0, false, ws);
+      }
+      room.game.players.push(newPlayer);
 
+      room.clients.push({
+        id: username,
+        x: newPlayer.x,
+        y: newPlayer.y,
+        ws: ws
+      });
+
+      // Send to joining client
       ws.send(JSON.stringify({
         type: 'you',
         player: newPlayer.toJSON(),
-        gameState: game.stateJSON()
+        gameState: room.game.stateJSON()
       }));
 
       ws.send(JSON.stringify({
         type: 'existingPlayers',
-        clients: game.players.map(p => (p.toJSON())),
+        clients: room.game.players.map(p => (p.toJSON())),
         localUser: username
       }));
 
-      // Notify other clients about new player
-      wss.clients.forEach(client => {
-        if (client.readyState === WebSocket.OPEN && client !== ws) {
-          client.send(JSON.stringify({
+      // Notify other clients in this room
+      room.clients.forEach(clientObj => {
+        if (clientObj.ws.readyState === WebSocket.OPEN && clientObj.ws !== ws) {
+          clientObj.ws.send(JSON.stringify({
             type: 'playerJoined',
             player: newPlayer.toJSON(),
           }));
         }
       });
-      //console.log(`Player ${username} connected`);
-      // console.log(clients)
-      //console.log(game.stateJSON())
-      // console.log(newPlayer.toJSON())
 
-      //console.log("Players in game:")
-      //for (let i = 0; i < players.length; i++){
-        //console.log("   " + players[i].id)
-    //  }
+      broadcastPlayerCount(roomCode);
     }
+
+    // All other message types must operate on the correct room
+    if (!roomCode || !rooms[roomCode]) return;
+    const room = rooms[roomCode];
+    const game = room.game;
+    const clients = room.clients;
 
     if (message.type === 'move') {
       const p = game.players.find(p => p.getId() === message.player.id);
       if (p) {
         p.refresh(message.player);
-        wss.clients.forEach(client => {
-          if (client.readyState === WebSocket.OPEN && client !== ws) {
-            client.send(JSON.stringify({
-              type: 'playerMoved',
-              player: message.player,
-            }));
+
+        clients.forEach(clientObj => {
+          if (clientObj.ws.readyState === WebSocket.OPEN && clientObj.ws !== ws) {
+            const targetClient = clientObj;
+            if (!targetClient || targetClient.id === message.player.id) return;
+
+            const sender = game.players.find(p => p.getId() === message.player.id);
+            const receiver = game.players.find(p => p.getId() === targetClient.id);
+
+            if (!sender || !receiver) return;
+
+            if (isWithinRadius(sender.position, receiver.position, VISIBILITY_RADIUS)) {
+              clientObj.ws.send(JSON.stringify({
+                type: 'playerMoved',
+                player: message.player,
+              }));
+            }
           }
         });
       }
     }
-    if( message.type === 'openChest'){
+
+    if (message.type === 'openChest') {
       const chest = message.chest;
 
-      wss.clients.forEach(client => {
-        if (client.readyState === WebSocket.OPEN && client !== ws) {
-          client.send(JSON.stringify({
+      clients.forEach(clientObj => {
+        if (clientObj.ws.readyState === WebSocket.OPEN && clientObj.ws !== ws) {
+          clientObj.ws.send(JSON.stringify({
             type: 'openChest',
             chest: chest,
           }));
@@ -123,15 +165,14 @@ wss.on('connection', async (ws) => {
       });
 
       game.chests[chest.id].opened = true;
-
     }
 
-    if( message.type === 'addItem'){
+    if (message.type === 'addItem') {
       const item = message.item;
       game.items.push(item);
-      wss.clients.forEach(client => {
-        if (client.readyState === WebSocket.OPEN ) {
-          client.send(JSON.stringify({
+      clients.forEach(clientObj => {
+        if (clientObj.ws.readyState === WebSocket.OPEN) {
+          clientObj.ws.send(JSON.stringify({
             type: 'addItem',
             item: item,
           }));
@@ -139,14 +180,14 @@ wss.on('connection', async (ws) => {
       });
     }
 
-    if( message.type === 'itemState'){
+    if (message.type === 'itemState') {
       const items = message.itemState;
       items.forEach((item) => {
         game.items[item.id] = item;
       });
-      wss.clients.forEach(client => {
-        if (client.readyState === WebSocket.OPEN && client !== ws) {
-          client.send(JSON.stringify({
+      clients.forEach(clientObj => {
+        if (clientObj.ws.readyState === WebSocket.OPEN && clientObj.ws !== ws) {
+          clientObj.ws.send(JSON.stringify({
             type: 'itemState',
             items: items,
           }));
@@ -154,12 +195,11 @@ wss.on('connection', async (ws) => {
       });
     }
 
-    if( message.type === 'fire'){
+    if (message.type === 'fire') {
       const gun = message.gun;
-      // console.log('fire');
-      wss.clients.forEach(client => {
-        if (client.readyState === WebSocket.OPEN && client !== ws) {
-          client.send(JSON.stringify({
+      clients.forEach(clientObj => {
+        if (clientObj.ws.readyState === WebSocket.OPEN && clientObj.ws !== ws) {
+          clientObj.ws.send(JSON.stringify({
             type: 'fire',
             gun: gun,
             x: message.x,
@@ -169,16 +209,15 @@ wss.on('connection', async (ws) => {
       });
     }
 
-    if( message.type === 'health'){
-
+    if (message.type === 'health') {
       const playerId = message.id;
       if(game.players.find((player) => player.id == playerId) == null){
-	return;
+        return;
       }
-	game.players.find((player) => player.id == playerId).health = message.health;
-      wss.clients.forEach(client => {
-        if (client.readyState === WebSocket.OPEN && client !== ws) {
-          client.send(JSON.stringify({
+      game.players.find((player) => player.id == playerId).health = message.health;
+      clients.forEach(clientObj => {
+        if (clientObj.ws.readyState === WebSocket.OPEN && clientObj.ws !== ws) {
+          clientObj.ws.send(JSON.stringify({
             type: 'health',
             id: playerId,
             health: message.health
@@ -187,9 +226,9 @@ wss.on('connection', async (ws) => {
       });
       if(message.health <= 0){
         game.kill(playerId);
-        wss.clients.forEach(client => {
-          if (client.readyState === WebSocket.OPEN) {
-            client.send(JSON.stringify({
+        clients.forEach(clientObj => {
+          if (clientObj.ws.readyState === WebSocket.OPEN) {
+            clientObj.ws.send(JSON.stringify({
               type: 'death',
               id: playerId,
             }));
@@ -199,38 +238,33 @@ wss.on('connection', async (ws) => {
     }
   });
 
-
-
-
-
   ws.on('close', () => {
-  //console.log('Client disconnected');
-  const disconnectedClient = clients.find(c => c.ws === ws);
-  clients = clients.filter(c => c.ws !== ws);
+    if (!roomCode || !rooms[roomCode]) return;
+    const room = rooms[roomCode];
+    let disconnectedClient = room.clients.find(c => c.ws === ws);
+    room.clients = room.clients.filter(c => c.ws !== ws);
 
-  if (disconnectedClient) {
-    const player = game.findPlayer(disconnectedClient.id);
-    if(player){
-      player.destroy();
-      game.removePlayer(player.id);
-      // for(let i = 0; i < game.players.length; i++){
-      //   if(game.players[i] == player){
-      //     game.players.splice(i, 1);
-      //   }
-      // }
-    }
-    // game.findPlayer(disconnectedClient.id).destroy();
-    wss.clients.forEach(client => {
-      if (client.readyState === WebSocket.OPEN && client !== ws) {
-        client.send(JSON.stringify({
-          type: 'playerDisconnected',
-          id: disconnectedClient.id,
-        }));
+    if (disconnectedClient) {
+      const player = room.game.findPlayer(disconnectedClient.id);
+      if(player){
+        player.destroy();
+        room.game.removePlayer(player.id);
       }
-    });
-
-  }
-});
+      room.clients.forEach(clientObj => {
+        if (clientObj.ws.readyState === WebSocket.OPEN && clientObj.ws !== ws) {
+          clientObj.ws.send(JSON.stringify({
+            type: 'playerDisconnected',
+            id: disconnectedClient.id,
+          }));
+        }
+      });
+    }
+    broadcastPlayerCount(roomCode);
+    // Clean up empty rooms
+    if (room.clients.length === 0) {
+      delete rooms[roomCode];
+    }
+  });
 
   ws.on('error', (error) => {
     console.error('WebSocket error:', error);
@@ -255,9 +289,12 @@ app.use('/middleware', express.static(path.join(__dirname, 'middleware')));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-// Routes
-app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public/templates/index.html'));
+// Serve game for any room code
+app.get('/room/:roomCode', (req, res) => {
+  if (!req.session.user) {
+    return res.redirect('/login');
+  }
+  res.sendFile(path.join(__dirname, 'public/templates/game.html'));
 });
 
 app.get('/dev', (req, res) => {
@@ -281,6 +318,9 @@ app.get('/home', (req, res) => {
 
 app.get('/login', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/templates/login.html'));
+});
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/templates/index.html'));
 });
 
 app.get('/signup', (req, res) => {
@@ -341,17 +381,17 @@ Username or password does not match <br><br>
 </center>
 `
 
-try {
-    const user = await fetchUser('username', username);
-    if (user.password === password) {
-      req.session.user = username;
-      res.redirect('/home');
-    } else {
+  try {
+      const user = await fetchUser('username', username);
+      if (user.password === password) {
+        req.session.user = username;
+        res.redirect('/home');
+      } else {
+        res.status(500).send(txt);
+      }
+    } catch (err) {
       res.status(500).send(txt);
     }
-  } catch (err) {
-    res.status(500).send(txt);
-  }
 });
 
 const port = process.env.PORT || 3000;

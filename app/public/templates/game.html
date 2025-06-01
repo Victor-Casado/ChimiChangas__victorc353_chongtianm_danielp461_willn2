@@ -3,11 +3,29 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
         <title>DEVOROYALE</title>
         <script src="https://pixijs.download/release/pixi.min.js"></script>
+        <style>
+          #playerCountDisplay {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: 0 auto;
+            text-align: center;
+            font-size: 1.2em;
+            color: white;
+            background: rgba(0,0,0,0.4);
+            padding: 0.7em;
+            z-index: 1000;
+            pointer-events: none;
+            user-select: none;
+          }
+        </style>
     </head>
     <body>
         <script type="module" src="/public/js/game.js"></script>
+        <div id="playerCountDisplay">0/2 players in room</div>
     </body>
 </html>

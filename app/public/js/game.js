@@ -4,7 +4,7 @@ import { Game } from '../../middleware/game.js';
 const match = window.location.pathname.match(/\/room\/([A-Z0-9]+)/i);
 const roomCode = match ? match[1].toUpperCase() : null;
 
-const ws = new WebSocket(`ws://${window.location.hostname}:8080`);
+const ws = new WebSocket(`wss://victorcasado.me/ws/${roomCode}`);
 let game = null;
 let messageQueue = [];
 

@@ -149,6 +149,8 @@ export class Game {
         }
         if(this.localPlayer && this.localPlayer.id == id){
           window.location.href = '/home';
+        } else{
+          window.location.href = '/victory';
         }
       }
       this.removePlayer(player.id);

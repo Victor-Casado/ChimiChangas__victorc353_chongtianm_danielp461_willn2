@@ -326,6 +326,10 @@ app.get('/signup', (req, res) => {
   res.sendFile(path.join(__dirname, 'public/templates/signup.html'));
 });
 
+app.get('/victory', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/templates/victory.html'));
+});
+
 app.get('/me', async (req, res) => {
   if (!req.session.user) {
     return res.status(401).json({ error: 'Not logged in' });

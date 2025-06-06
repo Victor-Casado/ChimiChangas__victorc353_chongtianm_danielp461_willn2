@@ -33,7 +33,10 @@ cd PATH/TO/ChimiChangas__victorc353_chongtianm_danielp461_willn2
 ```
 npm install
 ```
-3. Launch the Game
+
+3. Configure nginx server at victorcasado.me
+   
+4. Launch the Game
    
 ```
 node app/server.js

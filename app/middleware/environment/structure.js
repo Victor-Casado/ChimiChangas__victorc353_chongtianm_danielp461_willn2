@@ -21,7 +21,7 @@ export class Structure{
     }
     
     static getPath(type, variant){
-        return '/public/assets/environment/' + type + variant + '.png';
+        return '/devo/public/assets/environment/' + type + variant + '.png';
     }
 
     updatePos(){

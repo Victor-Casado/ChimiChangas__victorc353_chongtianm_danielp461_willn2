@@ -34,7 +34,7 @@ export class Game {
 
         this.localPlayer = null;
 
-        const crosshair = "url('/public/assets/weapons/crosshair.png'),auto";
+        const crosshair = "url('/devo/public/assets/weapons/crosshair.png'),auto";
 
         this.app.renderer.events.cursorStyles.default = crosshair
       }
@@ -148,9 +148,9 @@ export class Game {
           //console.log('After refresh:', this.items[itemData.id]);
         }
         if(this.localPlayer && this.localPlayer.id == id){
-          window.location.href = '/home';
+          window.location.href = '/devo/home';
         } else{
-          window.location.href = '/victory';
+          window.location.href = '/devo/victory';
         }
       }
       this.removePlayer(player.id);
@@ -169,8 +169,8 @@ export class Game {
           this.container.x = this.app.screen.width / 2 - this.localPlayer.getPosX() * this.zoomLevel;
           this.container.y = this.app.screen.height / 2 - this.localPlayer.getPosY() * this.zoomLevel;
 
-          this.localPlayer.position.x = Math.max(0, Math.min(this.app.screen.width - this.localPlayer.playerWidth, this.localPlayer.position.x));
-          this.localPlayer.position.y = Math.max(0, Math.min(this.app.screen.height - this.localPlayer.playerHeight, this.localPlayer.position.y));
+          this.localPlayer.position.x = Math.max(0, Math.min(1900 - this.localPlayer.playerWidth, this.localPlayer.position.x));
+          this.localPlayer.position.y = Math.max(0, Math.min(800 - this.localPlayer.playerHeight, this.localPlayer.position.y));
 
           const mouseScreen = new PIXI.Point(this.localPlayer.controller.mouseX + 8, this.localPlayer.controller.mouseY + 8);
           const mouseWorld = this.container.toLocal(mouseScreen);

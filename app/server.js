@@ -3,9 +3,9 @@ import session from 'express-session';
 import WebSocket, { WebSocketServer } from 'ws';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { addUser, fetchUser, updateUsername} from './db_scripts/login.js';
-import { Game }  from './middleware/game.js';
-import { Player }  from './middleware/player.js';
+import { addUser, fetchUser, updateUsername } from './db_scripts/login.js';
+import { Game } from './middleware/game.js';
+import { Player } from './middleware/player.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -46,7 +46,7 @@ wss.on('connection', async (ws) => {
     const message = JSON.parse(data);
 
     // JOIN HANDLER: roomCode is sent by client
-    if(message.type === 'join'){
+    if (message.type === 'join') {
       const username = message.username;
       roomCode = (message.roomCode || '').toUpperCase();
       if (!roomCode) {
@@ -73,17 +73,17 @@ wss.on('connection', async (ws) => {
 
       // Spawn the new player at random locations
       let random = Math.random();
-      if (random < 1.1){
+      if (random < 1.1) {
         newPlayer = new Player(username, username, null, 1900, 800, false, ws);
       }
-      if (random < .75){
+      if (random < .75) {
         newPlayer = new Player(username, username, null, 0, 800, false, ws);
       }
-      if (random < .5){
+      if (random < .5) {
         newPlayer = new Player(username, username, null, 1900, 0, false, ws);
       }
-      if (random < .25){
-        newPlayer = new Player(username, username, null,0, 0, false, ws);
+      if (random < .25) {
+        newPlayer = new Player(username, username, null, 0, 0, false, ws);
       }
       room.game.players.push(newPlayer);
 
@@ -211,7 +211,7 @@ wss.on('connection', async (ws) => {
 
     if (message.type === 'health') {
       const playerId = message.id;
-      if(game.players.find((player) => player.id == playerId) == null){
+      if (game.players.find((player) => player.id == playerId) == null) {
         return;
       }
       game.players.find((player) => player.id == playerId).health = message.health;
@@ -224,7 +224,7 @@ wss.on('connection', async (ws) => {
           }));
         }
       });
-      if(message.health <= 0){
+      if (message.health <= 0) {
         game.kill(playerId);
         clients.forEach(clientObj => {
           if (clientObj.ws.readyState === WebSocket.OPEN) {
@@ -246,7 +246,7 @@ wss.on('connection', async (ws) => {
 
     if (disconnectedClient) {
       const player = room.game.findPlayer(disconnectedClient.id);
-      if(player){
+      if (player) {
         player.destroy();
         room.game.removePlayer(player.id);
       }
@@ -292,7 +292,7 @@ app.use(express.json());
 // Serve game for any room code
 app.get('/room/:roomCode', (req, res) => {
   if (!req.session.user) {
-    return res.redirect('/login');
+    return res.redirect('/devo/login');
   }
   res.sendFile(path.join(__dirname, 'public/templates/game.html'));
 });
@@ -305,14 +305,14 @@ app.get('/dev', (req, res) => {
 
 app.get('/game', (req, res) => {
   if (!req.session.user) {
-    return res.redirect('/login');
+    return res.redirect('/devo/login');
   }
   res.sendFile(path.join(__dirname, 'public/templates/game.html'));
 });
 
 app.get('/home', (req, res) => {
   if (!req.session.user) {
-    return res.redirect('/login');
+    return res.redirect('/devo/login');
   }
   let username = req.session.user;
   res.sendFile(path.join(__dirname, 'public/templates/home.html'));
@@ -348,7 +348,7 @@ app.post('/signup', async (req, res) => {
 <h1>
 Username Already Exists <br><br>
 </h1>
-<form action="/">
+<form action="/devo/">
 <button class="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-full transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg">
   Home
 </form>
@@ -357,8 +357,8 @@ Username Already Exists <br><br>
 <img src="https://www.freeiconspng.com/uploads/smiley-sad-face-png-26.png">
 </center>
 `
-  if (addedUser){
-    res.redirect('/login');
+  if (addedUser) {
+    res.redirect('/devo/login');
   }
   else {
     res.status(500).send(txt);
@@ -374,7 +374,7 @@ app.post('/login', async (req, res) => {
 <h1>
 Username or password does not match <br><br>
 </h1>
-<form action="/">
+<form action="/devo/">
 <button class="px-8 py-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white font-bold rounded-full transition-transform transform-gpu hover:-translate-y-1 hover:shadow-lg">
   Home
 </form>
@@ -385,16 +385,16 @@ Username or password does not match <br><br>
 `
 
   try {
-      const user = await fetchUser('username', username);
-      if (user.password === password) {
-        req.session.user = username;
-        res.redirect('/home');
-      } else {
-        res.status(500).send(txt);
-      }
-    } catch (err) {
+    const user = await fetchUser('username', username);
+    if (user.password === password) {
+      req.session.user = username;
+      res.redirect('/devo/home');
+    } else {
       res.status(500).send(txt);
     }
+  } catch (err) {
+    res.status(500).send(txt);
+  }
 });
 
 const port = process.env.PORT || 3000;

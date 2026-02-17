@@ -1,7 +1,7 @@
 import { Game } from '../../middleware/game.js';
 
 // Get room code from URL: /room/:roomCode
-const match = window.location.pathname.match(/\/room\/([A-Z0-9]+)/i);
+const match = window.location.pathname.match(/\/(?:devo\/)?room\/([A-Z0-9]+)/i);
 const roomCode = match ? match[1].toUpperCase() : null;
 
 const ws = new WebSocket(`wss://victorcasado.me/ws/${roomCode}`);
@@ -9,7 +9,7 @@ let game = null;
 let messageQueue = [];
 
 ws.onopen = async () => {
-  const res = await fetch('/me');
+  const res = await fetch('/devo/me');
   const { username } = await res.json();
 
   ws.send(JSON.stringify({
@@ -39,7 +39,7 @@ ws.onmessage = (event) => {
 async function handleMessage(data) {
     if (data.type === 'roomFull') {
         alert("Room is full! Please join another room.");
-        window.location.href = "/home";
+        window.location.href = "/devo/home";
         return;
     }
     if (data.type === 'playerCount') {

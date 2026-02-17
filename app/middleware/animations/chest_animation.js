@@ -26,7 +26,7 @@ export class ChestAnimation
     }
 
     static getPath(rank){
-        return '/public/assets/ChestPack/animation/chest/' + rank + '/chest.json';
+        return '/devo/public/assets/ChestPack/animation/chest/' + rank + '/chest.json';
     }
 
     getRandomGun(){

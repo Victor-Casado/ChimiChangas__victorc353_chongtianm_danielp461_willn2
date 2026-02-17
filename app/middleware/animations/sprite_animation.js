@@ -19,7 +19,7 @@ export class SpriteAnimation
     }
 
     static getPath(skinNum, orientation){
-        return '/public/assets/CharacterPack/animation/character/' + skinNum + '/' + orientation + '/anim.json';
+        return '/devo/public/assets/CharacterPack/animation/character/' + skinNum + '/' + orientation + '/anim.json';
     }
 
     getTexture(orientation, action = 'Idle'){

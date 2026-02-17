@@ -19,7 +19,7 @@ export class Gun extends Item
     }
 
     static getPath(gunName){
-        return '/public/assets/weapons/guns/' + gunName + '.png';
+        return '/devo/public/assets/weapons/guns/' + gunName + '.png';
     }
 
     fire(targetX, targetY, absolute, ws, shotBy){
@@ -145,6 +145,6 @@ export class Bullet {
     }
 
     static getPath(type){
-        return '/public/assets/weapons/bullets/' + type + '.png';
+        return '/devo/public/assets/weapons/bullets/' + type + '.png';
     }
 }
